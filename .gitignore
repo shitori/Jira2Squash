@@ -128,3 +128,6 @@ dist
 
 # node 
 package-lock.json
+
+# local
+upload/
