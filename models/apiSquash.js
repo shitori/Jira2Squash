@@ -1,7 +1,8 @@
 const axios = require('axios');
 const proxy = require('./proxy')
-
-const baseURL = "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/"
+const dotenv = require('dotenv');
+dotenv.config();
+const baseURL = process.env.SQUASH_BASE_URL
 
 
 function modify(objectName, data, jSessionID) {

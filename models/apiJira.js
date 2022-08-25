@@ -1,10 +1,13 @@
 const axios = require('axios');
 const proxy = require('./proxy.js')
+const dotenv = require('dotenv');
+dotenv.config();
+const baseUrl = process.env.JIRA_BASE_URL
 
 function getIssues(jql, jSessionID) {
     return new Promise((resolve, reject) => {
         proxy.setJSessionID(jSessionID)
-        axios.get("https://jira-build.orangeapplicationsforbusiness.com/rest/api/latest/search?jql=" + encodeURI(jql) + "&maxResults=10000", proxy.infoCO)
+        axios.get(baseUrl + "search?jql=" + encodeURI(jql) + "&maxResults=10000", proxy.infoCO)
             .then(res => {
                 console.log(`statusCode: ${res.status}`);
                 let compactIssues = []
@@ -19,8 +22,8 @@ function getIssues(jql, jSessionID) {
                 });
                 console.log(compactIssues);
                 resolve(compactIssues)
-            }).catch(error => {   
-                console.log("fail api jira, check JSEssion");                          
+            }).catch(error => {
+                console.log("fail api jira, check JSEssion");
                 reject(error)
             });
     })
