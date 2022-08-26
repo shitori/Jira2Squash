@@ -1,6 +1,7 @@
 const axios = require('axios');
 const proxy = require('./proxy')
 const dotenv = require('dotenv');
+const { json } = require('body-parser');
 dotenv.config();
 const baseURL = process.env.SQUASH_BASE_URL
 
@@ -33,13 +34,30 @@ function create(objectName, data, jSessionID) {
     })
 }
 
+function getContents(objectType, idObject, jSessionID) {
+    proxy.setJSessionID(jSessionID)
+    return new Promise((resolve, reject) => {
+        let currentURL = baseURL + objectType + "/" + idObject + "/content?page=0&size=200000"
+        axios.get(currentURL, proxy.infoCO)
+            .then(res => {
+                if (res.data._embedded) {
+                    console.log(res.data._embedded.content)
+                }
+                resolve(res.data)
+            }).catch(err => {
+
+                reject(err)
+            })
+    })
+}
+
 function findByName(objectType, name, jSessionID) {
     proxy.setJSessionID(jSessionID)
     return new Promise((resolve, reject) => {
         let currentURL = baseURL + objectType + "?page=0&size=200000"
         axios.get(currentURL, proxy.infoCO)
             .then(res => {
-                console.log(res.status == 200 ? "Objet "+ name + " trouvé" : "Objet "+ name + " non trouvé");
+                console.log(res.status == 200 ? "Objet " + name + " trouvé" : "Objet " + name + " non trouvé");
                 let objects = res.data._embedded[objectType]
                 let searchObject = objects.find(object => object.name === name)
                 console.log(searchObject);
@@ -93,15 +111,40 @@ function createRequirement(idFolderParent, record, jSessionID) {
         .catch(err => console.error(err))
 }
 
+function createRequirementIfNecessary(idFolder, dataFolder, record, nameFolder, jSessionID) {
+    var folderEmpty = dataFolder._embedded == undefined;
+    var exigenceAlreadyExist = undefined;
+    if (folderEmpty) {
+        console.log("Répertoire " + nameFolder + " vide");
+        createRequirement(idFolder, record, jSessionID)
+    } else {
+        var exigenceAlreadyExist = dataFolder._embedded.content.find(el => el.name == record.nameJira.replaceAll('/', '\\'))
+        /*console.log("exigenceAlreadyExist :");
+        console.log(exigenceAlreadyExist);*/
+        if (exigenceAlreadyExist == undefined) {
+            createRequirement(idFolder, record, jSessionID)
+        } else {
+            console.log("l'exigence " + nameFolder + " existe déjà");
+        }
+    }
+}
+
 function createRequirements(idB, idWB, result, jSessionID) {
     console.log(result.length + " exigence(s) à créer");
-    result.forEach((record, index, array) => {
-        if (record.nameJira.toLowerCase().includes("wallboard")) {
-            createRequirement(idWB, record, jSessionID)
-        } else {
-            createRequirement(idB, record, jSessionID)
-        }
-    })
+    getContents("requirement-folders", idB, jSessionID)
+        .then(resBandeau => {
+            getContents("requirement-folders", idWB, jSessionID)
+                .then(resWallboard => {
+                    result.forEach(record => {
+                        if (record.nameJira.toLowerCase().includes("wallboard")) {
+                            createRequirementIfNecessary(idWB, resWallboard, record, "WallBoard", jSessionID)
+                        } else {
+                            createRequirementIfNecessary(idB, resBandeau, record, "Bandeau", jSessionID)
+                        }
+                    })
+                }).catch(err => console.log(err))
+        }).catch(err => console.log(err))
+
 }
 
 function createFolderIfNecessary(jSessionID, isWB, sprint) {
@@ -109,7 +152,7 @@ function createFolderIfNecessary(jSessionID, isWB, sprint) {
     return new Promise((resolve, reject) => {
         findIDByName("requirement-folders", folderName, jSessionID)
             .then(id => {
-                console.log(id == undefined ? "dossier " + folderName + " à créer" : "dossier " + folderName +  "à ne pas créer")
+                console.log(id == undefined ? "dossier " + folderName + " à créer" : "dossier " + folderName + " à ne pas créer")
                 if (id === undefined) {
                     let folderParentName = (isWB ? "New Wallboard" : "[NextGen]Nouveaux Bandeaux")
                     findIDByName("requirement-folders", folderParentName, jSessionID)

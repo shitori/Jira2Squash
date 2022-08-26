@@ -20,7 +20,7 @@ function getIssues(jql, jSessionID) {
                     compactIssue["typeJira"] = issue.fields.issuetype.name
                     compactIssues.push(compactIssue)
                 });
-                console.log(compactIssues);
+                //console.log(compactIssues);
                 resolve(compactIssues)
             }).catch(error => {
                 console.log("fail api jira, check JSEssion");
