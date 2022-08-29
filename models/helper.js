@@ -6,9 +6,9 @@ function getRandomInt(max) {
 }
 
 function saveSourceFile(files) {
-   
+
     return new Promise((resolve, reject) => {
-        
+
         if (!files) {
             console.log("File was not found");
             reject("No file");
@@ -54,7 +54,7 @@ function checkInput(body) {
 
     body.inputWB = !(body.inputWB === undefined)
     body.inputSprint = setEmptyField(body.inputSprint, 'undefined')
-    body.inputSquash = 'upload/'+ setEmptyField(body.inputSquash, 'dataForSquash') + '.xls'
+    body.inputSquash = 'upload/' + setEmptyField(body.inputSquash, 'dataForSquash') + '.xls'
     body.inputHeader = setEmptyField(body.inputHeader, 4)
     body.inputFooter = setEmptyField(body.inputFooter, 1)
     return body
@@ -64,15 +64,28 @@ function setEmptyField(field, defaultValue) {
     return (field == '' ? defaultValue : field)
 }
 
-function removeTmpFile(filePath){
+function removeTmpFile(filePath) {
     fs.unlink(filePath, (err) => {
         if (err) {
-          console.error(err)          
-        }else{
+            console.error(err)
+        } else {
             console.log(filePath + " supprimé")
         }
         return
     })
 }
 
-module.exports = { checkInput, saveSourceFile, saveSourceFileBis, removeTmpFile }
+function convertJiraType(jiraType) {
+    switch (jiraType) {
+        case "Anomalie":
+            return "BUG";
+        case "Récit":
+            return "STORY";
+        case "Amélioration":
+            return "ENHANCEMENT";
+        default:
+            return "";
+    }
+}
+
+module.exports = { checkInput, saveSourceFile, saveSourceFileBis, removeTmpFile, convertJiraType }
