@@ -79,9 +79,9 @@ class apiSquash {
                         .then(resWallboard => {
                             result.forEach(record => {
                                 if (record.nameJira.toLowerCase().includes("wallboard")) {
-                                    this.createRequirementIfNecessary(idWB, resWallboard, record, "WallBoard")
+                                    this.createRequirementIfNecessary(idWB, resWallboard, record, "WallBoard").then(res => console.info(res)).catch(err => console.error(err))
                                 } else {
-                                    this.createRequirementIfNecessary(idB, resBandeau, record, "Bandeau")
+                                    this.createRequirementIfNecessary(idB, resBandeau, record, "Bandeau").then(res => console.info(res)).catch(err => console.error(err))
                                 }
                             })
                             resolve(result.length + " exigence(s) à créer")
