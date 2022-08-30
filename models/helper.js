@@ -7,18 +7,15 @@ function getRandomInt(max) {
 function saveSourceFile(files) {
     return new Promise((resolve, reject) => {
         if (!files) {
-            console.log("File was not found");
             reject("No file");
         }
         var file = files.formFile;
-        console.log(file);
         var tmpName = 'upload/tmp' + getRandomInt(100) + '.xlsx'
         fs.writeFile(tmpName, file.data, (err) => {
             if (err) {
-                console.log("KO" + err);
                 reject(err);
             } else {
-                console.log("OK, fichier créer");
+                console.info("OK, fichier créer");
                 resolve(tmpName);
             }
         })
@@ -28,16 +25,14 @@ function saveSourceFile(files) {
 function saveSourceFileBis(files) {
     var tmpName = 'tmp' + getRandomInt(100) + '.xlsx'
     if (!files) {
-        console.log("File was not found");
         return "No file";
     }
     var file = files.formFile;
     fs.writeFile(tmpName, file.data, (err) => {
         if (err) {
-            console.log("KO" + err);
             return err;
         } else {
-            console.log("OK, fichier créer");
+            console.info("OK, fichier créer");
             return tmpName;
         }
     })
@@ -63,7 +58,7 @@ function removeTmpFile(filePath) {
         if (err) {
             console.error(err)
         } else {
-            console.log(filePath + " supprimé")
+            console.info(filePath + " supprimé")
         }
         return
     })

@@ -54,8 +54,6 @@ function writeOnExcel(sprintName, squashFileName, footerSize, result) {
 
 
 function writeOnSquash(sprintName, squashFileName, headerSize, footerSize, sourceFilePath) {
-    console.log("sourceFilePath : " + sourceFilePath);
-    console.log("headerSize : " + headerSize);
     const dataParser = {
         sourceFile: sourceFilePath,
         header: {
@@ -74,13 +72,13 @@ function writeOnSquash(sprintName, squashFileName, headerSize, footerSize, sourc
 
     result = result.general_report
     writeOnExcel(sprintName, squashFileName, footerSize, result)
-    console.log("Fichier créer");
+    console.info("Fichier créer");
 }
 
-function writeOnSquashAPI(sprintName, squashFileName, dataAPI) {    
-    
+function writeOnSquashAPI(sprintName, squashFileName, dataAPI) {
+
     writeOnExcel(sprintName, squashFileName, 0, dataAPI)
-    console.log("Fichier créer");
+    console.info("Fichier créer");
 }
 
 module.exports = { writeOnSquash, writeOnSquashAPI }

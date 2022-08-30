@@ -44,7 +44,7 @@ class apiSquash {
             }
         }
         this.create("requirements", data)
-            .then(success => console.log("ID nouvelle exigence : " + success.id))
+            .then(success => console.info("ID nouvelle exigence : " + success.id))
             .catch(err => console.error(err))
     }
 
@@ -57,17 +57,15 @@ class apiSquash {
         } else {
             var exigenceAlreadyExist = dataFolder._embedded.content.find(el => el.name == record.nameJira.replaceAll('/', '\\'))
             if (exigenceAlreadyExist == undefined) {
-                //dataFolder._embedded.content.forEach(el => console.log(el.name))
-                //console.log(record.nameJira.replaceAll('/', '\\'));
                 this.createRequirement(idFolder, record)
             } else {
-                console.log("l'exigence " + nameFolder + " existe déjà");
+                console.info("l'exigence " + nameFolder + " existe déjà");
             }
         }
     }
 
     createRequirements(idB, idWB, result) {
-        console.log(result.length + " exigence(s) à créer");
+        console.info(result.length + " exigence(s) à créer");
         this.getContents("requirement-folders", idB)
             .then(resBandeau => {
                 this.getContents("requirement-folders", idWB)
@@ -79,8 +77,8 @@ class apiSquash {
                                 this.createRequirementIfNecessary(idB, resBandeau, record, "Bandeau")
                             }
                         })
-                    }).catch(err => console.log(err))
-            }).catch(err => console.log(err))
+                    }).catch(err => console.error(err))
+            }).catch(err => console.error(err))
 
     }
 
@@ -89,12 +87,12 @@ class apiSquash {
         return new Promise((resolve, reject) => {
             this.findIDByName("requirement-folders", folderName)
                 .then(id => {
-                    console.log(id == undefined ? "dossier " + folderName + " à créer" : "dossier " + folderName + " à ne pas créer")
+                    console.info(id == undefined ? "dossier " + folderName + " à créer" : "dossier " + folderName + " à ne pas créer")
                     if (id === undefined) {
                         let folderParentName = (isWB ? "New Wallboard" : "[NextGen]Nouveaux Bandeaux")
                         this.findIDByName("requirement-folders", folderParentName)
                             .then(idParent => {
-                                console.log("folderParentID : " + idParent)
+                                console.info("folderParentID : " + idParent)
                                 let dataFolder = {
                                     "_type": "requirement-folder",
                                     "name": (isWB ? "WB - " : "G2R2 - ") + "Sprint " + sprint,
@@ -123,7 +121,7 @@ class apiSquash {
             axios.get(currentURL, this.proxy)
                 .then(res => {
                     if (res.data._embedded) {
-                        console.log(res.data._embedded.content)
+                        console.info(res.data._embedded.content)
                     }
                     resolve(res.data)
                 }).catch(err => {
@@ -135,8 +133,6 @@ class apiSquash {
     findByName(objectType, name) {
         return new Promise((resolve, reject) => {
             let currentURL = baseURL + objectType + "?page=0&size=200000"
-            //console.log(currentURL);
-            //console.log(this.proxy);
             axios.get(currentURL, this.proxy)
                 .then(res => {
                     console.info(res.status == 200 ? "Objet " + name + " trouvé" : "Objet " + name + " non trouvé");
@@ -144,7 +140,7 @@ class apiSquash {
                     let searchObject = objects.find(object => object.name === name)
                     console.info(searchObject);
                     resolve(searchObject)
-                }).catch(error => {                    
+                }).catch(error => {
                     reject(error)
                 });
         })
@@ -174,9 +170,9 @@ class apiSquash {
                     .then(resBandeau => {
                         this.createRequirements(resBandeau, resWB, result)
                     })
-                    .catch(err => console.log("le dossier bandeau n'existe pas : " + err))
+                    .catch(err => console.error("le dossier bandeau n'existe pas : " + err))
             })
-            .catch(err => console.log("le dossier wallboard n'existe pas : " + err))
+            .catch(err => console.error("le dossier wallboard n'existe pas : " + err))
     }
 }
 

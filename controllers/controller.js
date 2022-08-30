@@ -17,22 +17,17 @@ module.exports = {
         var jira = new Jira(proxyJira.getProxy())
         var squash = new Squash(proxySquash.getProxy())
         jira.getIssues("project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = 35330 ORDER BY priority DESC, updated DESC")
-            .then(res => {
-                console.log(res);
+            .then(res => {                
                 squash.importInSquashWithAPI(res, 999)
             })
-            .then(squashReturn => console.log(squashReturn))
-            .catch(err => console.log(err))
+            .then(squashReturn => console.info(squashReturn))
+            .catch(err => console.error(err))
 
         res.redirect('/')
     },
 
     fromFile: (req, res) => {
-
-        req.body = helper.checkInput(req.body)
-        console.log(req.body);
-        console.log(req.files);
-
+        req.body = helper.checkInput(req.body)   
         helper.saveSourceFile(req.files)
             .then(sourcePath => {
                 maker.writeOnSquash(req.body.inputSprint, req.body.inputSquash, req.body.inputHeader, req.body.inputFooter, sourcePath)
@@ -40,15 +35,12 @@ module.exports = {
                 setTimeout(() => {
                     res.download(req.body.inputSquash)
                 }, 1000);
-
             })
-            .catch(err => console.log("error : " + err))
+            .catch(err => console.error("error : " + err))
     },
 
     fromAPI: (req, res) => {
-        console.log(req.body);
-        req.body = helper.checkInput(req.body)        
-        console.log(req.body);
+        req.body = helper.checkInput(req.body)
         var jira = new Jira(new Proxy(req.body.inputSessionTokenJira).getProxy())
         var squash = new Squash(new Proxy(req.body.inputSessionTokenSquash).getProxy())
         jira.getIssues(req.body.inputJiraRequest)
@@ -72,6 +64,6 @@ module.exports = {
                         }, 1000);
                         break;
                 }
-            }).catch(err => console.log(err))
+            }).catch(err => console.error(err))
     }
 }
