@@ -1,0 +1,35 @@
+<form action="/fromFile" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="inputSprint" class="form-label">Sprint n°</label>
+      <input type="input" class="form-control" id="inputSprint" name="inputSprint"
+        aria-describedby="sprintHelp">
+      <div id="sprintHelp" class="form-text">Valeur par défaut : undefined</div>
+    </div>
+    <div class="mb-3">
+      <label for="formFile" class="form-label">Rapport JIRA</label>
+      <input class="form-control" type="file" id="formFile" name="formFile" accept=".xlsx" required
+        aria-describedby="fileHelp">
+      <div id="fileHelp" class="form-text">Uniquement les fichiers .xlsx</div>
+    </div>
+    <div class="mb-3">
+      <label for="inputSquash" class="form-label">Nom du fichier cible SQUASH (.xls)</label>
+      <input type="input" class="form-control" id="inputSquash" name="inputSquash"
+        aria-describedby="squashHelp">
+      <div id="squashHelp" class="form-text">Valeur par défaut : dataForSquash(.xls)</div>
+    </div>
+    <div class="mb-3">
+      <label for="inputHeader" class="form-label">Nombre de ligne du header à ignorer</label>
+      <input type="number" class="form-control" id="inputHeader" name="inputHeader"
+        aria-describedby="headerHelp">
+      <div id="headerHelp" class="form-text">Valeur par défaut : 4</div>
+    </div>
+    <div class="mb-3">
+      <label for="inputFooter" class="form-label">Nombre de ligne du footer à ignorer</label>
+      <input type="number" class="form-control" id="inputFooter" name="inputFooter"
+        aria-describedby="footerHelp">
+      <div id="footerHelp" class="form-text">Valeur par défaut : 1</div>
+    </div>
+    <div class="text-center">
+      <button type="submit" class="btn btn-success">Transférer</button>
+    </div>
+  </form>
