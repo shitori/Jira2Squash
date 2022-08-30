@@ -43,42 +43,52 @@ class apiSquash {
                 "id": idFolderParent
             }
         }
-        this.create("requirements", data)
-            .then(success => console.info("ID nouvelle exigence : " + success.id))
-            .catch(err => console.error(err))
+        return new Promise((resolve, reject) => {
+            this.create("requirements", data)
+                .then(success => resolve("ID nouvelle exigence : " + success.id))
+                .catch(err => reject(err))
+        })
+
     }
 
     createRequirementIfNecessary(idFolder, dataFolder, record, nameFolder) {
-        var folderEmpty = dataFolder._embedded == undefined;
-        var exigenceAlreadyExist = undefined;
-        if (folderEmpty) {
-            console.info("Répertoire " + nameFolder + " vide");
-            this.createRequirement(idFolder, record)
-        } else {
-            var exigenceAlreadyExist = dataFolder._embedded.content.find(el => el.name == record.nameJira.replaceAll('/', '\\'))
-            if (exigenceAlreadyExist == undefined) {
-                this.createRequirement(idFolder, record)
+        return new Promise((resolve, reject) => {
+            var folderEmpty = dataFolder._embedded == undefined;
+            var exigenceAlreadyExist = undefined;
+            if (folderEmpty) {
+                console.info("Répertoire " + nameFolder + " vide");
+                this.createRequirement(idFolder, record).then(res => resolve(res)).catch(err => reject(err))
             } else {
-                console.info("l'exigence " + nameFolder + " existe déjà");
+                var exigenceAlreadyExist = dataFolder._embedded.content.find(el => el.name == record.nameJira.replaceAll('/', '\\'))
+                if (exigenceAlreadyExist == undefined) {
+                    this.createRequirement(idFolder, record).then(res => resolve(res)).catch(err => reject(err))
+                } else {
+                    resolve("L'exigence " + nameFolder + " existe déjà");
+                }
             }
-        }
+        })
+
     }
 
     createRequirements(idB, idWB, result) {
-        console.info(result.length + " exigence(s) à créer");
-        this.getContents("requirement-folders", idB)
-            .then(resBandeau => {
-                this.getContents("requirement-folders", idWB)
-                    .then(resWallboard => {
-                        result.forEach(record => {
-                            if (record.nameJira.toLowerCase().includes("wallboard")) {
-                                this.createRequirementIfNecessary(idWB, resWallboard, record, "WallBoard")
-                            } else {
-                                this.createRequirementIfNecessary(idB, resBandeau, record, "Bandeau")
-                            }
-                        })
-                    }).catch(err => console.error(err))
-            }).catch(err => console.error(err))
+        return new Promise((resolve, reject) => {
+            console.info(result.length + " exigence(s) à créer");
+            this.getContents("requirement-folders", idB)
+                .then(resBandeau => {
+                    this.getContents("requirement-folders", idWB)
+                        .then(resWallboard => {
+                            result.forEach(record => {
+                                if (record.nameJira.toLowerCase().includes("wallboard")) {
+                                    this.createRequirementIfNecessary(idWB, resWallboard, record, "WallBoard")
+                                } else {
+                                    this.createRequirementIfNecessary(idB, resBandeau, record, "Bandeau")
+                                }
+                            })
+                            resolve(result.length + " exigence(s) à créer")
+                        }).catch(err => reject(err))
+                }).catch(err => reject(err))
+        })
+
 
     }
 
@@ -164,15 +174,18 @@ class apiSquash {
     }
 
     importInSquashWithAPI(result, sprint) {
-        this.createFolderIfNecessary(true, sprint)
-            .then(resWB => {
-                this.createFolderIfNecessary(false, sprint)
-                    .then(resBandeau => {
-                        this.createRequirements(resBandeau, resWB, result)
-                    })
-                    .catch(err => console.error("le dossier bandeau n'existe pas : " + err))
-            })
-            .catch(err => console.error("le dossier wallboard n'existe pas : " + err))
+        return new Promise((resolve, reject) => {
+            this.createFolderIfNecessary(true, sprint)
+                .then(resWB => {
+                    this.createFolderIfNecessary(false, sprint)
+                        .then(resBandeau => {
+                            this.createRequirements(resBandeau, resWB, result).then(res => resolve(res)).catch(err => reject(err))
+                        })
+                        .catch(err => console.error("le dossier bandeau n'existe pas : " + err))
+                })
+                .catch(err => console.error("le dossier wallboard n'existe pas : " + err))
+        })
+
     }
 }
 

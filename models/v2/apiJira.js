@@ -28,7 +28,7 @@ class apiJira {
                     });
                     resolve(compactIssues)
                 }).catch(error => {
-                    console.error("fail api jira, check JSEssion");
+                    console.error("fail api jira, check JSession");
                     reject(error)
                 });
         })
