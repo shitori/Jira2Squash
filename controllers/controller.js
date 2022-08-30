@@ -1,10 +1,6 @@
 var maker = require('./../models/maker')
 var helper = require('./../models/helper')
 
-//v1
-var jira = require('./../models/apiJira')
-var squash = require('./../models/apiSquash')
-
 //v2
 const Jira = require("./../models/v2/apiJira")
 const Proxy = require("./../models/v2/proxy")
@@ -50,28 +46,32 @@ module.exports = {
     },
 
     fromAPI: (req, res) => {
-        req.body = helper.checkInput(req.body)
         console.log(req.body);
-        if (req.body.inputJiraSprintRequest !== undefined) {
-            req.body.inputJiraRequest = "project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = " + req.body.inputJiraSprintRequest + " ORDER BY priority DESC, updated DESC"
-        }
-        jira.getIssues(req.body.inputJiraRequest, req.body.inputSessionTokenJira)
+        req.body = helper.checkInput(req.body)        
+        console.log(req.body);
+        var jira = new Jira(new Proxy(req.body.inputSessionTokenJira).getProxy())
+        var squash = new Squash(new Proxy(req.body.inputSessionTokenSquash).getProxy())
+        jira.getIssues(req.body.inputJiraRequest)
             .then(dataAPI => {
-                if (req.body.validator == 'file') {
-                    maker.writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
-                    setTimeout(() => {
-                        res.download(req.body.inputSquash)
-                    }, 1000);
-                } else if (req.body.validator == 'api') {
-                    squash.importInSquashWithAPI(dataAPI, req.body.inputSessionTokenSquash, req.body.inputSprint)
-                    res.redirect('/')
-                } else {
-                    squash.importInSquashWithAPI(dataAPI, req.body.inputSessionTokenSquash, req.body.inputSprint)
-                    maker.writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
-                    setTimeout(() => {
-                        res.download(req.body.inputSquash)
-                    }, 1000);
+                switch (req.body.validator) {
+                    case 'file':
+                        maker.writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
+                        setTimeout(() => {
+                            res.download(req.body.inputSquash)
+                        }, 1000);
+                        break;
+                    case 'api':
+                        squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
+                        res.redirect('/')
+                        break;
+                    default:
+                        squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
+                        maker.writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
+                        setTimeout(() => {
+                            res.download(req.body.inputSquash)
+                        }, 1000);
+                        break;
                 }
-            })
+            }).catch(err => console.log(err))
     }
 }

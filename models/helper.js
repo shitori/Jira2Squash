@@ -1,14 +1,11 @@
 var fs = require('fs')
 
-
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
 function saveSourceFile(files) {
-
     return new Promise((resolve, reject) => {
-
         if (!files) {
             console.log("File was not found");
             reject("No file");
@@ -26,11 +23,9 @@ function saveSourceFile(files) {
             }
         })
     })
-
 }
 
 function saveSourceFileBis(files) {
-
     var tmpName = 'tmp' + getRandomInt(100) + '.xlsx'
     if (!files) {
         console.log("File was not found");
@@ -46,17 +41,16 @@ function saveSourceFileBis(files) {
             return tmpName;
         }
     })
-
-
 }
 
 function checkInput(body) {
-
     body.inputWB = !(body.inputWB === undefined)
     body.inputSprint = setEmptyField(body.inputSprint, 'undefined')
     body.inputSquash = 'upload/' + setEmptyField(body.inputSquash, 'dataForSquash') + '.xls'
     body.inputHeader = setEmptyField(body.inputHeader, 4)
     body.inputFooter = setEmptyField(body.inputFooter, 1)
+    body.inputJiraRequest = ((body.inputJiraSprintRequest !== undefined && body.inputJiraSprintRequest !== '') ? "project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = " + body.inputJiraSprintRequest + " ORDER BY priority DESC, updated DESC" : body.inputJiraRequest)
+
     return body
 }
 

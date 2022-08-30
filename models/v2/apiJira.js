@@ -11,6 +11,7 @@ class apiJira {
     }
 
     getIssues(jql) {
+       
         return new Promise((resolve, reject) => {
             axios.get(baseUrl + "search?jql=" + encodeURI(jql) + "&maxResults=10000", this.proxy)
                 .then(res => {
@@ -25,7 +26,6 @@ class apiJira {
                         compactIssue["typeJira"] = issue.fields.issuetype.name
                         compactIssues.push(compactIssue)
                     });
-                    //console.log(compactIssues);
                     resolve(compactIssues)
                 }).catch(error => {
                     console.log("fail api jira, check JSEssion");
