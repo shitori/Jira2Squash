@@ -1,4 +1,13 @@
-<form action="/fromAPI" method="post" enctype="multipart/form-data">
+<script>
+  function test(){
+    console.log("hello");
+    var form = document.getElementById("formFormApi");
+    form.style.display = "none"
+    var loading = document.getElementById("loading");
+    loading.style.display = "block"
+  }
+</script>
+<form action="/fromAPI" id="formFormApi" method="post" enctype="multipart/form-data">
     <div class="mb-3">
       <label for="inputSprint" class="form-label">Sprint n°</label>
       <input type="input" class="form-control" id="inputSprint" name="inputSprint"
@@ -47,11 +56,15 @@
         pour "Générer + Transférer" et "Transférer"</div>
     </div>
     <div class="text-center">
-      <button type="submit" class="btn btn-outline-success btn-lg" name="validator"
+      <button type="submit" onclick="test()" class="btn btn-outline-success btn-lg" name="validator"
         value="file">Générer</button>
-      <button type="submit" class="btn btn-outline-info btn-lg" name="validator" value="fileApi">Générer +
+      <button type="submit" onclick="test()" class="btn btn-outline-info btn-lg" name="validator" value="fileApi">Générer +
         Transférer</button>
-      <button type="submit" class="btn btn-outline-primary btn-lg" name="validator"
+      <button type="submit" onclick="test()" class="btn btn-outline-primary btn-lg" name="validator"
         value="api">Transférer</button>
     </div>
   </form>
+  <div id="loading" class="mt-5 text-center" style="display: none;">
+    <h2>Chargement en cours ...</h2>
+    <%- include('../loader.ejs'); %>
+  </div>
