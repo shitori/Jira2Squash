@@ -70,9 +70,9 @@ class apiSquash {
 
     }
 
+    
     createRequirements(idB, idWB, result) {
         return new Promise((resolve, reject) => {
-            console.info(result.length + " exigence(s) à créer");
             this.getContents("requirement-folders", idB)
                 .then(resBandeau => {
                     this.getContents("requirement-folders", idWB)
@@ -88,8 +88,6 @@ class apiSquash {
                         }).catch(err => reject(err))
                 }).catch(err => reject(err))
         })
-
-
     }
 
     createFolderIfNecessary(isWB, sprint) {
