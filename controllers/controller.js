@@ -62,12 +62,14 @@ module.exports = {
                     case 'api':
                         squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
                             .then(ret => {
+                                console.log(ret);
                                 res.redirect(url.format({
                                     pathname: "/success",
                                     query: {
                                         "from": req.body.validator,
                                         "fileName": undefined,
-                                        "message": "OK : " + ret
+                                        "message": "OK : " + ret.message,
+                                        "moreInfo": ret.moreInfo
                                     }
                                 }))
                             }).catch(err => {
@@ -76,7 +78,8 @@ module.exports = {
                                     query: {
                                         "from": req.body.validator,
                                         "fileName": undefined,
-                                        "message": "KO : " + err
+                                        "message": "KO : " + err,
+                                        "moreInfo": undefined
                                     }
                                 }))
                             })
@@ -90,7 +93,8 @@ module.exports = {
                                 query: {
                                     "from": "other",
                                     "fileName": sourceName,
-                                    "message": "OK : " + ret
+                                    "message": "OK : " + ret.message,
+                                    "moreInfo": ret.moreInfo,
                                 }
                             }))
                         })
@@ -106,7 +110,8 @@ module.exports = {
             {
                 "message": req.query.message,
                 "from": req.query.from,
-                "fileName": req.query.fileName
+                "fileName": req.query.fileName,
+                "moreInfo": req.query.moreInfo
             })
     },
 

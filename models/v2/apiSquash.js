@@ -45,7 +45,7 @@ class apiSquash {
         }
         return new Promise((resolve, reject) => {
             this.create("requirements", data)
-                .then(success => resolve(record.nameJira + " - ID nouvelle exigence : " + success.id))
+                .then(success => resolve("ID nouvelle exigence : " + success.id + " - " + record.nameJira))
                 .catch(err => reject(err))
         })
 
@@ -63,7 +63,7 @@ class apiSquash {
                 if (exigenceAlreadyExist == undefined) {
                     this.createRequirement(idFolder, record).then(res => resolve({ "message": res, "result": 1 })).catch(err => reject(err))
                 } else {
-                    resolve({ "message": record.nameJira + " - L'exigence " + nameFolder + " existe déjà", "result": 0 })
+                    resolve({ "message": "L'exigence " + nameFolder + " existe déjà - " + record.nameJira, "result": 0 })
                 }
             }
         })
@@ -104,26 +104,24 @@ class apiSquash {
                     console.info(id == undefined ? "dossier " + folderName + " à créer" : "dossier " + folderName + " à ne pas créer")
                     if (id === undefined) {
                         let folderParentName = (isWB ? "New Wallboard" : "[NextGen]Nouveaux Bandeaux")
-                        this.findIDByName("requirement-folders", folderParentName)
-                            .then(idParent => {
-                                console.info("folderParentID : " + idParent)
-                                let dataFolder = {
-                                    "_type": "requirement-folder",
-                                    "name": (isWB ? "WB - " : "G2R2 - ") + "Sprint " + sprint,
-                                    "parent": {
-                                        "_type": "requirement-folder",
-                                        "id": idParent
-                                    }
-                                }
-                                this.create("requirement-folders", dataFolder)
-                                    .then(res => {
-                                        let idNewFolder = res.id
-                                        resolve(idNewFolder)
-                                    }).catch(err => reject(err))
-                            })
+                        return this.findIDByName("requirement-folders", folderParentName)
                     } else {
                         resolve(id)
                     }
+                }).then(idParent => {
+                    console.info("folderParentID : " + idParent)
+                    let dataFolder = {
+                        "_type": "requirement-folder",
+                        "name": (isWB ? "WB - " : "G2R2 - ") + "Sprint " + sprint,
+                        "parent": {
+                            "_type": "requirement-folder",
+                            "id": idParent
+                        }
+                    }
+                    return this.create("requirement-folders", dataFolder)
+                }).then(res => {
+                    let idNewFolder = res.id
+                    resolve(idNewFolder)
                 }).catch(err => reject(err))
         })
 

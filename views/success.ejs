@@ -19,18 +19,20 @@
                 <%= message %>
             </h1>
         </div>
-
+        <pre><%= moreInfo %></pre>
+        
         <% if (fileName) {%>
             <form action="/file" method="post" enctype="multipart/form-data">
                 <input name="fileName" type="hidden" value="<%= fileName %>">
                 <div class="d-grid gap-2">
-                    <button class="btn btn-outline-info btn-lg" type="submit">Recuperer le fichier Excel</button>
+                    <button class="btn btn-outline-info btn-lg" type="submit">Recuperer le fichier
+                        Excel</button>
                 </div>
             </form>
-            <% } %>
-                <div class="d-grid gap-2 mt-1">
-                    <a href="/" class="btn btn-outline-primary btn-lg" type="button">Retour à l'accueil</a>
-                </div>
+        <% } %>
+        <div class="d-grid gap-2 mt-1">
+            <a href="/" class="btn btn-outline-primary btn-lg" type="button">Retour à l'accueil</a>
+        </div>
     </div>
     </div>
 </body>
