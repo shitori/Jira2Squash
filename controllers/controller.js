@@ -41,6 +41,7 @@ module.exports = {
     },
 
     fromAPI: (req, res) => {
+        
         var sourceName = req.body.inputSquash
         req.body = helper.checkInput(req.body)
         var jira = new Jira(new Proxy(req.body.inputSessionTokenJira).getProxy())
@@ -116,5 +117,9 @@ module.exports = {
     getFile: (req, res) => {
         console.log(req.body);
         res.download("upload/" + req.body.fileName + ".xls")
+    },
+
+    loading: (req,res) => {
+        res.render('loading')
     }
 }
