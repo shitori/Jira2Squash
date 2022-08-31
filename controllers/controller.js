@@ -72,37 +72,35 @@ module.exports = {
                                         "moreInfo": ret.moreInfo
                                     }
                                 }))
-                            }).catch(err => {
+                            })
+                        break;
+                    default:
+                        squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
+                            .then(ret => {
+                                ret = ret + '\n' + maker.writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
                                 res.redirect(url.format({
                                     pathname: "/success",
                                     query: {
-                                        "from": req.body.validator,
-                                        "fileName": undefined,
-                                        "message": "KO : " + err,
-                                        "moreInfo": undefined
+                                        "from": "other",
+                                        "fileName": sourceName,
+                                        "message": "OK : " + ret.message,
+                                        "moreInfo": ret.moreInfo,
                                     }
                                 }))
                             })
-
-                        break;
-                    default:
-                        squash.importInSquashWithAPI(dataAPI, req.body.inputSprint).then(ret => {
-                            ret = ret + '\n' + maker.writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
-                            res.redirect(url.format({
-                                pathname: "/success",
-                                query: {
-                                    "from": "other",
-                                    "fileName": sourceName,
-                                    "message": "OK : " + ret.message,
-                                    "moreInfo": ret.moreInfo,
-                                }
-                            }))
-                        })
-
-
                         break;
                 }
-            }).catch(err => console.error(err))
+            }).catch(err => {
+                res.redirect(url.format({
+                    pathname: "/success",
+                    query: {
+                        "from": req.body.validator,
+                        "fileName": undefined,
+                        "message": "KO : " + err,
+                        "moreInfo": undefined
+                    }
+                }))
+            })
     },
 
     success: (req, res) => {
