@@ -13,13 +13,13 @@ module.exports = {
     },
 
     test: (req, res) => {
-        var proxyJira = new Proxy("F7BCA379342DAFB9C2EC27C7751051D3")
-        var proxySquash = new Proxy("81929304DF98798D0F36631F77A5D612")
+        var proxyJira = new Proxy("F1A0B124ED6981EE8C5C02CDEEBCD9F8")
+        var proxySquash = new Proxy("98F1437FF881DE01A32D7981F355A44E")
         var jira = new Jira(proxyJira.getProxy())
         var squash = new Squash(proxySquash.getProxy())
         jira.getIssues("project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = 35330 ORDER BY priority DESC, updated DESC")
             .then(res => {
-                squash.importInSquashWithAPI(res, 999)
+                return squash.importInSquashWithAPI(res, 999)
             })
             .then(squashReturn => console.info(squashReturn))
             .catch(err => console.error(err))

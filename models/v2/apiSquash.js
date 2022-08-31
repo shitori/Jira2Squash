@@ -70,7 +70,7 @@ class apiSquash {
 
     }
 
-    
+
     createRequirements(idB, idWB, result) {
         return new Promise((resolve, reject) => {
             this.getContents("requirement-folders", idB)
@@ -171,7 +171,7 @@ class apiSquash {
         })
     }
 
-    importInSquashWithAPI(result, sprint) {
+    _importInSquashWithAPI(result, sprint) {
         return new Promise((resolve, reject) => {
             this.createFolderIfNecessary(true, sprint)
                 .then(resWB => {
@@ -183,7 +183,15 @@ class apiSquash {
                 })
                 .catch(err => console.error("le dossier wallboard n'existe pas : " + err))
         })
+    }
 
+    importInSquashWithAPI(result, sprint) {
+        return new Promise((resolve, reject) => {
+            var promesse = [this.createFolderIfNecessary(true, sprint), this.createFolderIfNecessary(false, sprint)]
+            Promise.all(promesse).then(responses => {
+                this.createRequirements(responses[1], responses[0], result).then(res => resolve(res)).catch(err => reject(err))
+            })
+        })
     }
 }
 
