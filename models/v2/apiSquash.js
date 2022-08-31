@@ -45,7 +45,7 @@ class apiSquash {
         }
         return new Promise((resolve, reject) => {
             this.create("requirements", data)
-                .then(success => resolve("ID nouvelle exigence : " + success.id))
+                .then(success => resolve(record.nameJira + " - ID nouvelle exigence : " + success.id))
                 .catch(err => reject(err))
         })
 
@@ -57,13 +57,13 @@ class apiSquash {
             var exigenceAlreadyExist = undefined;
             if (folderEmpty) {
                 console.info("Répertoire " + nameFolder + " vide");
-                this.createRequirement(idFolder, record).then(res => resolve(res)).catch(err => reject(err))
+                this.createRequirement(idFolder, record).then(res => resolve({ "message": res, "result": 1 })).catch(err => reject(err))
             } else {
                 var exigenceAlreadyExist = dataFolder._embedded.content.find(el => el.name == record.nameJira.replaceAll('/', '\\'))
                 if (exigenceAlreadyExist == undefined) {
-                    this.createRequirement(idFolder, record).then(res => resolve(res)).catch(err => reject(err))
+                    this.createRequirement(idFolder, record).then(res => resolve({ "message": res, "result": 1 })).catch(err => reject(err))
                 } else {
-                    resolve("L'exigence " + nameFolder + " existe déjà");
+                    resolve({ "message": record.nameJira + " - L'exigence " + nameFolder + " existe déjà", "result": 0 })
                 }
             }
         })
@@ -73,19 +73,25 @@ class apiSquash {
 
     createRequirements(idB, idWB, result) {
         return new Promise((resolve, reject) => {
-            this.getContents("requirement-folders", idB)
-                .then(resBandeau => {
-                    this.getContents("requirement-folders", idWB)
-                        .then(resWallboard => {
-                            result.forEach(record => {
-                                if (record.nameJira.toLowerCase().includes("wallboard")) {
-                                    this.createRequirementIfNecessary(idWB, resWallboard, record, "WallBoard").then(res => console.info(res)).catch(err => console.error(err))
-                                } else {
-                                    this.createRequirementIfNecessary(idB, resBandeau, record, "Bandeau").then(res => console.info(res)).catch(err => console.error(err))
-                                }
-                            })
-                            resolve(result.length + " exigence(s) à créer")
-                        }).catch(err => reject(err))
+            var promises = [this.getContents("requirement-folders", idB), this.getContents("requirement-folders", idWB)]
+            Promise.all(promises)
+                .then(responses => {
+                    var resWallboard = responses[1]
+                    var resBandeau = responses[0]
+                    result.forEach((record, index, array) => {
+                        if (record.nameJira.toLowerCase().includes("wallboard")) {
+                            result[index] = this.createRequirementIfNecessary(idWB, resWallboard, record, "WallBoard")
+                        } else {
+                            result[index] = this.createRequirementIfNecessary(idB, resBandeau, record, "Bandeau")
+                        }
+                    })
+                    Promise.all(result).then(resultResponses => {
+                        var totalCreate = 0;
+                        var status = ""
+                        resultResponses.forEach(el => { totalCreate += el.result; status += el.message + "\n" })
+                        resolve({ "message": totalCreate + " exigence(s) créée sur " + result.length, "moreInfo": status })
+                    }).catch(err => reject(err))
+
                 }).catch(err => reject(err))
         })
     }
@@ -168,20 +174,6 @@ class apiSquash {
                         resolve(res[field])
                     }
                 }).catch(err => reject(err))
-        })
-    }
-
-    _importInSquashWithAPI(result, sprint) {
-        return new Promise((resolve, reject) => {
-            this.createFolderIfNecessary(true, sprint)
-                .then(resWB => {
-                    this.createFolderIfNecessary(false, sprint)
-                        .then(resBandeau => {
-                            this.createRequirements(resBandeau, resWB, result).then(res => resolve(res)).catch(err => reject(err))
-                        })
-                        .catch(err => console.error("le dossier bandeau n'existe pas : " + err))
-                })
-                .catch(err => console.error("le dossier wallboard n'existe pas : " + err))
         })
     }
 
