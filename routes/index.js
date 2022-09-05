@@ -16,6 +16,4 @@ router.get("/success", controller.success)
 
 router.post('/file', controller.getFile)
 
-router.get('/loading', controller.loading)
-
 module.exports = router;

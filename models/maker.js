@@ -2,8 +2,7 @@ const xl = require('excel4node');
 const wb = new xl.Workbook();
 const ws = wb.addWorksheet('REQUIREMENT');
 const excelToJson = require('convert-excel-to-json');
-var fs = require('fs');
-const { resolve } = require('path');
+
 
 const headingColumnNames = [
     "ACTION",
@@ -74,13 +73,13 @@ function writeOnSquash(sprintName, squashFileName, headerSize, footerSize, sourc
 
     result = result.general_report
     return writeOnExcel(sprintName, squashFileName, footerSize, result)
-    
+
 }
 
 function writeOnSquashAPI(sprintName, squashFileName, dataAPI) {
-    
+
     return writeOnExcel(sprintName, squashFileName, 0, dataAPI)
-    
+
 }
 
 module.exports = { writeOnSquash, writeOnSquashAPI }

@@ -3,7 +3,15 @@ const dotenv = require('dotenv');
 const helper = require('../helper')
 dotenv.config();
 const baseURL = process.env.SQUASH_BASE_URL
+const guiJiraURL = process.env.JIRA_GUI_URL
 
+const wallboardFolderFileName = "WallBoard"
+const wallboardAcronymeSprint = "WB - "
+const wallboardFolderParentName = "New Wallboard"
+
+const bandeauFolderFileName = "Bandeau"
+const bandeauAcronymeSprint = "G2R2 - "
+const bandeauFolderParentName = "[NextGen]Nouveaux Bandeaux"
 
 
 class apiSquash {
@@ -35,7 +43,7 @@ class apiSquash {
                     "code": "REQ_JIRA_BUILD_" + helper.convertJiraType(record.typeJira)
                 },
                 "status": "UNDER_REVIEW",
-                "description": '<p><a href="https://jira-build.orangeapplicationsforbusiness.com/browse/' + record.idJira + '" target="_blank">Lien vers le ticket JIRA</a></p>',
+                "description": '<p><a href="' + guiJiraURL + record.idJira + '" target="_blank">Lien vers le ticket JIRA</a></p>',
 
             },
             "parent": {
@@ -80,9 +88,9 @@ class apiSquash {
                     var resBandeau = responses[0]
                     result.forEach((record, index, array) => {
                         if (record.nameJira.toLowerCase().includes("wallboard")) {
-                            result[index] = this.createRequirementIfNecessary(idWB, resWallboard, record, "WallBoard")
+                            result[index] = this.createRequirementIfNecessary(idWB, resWallboard, record, wallboardFolderFileName)
                         } else {
-                            result[index] = this.createRequirementIfNecessary(idB, resBandeau, record, "Bandeau")
+                            result[index] = this.createRequirementIfNecessary(idB, resBandeau, record, bandeauFolderFileName)
                         }
                     })
                     Promise.all(result).then(resultResponses => {
@@ -91,19 +99,18 @@ class apiSquash {
                         resultResponses.forEach(el => { totalCreate += el.result; status += el.message + "\n" })
                         resolve({ "message": totalCreate + " exigence(s) créée sur " + result.length, "moreInfo": status })
                     }).catch(err => reject(err))
-
                 }).catch(err => reject(err))
         })
     }
 
     createFolderIfNecessary(isWB, sprint) {
-        let folderName = (isWB ? "WB - " : "G2R2 - ") + "Sprint " + sprint
+        let folderName = (isWB ? wallboardAcronymeSprint : bandeauAcronymeSprint) + "Sprint " + sprint
         return new Promise((resolve, reject) => {
             this.findIDByName("requirement-folders", folderName)
                 .then(id => {
                     console.info(id == undefined ? "dossier " + folderName + " à créer" : "dossier " + folderName + " à ne pas créer")
                     if (id === undefined) {
-                        let folderParentName = (isWB ? "New Wallboard" : "[NextGen]Nouveaux Bandeaux")
+                        let folderParentName = (isWB ? wallboardFolderParentName : bandeauFolderParentName)
                         return this.findIDByName("requirement-folders", folderParentName)
                     } else {
                         resolve(id)
@@ -112,7 +119,7 @@ class apiSquash {
                     console.info("folderParentID : " + idParent)
                     let dataFolder = {
                         "_type": "requirement-folder",
-                        "name": (isWB ? "WB - " : "G2R2 - ") + "Sprint " + sprint,
+                        "name": folderName,
                         "parent": {
                             "_type": "requirement-folder",
                             "id": idParent
