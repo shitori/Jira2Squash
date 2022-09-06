@@ -7,9 +7,15 @@ const Jira = require("./../models/v2/apiJira")
 const Proxy = require("./../models/v2/proxy")
 const Squash = require("./../models/v2/apiSquash")
 
+const dotenv = require('dotenv');
+dotenv.config();
+
+const jiraHome = process.env.JIRA_HOME_URL
+const squashHome = process.env.SQUASH_HOME_URL
+
 module.exports = {
     home: (req, res) => {
-        res.render('index', { title: 'Jira2Squash' })
+        res.render('index', { title: 'Jira2Squash', jiraHome, squashHome })
     },
 
     test: (req, res) => {
@@ -41,7 +47,6 @@ module.exports = {
     },
 
     fromAPI: (req, res) => {
-
         var sourceName = req.body.inputSquash
         req.body = helper.checkInput(req.body)
         var jira = new Jira(new Proxy(req.body.inputSessionTokenJira).getProxy())
@@ -50,55 +55,55 @@ module.exports = {
             .then(dataAPI => {
                 switch (req.body.validator) {
                     case 'file':
-                        var ret = maker.writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
-                        res.redirect(url.format({
-                            pathname: "/success",
-                            query: {
-                                "from": req.body.validator,
-                                "fileName": sourceName,
-                                "message": "OK : " + ret
-                            }
-                        }))
+                        return maker.writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
+                    case 'api':
+                        return squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
+                    default:
+                        return {
+                            fileResult: maker.writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI),
+                            apiResult: squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
+                        }
+                }
+            }).then(finalResult => {
+                var query = {}
+                switch (req.body.validator) {
+                    case 'file':
+                        query = {
+                            "from": req.body.validator,
+                            "fileName": sourceName,
+                            "message": "OK : " + finalResult,
+                            "moreInfo": undefined
+                        }
                         break;
                     case 'api':
-                        squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
-                            .then(ret => {
-                                console.log(ret);
-                                res.redirect(url.format({
-                                    pathname: "/success",
-                                    query: {
-                                        "from": req.body.validator,
-                                        "fileName": undefined,
-                                        "message": "OK : " + ret.message,
-                                        "moreInfo": ret.moreInfo
-                                    }
-                                }))
-                            })
+                        query = {
+                            "from": req.body.validator,
+                            "fileName": undefined,
+                            "message": "OK : " + finalResult.message,
+                            "moreInfo": finalResult.moreInfo
+                        }
                         break;
                     default:
-                        squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
-                            .then(ret => {
-                                ret = ret + '\n' + maker.writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
-                                res.redirect(url.format({
-                                    pathname: "/success",
-                                    query: {
-                                        "from": "other",
-                                        "fileName": sourceName,
-                                        "message": "OK : " + ret.message,
-                                        "moreInfo": ret.moreInfo,
-                                    }
-                                }))
-                            })
+                        query = {
+                            "from": "other",
+                            "fileName": sourceName,
+                            "message": "OK : " + finalResult.apiResult.message + " / " + finalResult.fileResult,
+                            "moreInfo": finalResult.apiResult.moreInfo,
+                        }
                         break;
                 }
+                res.redirect(url.format({
+                    pathname: "/success",
+                    query
+                }))
             }).catch(err => {
                 res.redirect(url.format({
                     pathname: "/success",
                     query: {
                         "from": req.body.validator,
                         "fileName": undefined,
-                        "message": "KO : " + err,
-                        "moreInfo": undefined
+                        "message": "KO : le transfert a échoué.",
+                        "moreInfo": err
                     }
                 }))
             })
@@ -110,7 +115,9 @@ module.exports = {
                 "message": req.query.message,
                 "from": req.query.from,
                 "fileName": req.query.fileName,
-                "moreInfo": req.query.moreInfo
+                "moreInfo": req.query.moreInfo,
+                jiraHome,
+                squashHome
             })
     },
 
