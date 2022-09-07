@@ -3,6 +3,18 @@ const wb = new xl.Workbook();
 const ws = wb.addWorksheet('REQUIREMENT');
 const excelToJson = require('convert-excel-to-json');
 
+var helper = require('../models/helper')
+
+//v2
+const Jira = require("../models/v2/apiJira")
+const Proxy = require("../models/v2/proxy")
+const Squash = require("../models/v2/apiSquash")
+
+const dotenv = require('dotenv');
+dotenv.config();
+
+
+
 
 const headingColumnNames = [
     "ACTION",
@@ -82,4 +94,93 @@ function writeOnSquashAPI(sprintName, squashFileName, dataAPI) {
 
 }
 
-module.exports = { writeOnSquash, writeOnSquashAPI }
+function fromFile(req) {
+    return new Promise((resolve, reject) => {
+        req.body = helper.checkInput(req.body)
+        helper.saveSourceFile(req.files)
+            .then(sourcePath => {
+                writeOnSquash(req.body.inputSprint, req.body.inputSquash, req.body.inputHeader, req.body.inputFooter, sourcePath)
+                helper.removeTmpFile(sourcePath)
+                setTimeout(() => {
+                    resolve(req.body.inputSquash)
+                }, 1000);
+            })
+            .catch(err => reject("error : " + err))
+    })
+}
+
+function fromAPI(req) {
+    return new Promise(resolve => {
+        var sourceName = req.body.inputSquash
+        req.body = helper.checkInput(req.body)
+        var jira = new Jira(new Proxy(req.body.inputSessionTokenJira).getProxy())
+        var squash = new Squash(new Proxy(req.body.inputSessionTokenSquash).getProxy())
+        jira.getIssues(req.body.inputJiraRequest)
+            .then(dataAPI => {
+                switch (req.body.validator) {
+                    case 'file':
+                        return writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
+                    case 'api':
+                        return squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
+                    default:
+                        return {
+                            fileResult: writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI),
+                            apiResult: squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
+                        }
+                }
+            }).then(finalResult => {
+                var query = {}
+                switch (req.body.validator) {
+                    case 'file':
+                        query = {
+                            "from": req.body.validator,
+                            "fileName": sourceName,
+                            "message": "OK : " + finalResult,
+                            "moreInfo": undefined
+                        }
+                        break;
+                    case 'api':
+                        query = {
+                            "from": req.body.validator,
+                            "fileName": undefined,
+                            "message": "OK : " + finalResult.message,
+                            "moreInfo": finalResult.moreInfo
+                        }
+                        break;
+                    default:
+                        query = {
+                            "from": "other",
+                            "fileName": sourceName,
+                            "message": "OK : " + finalResult.apiResult.message + " / " + finalResult.fileResult,
+                            "moreInfo": finalResult.apiResult.moreInfo,
+                        }
+                        break;
+                }
+                resolve(query)
+            }).catch(err => {
+                resolve({
+                    "from": req.body.validator,
+                    "fileName": undefined,
+                    "message": "KO : le transfert a échoué.",
+                    "moreInfo": err
+                })
+            })
+    })
+}
+
+function test() {
+    var proxyJira = new Proxy("F1A0B124ED6981EE8C5C02CDEEBCD9F8")
+    var proxySquash = new Proxy("98F1437FF881DE01A32D7981F355A44E")
+    var jira = new Jira(proxyJira.getProxy())
+    var squash = new Squash(proxySquash.getProxy())
+    jira.getIssues("project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = 35330 ORDER BY priority DESC, updated DESC")
+        .then(res => {
+            return squash.importInSquashWithAPI(res, 999)
+        })
+        .then(squashReturn => console.info(squashReturn))
+        .catch(err => console.error(err))
+}
+
+
+
+module.exports = { writeOnSquash, writeOnSquashAPI, fromFile, fromAPI, test }

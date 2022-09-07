@@ -1,0 +1,97 @@
+<%- include('./commonHeader.ejs'); %>
+
+    <head>
+        <title>
+            Game Of Life
+        </title>
+    </head>
+
+    <script>
+        function getCurrentStatut() {            
+            let array = []
+            for (let i = 0; i < 100; i++) {
+                array[i] = []
+                for (let j = 0; j < 200; j++) {
+                    let formule1d = 200 * i + j
+                    array[i][j] = document.getElementById(formule1d).classList.contains('bg-dark') || document.getElementById(formule1d).classList.contains('bg-danger');
+
+                }
+            }
+            return array
+        }
+
+        function applyMouvement(array) {
+            
+            for (let i = 0; i < 100; i++) {
+                for (let j = 0; j < 200; j++) {
+                    let formule1d = 200 * i + j
+
+                    let currentCell = array[i][j]
+
+                    let iNext = (i + 1 == 100 ? 99 : i + 1)
+                    let iPrec = (i - 1 == -1 ? 0 : i - 1)
+                    let jNext = (j + 1 == 200 ? 199 : j + 1)
+                    let jPrec = (j - 1 == -1 ? 0 : j - 1)
+                    let cellFriends = [
+                        array[iNext][jPrec],
+                        array[iNext][j],
+                        array[iNext][jNext],
+                        array[iPrec][jPrec],
+                        array[iPrec][j],
+                        array[iPrec][jNext],
+                        array[i][jNext],
+                        array[i][jPrec]
+                    ]
+                    var friendAlive = cellFriends.filter(cf => cf == true).length
+                    
+                    if (friendAlive == 3 && !currentCell) {                        
+                        document.getElementById(formule1d).classList.add('bg-danger') // main rule
+                    }
+                    if (currentCell) {
+                        if (friendAlive == 3 || friendAlive == 2) {
+                            document.getElementById(formule1d).classList.remove('bg-danger')
+                            document.getElementById(formule1d).classList.add('bg-dark')
+                        } else {     
+                            document.getElementById(formule1d).classList.remove('bg-danger')                       
+                            document.getElementById(formule1d).classList.remove('bg-dark') // main rule
+                        }
+                    }
+                }
+            }
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function (event) {
+
+            setInterval(() => applyMouvement(getCurrentStatut()), 35)
+
+
+
+
+        });
+
+    </script>
+
+    <body class="container-fluid bg-light">
+        <div class="mt-2 p-5 ">
+            <table>
+
+                <% for(var i=0; i<max; i++) {%>
+                    <tr>
+                        <% for(var j=0; j<max*2; j++) {%>
+
+                            <% if(array[i][j]){ %>
+                                <td class="border bg-dark p-1" id="<%= max * 2 * i + j %>">
+                                </td>
+                                <% } else {%>
+                                    <td class="border p-1 " id="<%= max * 2 * i + j %>">
+                                    </td>
+                                    <% } %>
+                                        <% } %>
+                    </tr>
+                    <% } %>
+
+
+            </table>
+        </div>
+    </body>
