@@ -129,6 +129,7 @@ function fromAPI(req) {
                         }
                 }
             }).then(finalResult => {
+                
                 var query = {}
                 switch (req.body.validator) {
                     case 'file':

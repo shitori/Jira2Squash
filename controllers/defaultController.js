@@ -29,10 +29,10 @@ module.exports = {
             .then(dataQuery => {
                 res.render('success',
                     {
-                        "message": req.query.message,
-                        "from": req.query.from,
-                        "fileName": req.query.fileName,
-                        "moreInfo": req.query.moreInfo,
+                        "message": dataQuery.message,
+                        "from": dataQuery.from,
+                        "fileName": dataQuery.fileName,
+                        "moreInfo": dataQuery.moreInfo,
 
                     })
             })
