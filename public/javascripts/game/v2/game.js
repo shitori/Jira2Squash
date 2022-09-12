@@ -126,7 +126,7 @@ function applyMouvementV2(array) {
             }
 
             var cellElement = document.getElementById(formule1d)
-
+            cellElement.dataset.life = 1 + parseInt(cellElement.dataset.life)
             switch (currentCell) {
                 case 0: //Morte ==> si voisin danger alors danger alors si alive > 3 alors  sinon le plus grand nombre type de voisin sinon reste morte
                     if (friendAlive > 3) {
@@ -134,15 +134,27 @@ function applyMouvementV2(array) {
                             if (getRandomInt(101) < (friendArray[4] * 10)) {
                                 purgeCell(cellElement)
                                 cellElement.classList.add('bg-danger')
+
                             }
                         } else {
                             purgeCell(cellElement)
+                            friendArray.shift()
                             setColor(cellElement, friendArray.indexOf(Math.max(...friendArray)))
                         }
+                        cellElement.dataset.life = 0
+                    } else {
+                        // still death
                     }
                     break;
                 case 1: //Eau ==> si age>100 alors % bloc d'eau + calamité centre 
                     //si voisinEau > 6 alors si > 8 alors % de calamité sinon glace
+                    if (cellElement.dataset.life > oldCell) {
+                        console.log("cellule dangereuse");
+                        if (getRandomInt(101) < oldCell) {
+                            purgeCell(cellElement)
+                            setColor(cellElement, 4)
+                        }
+                    }
 
                     break;
                 case 2: //Montage 
