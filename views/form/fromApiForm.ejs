@@ -1,6 +1,6 @@
 <script>
-  function test(){
-    console.log("hello");
+  function showLoading(){
+    
     var form = document.getElementById("formFormApi");
     form.style.display = "none"
     var loading = document.getElementById("loading");
@@ -56,11 +56,11 @@
         pour "Générer + Transférer" et "Transférer"</div>
     </div>
     <div class="text-center">
-      <button type="submit" onclick="test()" class="btn btn-outline-success btn-lg" name="validator"
+      <button type="submit" onclick="showLoading()" class="btn btn-outline-success btn-lg" name="validator"
         value="file">Générer</button>
-      <button type="submit" onclick="test()" class="btn btn-outline-info btn-lg" name="validator" value="fileApi">Générer +
+      <button type="submit" onclick="showLoading()" class="btn btn-outline-info btn-lg" name="validator" value="fileApi">Générer +
         Transférer</button>
-      <button type="submit" onclick="test()" class="btn btn-outline-primary btn-lg" name="validator"
+      <button type="submit" onclick="showLoading()" class="btn btn-outline-primary btn-lg" name="validator"
         value="api">Transférer</button>
     </div>
   </form>
