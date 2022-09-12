@@ -9,11 +9,13 @@
     <script type="text/javascript" src="/javascripts/game/v2/game.js"></script>
 
     <script>
-        
+
 
         const params = new URLSearchParams(window.location.search)
         const max = params.get('max')
         const life = params.get('life')
+        var cpt = 0
+        const speed = 500
 
 
 
@@ -22,15 +24,21 @@
         }
 
         document.addEventListener("DOMContentLoaded", function (event) {
-            var cpt = 0
-            var speed = 500
-            
-            setInterval(() => {
-                console.log(getCurrentStatutV2());
+
+
+            /*setInterval(() => {
+                
                 applyMouvementV2(getCurrentStatutV2());
                 applyCpt(cpt++);
-            }, speed)
+            }, speed)*/
+
+
         });
+
+        function oneStep() {
+            applyMouvementV2(getCurrentStatutV2());
+            applyCpt(cpt++);
+        }
 
     </script>
 
@@ -94,25 +102,24 @@
 
                             <% switch (array[i][j]) { case 1 : %>
 
-                                <td class="border bg-primary p-1 " id="<%= max * 2 * i + j %>"></td>
+                                <td class=" bg-primary p-1 " id="<%= max * 2 * i + j %>"></td>
                                 <% break; case 2 : %>
-                                    <td class="border bg-secondary p-1 " id="<%= max * 2 * i + j %>"></td>
+                                    <td class=" bg-secondary p-1 " id="<%= max * 2 * i + j %>"></td>
                                     <% break; case 3 : %>
-                                        <td class="border bg-success p-1 " id="<%= max * 2 * i + j %>"></td>
+                                        <td class=" bg-success p-1 " id="<%= max * 2 * i + j %>"></td>
                                         <% break; case 4 : %>
-                                            <td class="border bg-danger p-1 " id="<%= max * 2 * i + j %>">
+                                            <td class=" bg-danger p-1 " id="<%= max * 2 * i + j %>">
                                             </td>
                                             <% break; case 5 : %>
-                                                <td class="border bg-warning p-1 " id="<%= max * 2 * i + j %>">
+                                                <td class=" bg-warning p-1 " id="<%= max * 2 * i + j %>">
                                                 </td>
                                                 <% break; case 6 : %>
-                                                    <td class="border bg-info p-1 " id="<%= max * 2 * i + j %>"></td>
+                                                    <td class=" bg-info p-1 " id="<%= max * 2 * i + j %>"></td>
                                                     <% break; case 7 : %>
-                                                        <td class="border bg-dark p-1 " id="<%= max * 2 * i + j %>">
+                                                        <td class=" bg-dark p-1 " id="<%= max * 2 * i + j %>">
                                                         </td>
                                                         <% break; case 0 : %>
-                                                            <td class="border bg-light p-1 "
-                                                                id="<%= max * 2 * i + j %>"></td>
+                                                            <td class=" bg-light p-1 " id="<%= max * 2 * i + j %>"></td>
                                                             <% break; default : %>
 
 
@@ -128,7 +135,8 @@
 
             </table>
 
-
+            <button type="button" onclick="oneStep()" class="mt-2 btn btn-outline-primary btn-lg"
+                value="api">Step</button>
 
         </div>
     </body>

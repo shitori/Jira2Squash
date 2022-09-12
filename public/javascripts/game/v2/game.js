@@ -1,3 +1,5 @@
+
+
 function getCurrentStatutV2() {
     let array = []
     for (let i = 0; i < max; i++) {
@@ -28,6 +30,57 @@ function getCurrentStatutV2() {
         }
     }
     return array
+}
+
+function setColor(cell, nb) {
+    switch (nb) {
+        case 0: //Morte 
+            cell.classList.add('bg-light')
+            break;
+        case 1: //Eau 
+            cell.classList.add('bg-primary')
+            break;
+        case 2: //Montage 
+            cell.classList.add('bg-secondary')
+
+            break;
+        case 3: //Forêt
+            cell.classList.add('bg-success')
+            break;
+        case 4: //Danger
+            cell.classList.add('bg-danger')
+            break;
+        case 5: //Sable
+            cell.classList.add('bg-warning')
+            break;
+        case 6: //Glace
+            cell.classList.add('bg-info')
+            break;
+        case 7: //Civ 1
+            cell.classList.add('bg-dark')
+            break;
+
+        default:
+            console.error("Impossible :" + cell + " / nb : " + nb);
+            break;
+    }
+}
+
+function purgeCell(cell) {
+    cell.classList.remove('bg-primary')
+    cell.classList.remove('bg-secondary')
+    cell.classList.remove('bg-success')
+    cell.classList.remove('bg-danger')
+    cell.classList.remove('bg-warning')
+    cell.classList.remove('bg-info')
+    cell.classList.remove('bg-dark')
+    cell.classList.remove('bg-light')
+}
+
+function getRandomInt(max) {
+
+
+    return Math.floor(Math.random() * max);
 }
 
 function applyMouvementV2(array) {
@@ -75,24 +128,38 @@ function applyMouvementV2(array) {
             var cellElement = document.getElementById(formule1d)
 
             switch (currentCell) {
-                case 0: //Morte ==> prend vie si voisin danger alors danger alors si alive > 3 alors  sinon le plus grand nombre type de voisin sinon reste morte
-
+                case 0: //Morte ==> si voisin danger alors danger alors si alive > 3 alors  sinon le plus grand nombre type de voisin sinon reste morte
+                    if (friendAlive > 3) {
+                        if (friendArray[4] > 2) {
+                            if (getRandomInt(101) < (friendArray[4] * 10)) {
+                                purgeCell(cellElement)
+                                cellElement.classList.add('bg-danger')
+                            }
+                        } else {
+                            purgeCell(cellElement)
+                            setColor(cellElement, friendArray.indexOf(Math.max(...friendArray)))
+                        }
+                    }
                     break;
                 case 1: //Eau ==> si age>100 alors % bloc d'eau + calamité centre 
-                        //si voisinEau > 6 alors si > 8 alors % de calamité sinon glace
+                    //si voisinEau > 6 alors si > 8 alors % de calamité sinon glace
 
                     break;
-                case 2: //Montage si age>100 alors % bloc montage 2/3 + 1/3 danger + vide centre 
-                        //si eau alors foret
-                        // si danger > 2 alors  % bloc montage 2/3 + 1/3 danger + vide centre
-                        // si sable > montagne alors age + 5
-                        // si glace > 4 alors age +10
-                        
+                case 2: //Montage 
+                    // si age>100 alors % bloc montage 2/3 + 1/3 danger + vide centre 
+                    // si eau alors random foret
+                    // si montagne alors rien 
+                    // si forêt alors rien
+                    // si danger > 2 alors  % bloc montage 2/3 + 1/3 danger + vide centre
+                    // si sable > montagne alors age + 2
+                    // si glace > 4 alors age +3
+                    // si civ alors age nb civ
+
 
                     break;
                 case 3: //Forêt
-                        //foret>glace alors voisinGlace=1/2Foret+1/2vide 
-                        //si 1>eau>3 alors mort = foret
+                    //foret>glace alors voisinGlace=1/2Foret+1/2vide 
+                    //si 1>eau>3 alors mort = foret
 
                     break;
                 case 4: //Danger
