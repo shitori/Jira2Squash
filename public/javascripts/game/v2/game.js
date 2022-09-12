@@ -67,6 +67,10 @@ function applyMouvementV2(array) {
             ]
 
             var friendAlive = cellFriends.filter(cf => cf > 0).length
+            var friendArray = []
+            for (let index = 0; index < 8; index++) {
+                friendArray[index] = cellFriends.filter(cf => cf == index).length
+            }
 
             var cellElement = document.getElementById(formule1d)
 
@@ -86,10 +90,10 @@ function applyMouvementV2(array) {
                 case 4: //Danger
 
                     break;
-                case 5: //Civ 3
+                case 5: //Sable
 
                     break;
-                case 6: //Civ 2
+                case 6: //Glace
 
                     break;
                 case 7: //Civ 1
@@ -104,7 +108,7 @@ function applyMouvementV2(array) {
 
 
 
-            if (currentCell) {
+            /*if (currentCell) {
                 if (friendAlive == 3 || friendAlive == 2) { //still alive
                     cellElement.classList.remove('bg-danger')
                     cellElement.classList.add('bg-dark')
@@ -139,7 +143,7 @@ function applyMouvementV2(array) {
 
                     cellElement.dataset.life = 1
                 }
-            }
+            }*/
         }
     }
 }

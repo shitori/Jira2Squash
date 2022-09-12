@@ -24,10 +24,11 @@
         document.addEventListener("DOMContentLoaded", function (event) {
             var cpt = 0
             var speed = 500
-            console.log(getCurrentStatutV2());
+            
             setInterval(() => {
-                //applyMouvement(getCurrentStatut());
-                //applyCpt(cpt++);
+                console.log(getCurrentStatutV2());
+                applyMouvementV2(getCurrentStatutV2());
+                applyCpt(cpt++);
             }, speed)
         });
 
@@ -51,10 +52,10 @@
                     <td>Eau</td>
                     <td>Montagne</td>
                     <td>Forêt</td>
-                    <td>Danger</td>
-                    <td>Civilisation 3</td>
-                    <td>Civilisation 2</td>
-                    <td>Civilisation 1</td>
+                    <td>Calamité</td>
+                    <td>Sable</td>
+                    <td>Glace</td>
+                    <td>Civilisation</td>
                     <td>Vide</td>
                 </tr>
             </table>
