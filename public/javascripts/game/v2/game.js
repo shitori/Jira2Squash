@@ -75,16 +75,24 @@ function applyMouvementV2(array) {
             var cellElement = document.getElementById(formule1d)
 
             switch (currentCell) {
-                case 0: //Morte
+                case 0: //Morte ==> prend vie si voisin danger alors danger alors si alive > 3 alors  sinon le plus grand nombre type de voisin sinon reste morte
 
                     break;
-                case 1: //Eau
+                case 1: //Eau ==> si age>100 alors % bloc d'eau + calamité centre 
+                        //si voisinEau > 6 alors si > 8 alors % de calamité sinon glace
 
                     break;
-                case 2: //Montage
+                case 2: //Montage si age>100 alors % bloc montage 2/3 + 1/3 danger + vide centre 
+                        //si eau alors foret
+                        // si danger > 2 alors  % bloc montage 2/3 + 1/3 danger + vide centre
+                        // si sable > montagne alors age + 5
+                        // si glace > 4 alors age +10
+                        
 
                     break;
                 case 3: //Forêt
+                        //foret>glace alors voisinGlace=1/2Foret+1/2vide 
+                        //si 1>eau>3 alors mort = foret
 
                     break;
                 case 4: //Danger
