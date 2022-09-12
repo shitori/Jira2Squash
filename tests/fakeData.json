@@ -1,0 +1,32 @@
+{
+    "jiraFakeData": [
+        {
+            "idJira": "FCCNB-3261",
+            "priority": "Normal",
+            "nameJira": "[Callback programmé] les accents dans un message sont mal encodés",
+            "description": "Lors d",
+            "typeJira": "Anomalie"
+        },
+        {
+            "idJira": "FCCNB-3265",
+            "priority": "Normal",
+            "nameJira": "Qualification sprint 70",
+            "description": null,
+            "typeJira": "Récit"
+        },
+        {
+            "idJira": "FCCNB-3237",
+            "priority": "Normal",
+            "nameJira": "[WebRTC] KeepAlived - Rendre la solution plus robuste aux perturbations systèmes",
+            "description": "De la même manière que ça a été fait sur le périmètre Nextgen (FCCNB-2499)",
+            "typeJira": "Amélioration"
+        },
+        {
+            "idJira": "FCCNB-3198",
+            "priority": "Normal",
+            "nameJira": "[New Wallboard] Ajout des seuils ",
+            "description": "h1. {color:#ff8b00}(*) Besoin :{color}\r\n",
+            "typeJira": "Récit"
+        }
+    ]
+}

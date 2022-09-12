@@ -17,7 +17,42 @@
                 array[i] = []
                 for (let j = 0; j < max * 2; j++) {
                     let formule1d = max * 2 * i + j
-                    array[i][j] = document.getElementById(formule1d).classList.contains('bg-dark') || document.getElementById(formule1d).classList.contains('bg-danger');
+
+                    var cellElement = document.getElementById(formule1d)
+
+                    array[i][j] = cellElement.classList.contains('bg-dark')
+                        || cellElement.classList.contains('bg-danger')
+                }
+            }
+            return array
+        }
+
+        function getCurrentStatutV2() {
+            let array = []
+            for (let i = 0; i < max; i++) {
+                array[i] = []
+                for (let j = 0; j < max * 2; j++) {
+                    let formule1d = max * 2 * i + j
+                    
+
+                    var cellElementClassList = document.getElementById(formule1d).classList
+                    if (cellElementClassList.contains('bg-primary')) {
+                        array[i][j] = 1
+                    } else if (cellElementClassList.contains('bg-secondary')) {
+                        array[i][j] = 2
+                    } else if (cellElementClassList.contains('bg-success')) {
+                        array[i][j] = 3
+                    } else if (cellElementClassList.contains('bg-danger')) {
+                        array[i][j] = 4
+                    } else if (cellElementClassList.contains('bg-warning')) {
+                        array[i][j] = 5
+                    } else if (cellElementClassList.contains('bg-info')) {
+                        array[i][j] = 6
+                    } else if (cellElementClassList.contains('bg-dark')) {
+                        array[i][j] = 7
+                    } else if (cellElementClassList.contains('bg-light')) {
+                        array[i][j] = 0
+                    } else { }
 
                 }
             }
@@ -28,8 +63,6 @@
 
             for (let i = 0; i < max; i++) {
                 for (let j = 0; j < max * 2; j++) {
-                    let formule1d = max * 2 * i + j
-
                     let currentCell = array[i][j]
 
                     let iNext = (i + 1 == max ? max - 1 : i + 1)
@@ -46,19 +79,55 @@
                         array[i][jNext],
                         array[i][jPrec]
                     ]
-                    var friendAlive = cellFriends.filter(cf => cf == true).length                 
 
+                    let formule1d = max * 2 * i + j
+                    let formule1dFriend = [
+                        max * 2 * iNext + jPrec,
+                        max * 2 * iNext + j,
+                        max * 2 * iNext + jNext,
+                        max * 2 * iPrec + jPrec,
+                        max * 2 * iPrec + j,
+                        max * 2 * iPrec + jNext,
+                        max * 2 * i + jPrec,
+                        max * 2 * i + jNext
+                    ]
+
+                    var friendAlive = cellFriends.filter(cf => cf == true).length
+                    var cellElement = document.getElementById(formule1d)
                     if (currentCell) {
                         if (friendAlive == 3 || friendAlive == 2) { //still alive
-                            document.getElementById(formule1d).classList.remove('bg-danger')
-                            document.getElementById(formule1d).classList.add('bg-dark')
+                            cellElement.classList.remove('bg-danger')
+                            cellElement.classList.add('bg-dark')
+
+                            cellElement.dataset.life = 1 + parseInt(cellElement.dataset.life)
                         } else { //death
-                            document.getElementById(formule1d).classList.remove('bg-danger')
-                            document.getElementById(formule1d).classList.remove('bg-dark') // main rule
+                            cellElement.classList.remove('bg-danger')
+                            cellElement.classList.remove('bg-dark') // main rule
+
+                            cellElement.dataset.life = 0
                         }
-                    }else {
+
+                        if (cellElement.dataset.life > 100) { // new rule : migration
+                            cellElement.classList.remove('bg-danger')
+                            cellElement.classList.remove('bg-dark')
+
+                            cellElement.dataset.life = 0
+
+                            formule1dFriend.forEach(formule => {
+                                var cellFriendEl = document.getElementById(formule)
+                                cellFriendEl.classList.add('bg-danger')
+
+                                cellFriendEl.dataset.life = 1
+                            })
+
+                        }
+
+
+                    } else {
                         if (friendAlive == 3) { // alive
-                            document.getElementById(formule1d).classList.add('bg-danger') // main rule
+                            cellElement.classList.add('bg-danger') // main rule
+
+                            cellElement.dataset.life = 1
                         }
                     }
                 }
@@ -71,10 +140,11 @@
 
         document.addEventListener("DOMContentLoaded", function (event) {
             var cpt = 0
-            var speed = 0
+            var speed = 500
+            console.log(getCurrentStatutV2());
             setInterval(() => {
-                applyMouvement(getCurrentStatut());
-                applyCpt(cpt++);
+                //applyMouvement(getCurrentStatut());
+                //applyCpt(cpt++);
             }, speed)
         });
 
@@ -83,17 +153,41 @@
     <body class="container-fluid bg-light">
         <div class="mt-2 p-5 ">
             <h1>Cycle de vie : <span id="compteur"></span></h1>
-            <table>
+            <table class="mb-5">
+                <tr>
+                    <th class="border bg-primary p-1"></th>
+                    <th class="border bg-secondary p-1"></th>
+                    <th class="border bg-success p-1"></th>
+                    <th class="border bg-danger p-1"></th>
+                    <th class="border bg-warning p-1"></th>
+                    <th class="border bg-info p-1"></th>
+                    <th class="border bg-dark p-1"></th>
+                    <th class="border bg-light p-1"></th>
+                </tr>
+                <tr>
+                    <td>Eau</td>
+                    <td>Montagne</td>
+                    <td>Forêt</td>
+                    <td>Danger</td>
+                    <td>Civilisation 3</td>
+                    <td>Civilisation 2</td>
+                    <td>Civilisation 1</td>
+                    <td>Vide</td>
+                </tr>
+            </table>
+            <!--<table>
 
                 <% for(var i=0; i<max; i++) {%>
                     <tr>
                         <% for(var j=0; j<max*2; j++) {%>
 
                             <% if(array[i][j]){ %>
-                                <td class="border bg-dark p-1" id="<%= max * 2 * i + j %>">
+                                <td class="border bg-dark p-1 " id="<%= max * 2 * i + j %>">
+
                                 </td>
                                 <% } else {%>
                                     <td class="border p-1 " id="<%= max * 2 * i + j %>">
+
                                     </td>
                                     <% } %>
                                         <% } %>
@@ -101,6 +195,56 @@
                     <% } %>
 
 
+
+
+
+
+            </table> -->
+            <table>
+
+                <% for(var i=0; i<max; i++) {%>
+                    <tr>
+                        <% for(var j=0; j<max*2; j++) {%>
+
+
+
+                            <% switch (array[i][j]) { case 1 : %>
+
+                                <td class="border bg-primary p-1 " id="<%= max * 2 * i + j %>"></td>
+                                <% break; case 2 : %>
+                                    <td class="border bg-secondary p-1 " id="<%= max * 2 * i + j %>"></td>
+                                    <% break; case 3 : %>
+                                        <td class="border bg-success p-1 " id="<%= max * 2 * i + j %>"></td>
+                                        <% break; case 4 : %>
+                                            <td class="border bg-danger p-1 " id="<%= max * 2 * i + j %>">
+                                            </td>
+                                            <% break; case 5 : %>
+                                                <td class="border bg-warning p-1 " id="<%= max * 2 * i + j %>">
+                                                </td>
+                                                <% break; case 6 : %>
+                                                    <td class="border bg-info p-1 " id="<%= max * 2 * i + j %>"></td>
+                                                    <% break; case 7 : %>
+                                                        <td class="border bg-dark p-1 " id="<%= max * 2 * i + j %>">
+                                                        </td>
+                                                        <% break; case 0 : %>
+                                                            <td class="border bg-light p-1 "
+                                                                id="<%= max * 2 * i + j %>"></td>
+                                                            <% break; default : %>
+
+
+                                                                <% break; } %>
+                                                                    <% } %>
+                    </tr>
+                    <% } %>
+
+
+
+
+
+
             </table>
+
+
+
         </div>
     </body>

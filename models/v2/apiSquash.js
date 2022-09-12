@@ -185,11 +185,12 @@ class apiSquash {
     importInSquashWithAPI(result, sprint) {
         return new Promise((resolve, reject) => {
             var promesse = [this.createFolderIfNecessary(true, sprint), this.createFolderIfNecessary(false, sprint)]
-            Promise.all(promesse).then(responses => {
+            Promise.all(promesse)
+            .then(responses => {
                 this.createRequirements(responses[1], responses[0], result)
                     .then(res => resolve(res))
                     .catch(err => reject(err))
-            })
+            }).catch(err => reject(err))
         })
     }
 }

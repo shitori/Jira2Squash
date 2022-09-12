@@ -28,10 +28,10 @@ router.get('/game', (req, res) => {
         array[i] = []
         for (let j = 0; j < max * 2; j++) {
 
-            array[i][j] = getRandomInt(101) > req.query.life
+            array[i][j] = (getRandomInt(101) < req.query.life ? (getRandomInt(7) + 1): 0 )
         }
     }
-    // => U
+    /*// => U
     array[max / 2][max] = true
     //array[0][1] = true
     array[max / 2][max + 2] = true
@@ -40,7 +40,7 @@ router.get('/game', (req, res) => {
     array[max / 2 + 1][max + 2] = true
     array[max / 2 + 2][max] = true
     array[max / 2 + 2][max + 1] = true
-    array[max / 2 + 2][max + 2] = true
+    array[max / 2 + 2][max + 2] = true*/
     res.render("gameOfLife", { array, max })
 })
 

@@ -7,6 +7,7 @@ module.exports = {
     fromAPI: (req, res) => {
         maker.fromAPI(req)
             .then(dataQuery => { res.json(dataQuery) })
+            .catch(err => { res.json(err) })
     },
 
     fromFile: (req, res) => {
