@@ -77,4 +77,4 @@ function convertJiraType(jiraType) {
     }
 }
 
-module.exports = { checkInput, saveSourceFile, saveSourceFileBis, removeTmpFile, convertJiraType }
+module.exports = { checkInput, saveSourceFile, saveSourceFileBis, removeTmpFile, convertJiraType, getRandomInt }

@@ -33,6 +33,8 @@ function getCurrentStatutV2() {
 }
 
 function setColor(cell, nb) {
+    purgeCell(cell)
+    cell.dataset.life = 0
     switch (nb) {
         case 0: //Morte 
             cell.classList.add('bg-light')
@@ -132,27 +134,39 @@ function applyMouvementV2(array) {
                     if (friendAlive > 3) {
                         if (friendArray[4] > 2) {
                             if (getRandomInt(101) < (friendArray[4] * 10)) {
-                                purgeCell(cellElement)
-                                cellElement.classList.add('bg-danger')
-
+                                setColor(cellElement, 4)
                             }
                         } else {
-                            purgeCell(cellElement)
                             friendArray.shift()
                             setColor(cellElement, friendArray.indexOf(Math.max(...friendArray)))
                         }
-                        cellElement.dataset.life = 0
                     } else {
                         // still death
                     }
                     break;
-                case 1: //Eau ==> si age>100 alors % bloc d'eau + calamité centre 
-                    //si voisinEau > 6 alors si > 8 alors % de calamité sinon glace
+                case 1: //Eau 
+                    //si age>100 alors % bloc d'eau + calamité centre 
+
                     if (cellElement.dataset.life > oldCell) {
-                        console.log("cellule dangereuse");
+                        //console.log("cellule dangereuse");
                         if (getRandomInt(101) < oldCell) {
-                            purgeCell(cellElement)
                             setColor(cellElement, 4)
+                            formule1dFriend.forEach(f1d => {
+                                if (getRandomInt(3) < 2) {
+                                    var cellFriendEl = document.getElementById(f1d)
+                                    setColor(cellFriendEl, 1)
+                                }
+                            })
+                        }
+                    } else {
+                        //si voisinEau > 6 alors si > 8 alors % de calamité sinon glace
+                        if (friendArray[1] > 6) {
+                            if (friendArray[1] > 8 && getRandomInt(3) < 2) {
+                                setColor(cellElement, 6)
+                            } else {
+                                setColor(cellElement, 6)
+                            }
+
                         }
                     }
 
@@ -191,46 +205,6 @@ function applyMouvementV2(array) {
                     console.error("Impossible :" + currentCell);
                     break;
             }
-
-
-
-
-            /*if (currentCell) {
-                if (friendAlive == 3 || friendAlive == 2) { //still alive
-                    cellElement.classList.remove('bg-danger')
-                    cellElement.classList.add('bg-dark')
-
-                    cellElement.dataset.life = 1 + parseInt(cellElement.dataset.life)
-                } else { //death
-                    cellElement.classList.remove('bg-danger')
-                    cellElement.classList.remove('bg-dark') // main rule
-
-                    cellElement.dataset.life = 0
-                }
-
-                if (cellElement.dataset.life > 100) { // new rule : migration
-                    cellElement.classList.remove('bg-danger')
-                    cellElement.classList.remove('bg-dark')
-
-                    cellElement.dataset.life = 0
-
-                    formule1dFriend.forEach(formule => {
-                        var cellFriendEl = document.getElementById(formule)
-                        cellFriendEl.classList.add('bg-danger')
-
-                        cellFriendEl.dataset.life = 1
-                    })
-
-                }
-
-
-            } else {
-                if (friendAlive == 3) { // alive
-                    cellElement.classList.add('bg-danger') // main rule
-
-                    cellElement.dataset.life = 1
-                }
-            }*/
         }
     }
 }

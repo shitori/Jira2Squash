@@ -1,5 +1,6 @@
 const url = require('url')
 var maker = require('../models/maker')
+var helper = require('../models/helper')
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -40,8 +41,20 @@ module.exports = {
     },
 
     getFile: (req, res) => {
-        console.log(req.body);
         res.download("upload/" + req.body.fileName + ".xls")
+    },
+
+    game: (req, res) => {
+        let max = req.query.max
+        let array = []
+        for (let i = 0; i < max; i++) {
+            array[i] = []
+            for (let j = 0; j < max * 2; j++) {
+                array[i][j] = (helper.getRandomInt(101) < req.query.life ? (helper.getRandomInt(7) + 1) : 0)
+            }
+        }
+
+        res.render("gameOfLife", { array, max })
     }
 
 }
