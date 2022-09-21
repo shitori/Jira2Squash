@@ -1,0 +1,102 @@
+[
+    {
+        "name": "Déconnexion",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19537"
+    },
+    {
+        "name": "Appels entrants",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19538"
+    },
+    {
+        "name": "Callback",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19539"
+    },
+    {
+        "name": "Demande d'assistance",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19540"
+    },
+    {
+        "name": "Multi CLI",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19541"
+    },
+    {
+        "name": "Dashboard",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19542"
+    },
+    {
+        "name": "Pause légale",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19543"
+    },
+    {
+        "name": "Conférence",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19544"
+    },
+    {
+        "name": "click to call",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19545"
+    },
+    {
+        "name": "Sécurité",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19546"
+    },
+    {
+        "name": "Connexion au bandeau",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19547"
+    },
+    {
+        "name": "Statistiques_agent",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19548"
+    },
+    {
+        "name": "file d'attente",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19549"
+    },
+    {
+        "name": "Supervision",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19550"
+    },
+    {
+        "name": "Clôture d'appels",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19551"
+    },
+    {
+        "name": "Appels sortants",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19552"
+    },
+    {
+        "name": "Digital",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19553"
+    },
+    {
+        "name": "Statut de l'agent",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19554"
+    },
+    {
+        "name": "Option mobile",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19555"
+    },
+    {
+        "name": "Enregistrements",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19556"
+    },
+    {
+        "name": "Mise en pause",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19557"
+    },
+    {
+        "name": "Transfert d'appel",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19558"
+    },
+    {
+        "name": "Temps de conversation",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19559"
+    },
+    {
+        "name": "CRM",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19560"
+    },
+    {
+        "name": "Mes activités",
+        "url": "https://test-management.orangeapplicationsforbusiness.com/squash/api/rest/latest/test-suites/19561"
+    }
+]

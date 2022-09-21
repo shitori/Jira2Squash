@@ -11,4 +11,7 @@ router.post("/fromFile", controller.fromFile)
 
 router.post("/fromApi", controller.fromAPI)
 
+router.get("/primaryTest", controller.foldersTest)
+
+
 module.exports = router

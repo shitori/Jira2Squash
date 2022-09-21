@@ -1,0 +1,44 @@
+<table>
+
+    <% for(var i=0; i<max; i++) {%>
+        <tr>
+            <% for(var j=0; j<max*2; j++) {%>
+
+
+
+                <% switch (array[i][j]) { case 1 : %>
+
+                    <td class=" bg-primary p-1 " id="<%= max * 2 * i + j %>" data-life="0"></td>
+                    <% break; case 2 : %>
+                        <td class=" bg-secondary p-1 " id="<%= max * 2 * i + j %>" data-life="0"></td>
+                        <% break; case 3 : %>
+                            <td class=" bg-success p-1 " id="<%= max * 2 * i + j %>" data-life="0"></td>
+                            <% break; case 4 : %>
+                                <td class=" bg-danger p-1 " id="<%= max * 2 * i + j %>" data-life="0">
+                                </td>
+                                <% break; case 5 : %>
+                                    <td class=" bg-warning p-1 " id="<%= max * 2 * i + j %>" data-life="0">
+                                    </td>
+                                    <% break; case 6 : %>
+                                        <td class=" bg-info p-1 " id="<%= max * 2 * i + j %>" data-life="0">
+                                        </td>
+                                        <% break; case 7 : %>
+                                            <td class=" bg-dark p-1 " id="<%= max * 2 * i + j %>" data-life="0">
+                                            </td>
+                                            <% break; case 0 : %>
+                                                <td class=" bg-light p-1 " id="<%= max * 2 * i + j %>" data-life="0">
+                                                </td>
+                                                <% break; default : %>
+
+
+                                                    <% break; } %>
+                                                        <% } %>
+        </tr>
+        <% } %>
+
+
+
+
+
+
+</table>

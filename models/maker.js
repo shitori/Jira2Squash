@@ -2,6 +2,7 @@ const xl = require('excel4node');
 const wb = new xl.Workbook();
 const ws = wb.addWorksheet('REQUIREMENT');
 const excelToJson = require('convert-excel-to-json');
+const axios = require('axios');
 
 var helper = require('../models/helper')
 
@@ -11,6 +12,8 @@ const Proxy = require("../models/v2/proxy")
 const Squash = require("../models/v2/apiSquash")
 
 const dotenv = require('dotenv');
+const { response } = require('express');
+
 dotenv.config();
 
 
@@ -129,7 +132,7 @@ function fromAPI(req) {
                         }
                 }
             }).then(finalResult => {
-                
+
                 var query = {}
                 switch (req.body.validator) {
                     case 'file':
@@ -169,6 +172,44 @@ function fromAPI(req) {
     })
 }
 
+function primaryTest(req, folders) {
+    return new Promise((resolve, reject) => {
+        var proxy = new Proxy(req.query.tokenSquash).getProxy()
+        var promises = []
+        folders.forEach(folder => {
+            var currentURL = folder.url
+            promises.push(axios.get(currentURL, proxy))
+        })
+
+        Promise.all(promises)
+            .then(responses => {
+                responses.forEach(response => {
+                    //console.log(response.data.name);
+                    response.data.test_plan.forEach(el => {
+                        //console.log(el.referenced_test_case.name);
+                        console.log(el.referenced_test_case._links.self.href + ";" + response.data.name + ";" + response.data.name + " - " + el.referenced_test_case.name + ";");
+                    })
+                })
+                resolve(responses)
+            }).catch(err => reject(err))
+    })
+
+
+    /*folders.forEach(folder => {
+        var currentURL = folder.url
+        
+        axios.get(currentURL, proxy)
+            .then(res => {
+                res.data.test_plan.forEach(el => {
+
+                    console.log(res.data.name + " - " + el.referenced_test_case.name);
+                })
+            })
+            .catch(err => console.log("err"))
+    })*/
+
+}
+
 function test() {
     var proxyJira = new Proxy("F1A0B124ED6981EE8C5C02CDEEBCD9F8")
     var proxySquash = new Proxy("98F1437FF881DE01A32D7981F355A44E")
@@ -184,4 +225,4 @@ function test() {
 
 
 
-module.exports = { writeOnSquash, writeOnSquashAPI, fromFile, fromAPI, test }
+module.exports = { writeOnSquash, writeOnSquashAPI, fromFile, fromAPI, test, primaryTest }

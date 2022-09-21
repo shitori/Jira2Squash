@@ -146,9 +146,7 @@ function applyMouvementV2(array) {
                     break;
                 case 1: //Eau 
                     //si age>100 alors % bloc d'eau + calamité centre 
-
                     if (cellElement.dataset.life > oldCell) {
-                        //console.log("cellule dangereuse");
                         if (getRandomInt(101) < oldCell) {
                             setColor(cellElement, 4)
                             formule1dFriend.forEach(f1d => {
@@ -162,7 +160,7 @@ function applyMouvementV2(array) {
                         //si voisinEau > 6 alors si > 8 alors % de calamité sinon glace
                         if (friendArray[1] > 6) {
                             if (friendArray[1] > 8 && getRandomInt(3) < 2) {
-                                setColor(cellElement, 6)
+                                setColor(cellElement, 4)
                             } else {
                                 setColor(cellElement, 6)
                             }
