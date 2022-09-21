@@ -75,7 +75,11 @@ function startGame() {
     canvas = document.querySelector('canvas');
     ctx = canvas.getContext('2d');
     clearBoard()
-    initCells()
+    initCells()    
     drawCells()
+}
+
+function step(){
+    console.log("in step");
 }
 

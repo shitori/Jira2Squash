@@ -5,22 +5,14 @@
             Game Of Life
         </title>
     </head>
-    <script type="text/javascript" src="/javascripts/game/v1/game.js"></script>
+
     <script type="text/javascript" src="/javascripts/game/v2/game.js"></script>
     <script type="text/javascript" src="/javascripts/game/v3/game.js"></script>
 
     <script>
 
-
-        const params = new URLSearchParams(window.location.search)
-        const max = params.get('max')
-        const life = params.get('life')
         var cpt = 0
         const speed = 100
-        var interval
-        const oldCell = 50
-
-
 
         function applyCpt(cpt) {
             document.getElementById("compteur").textContent = cpt
@@ -28,22 +20,22 @@
 
         document.addEventListener("DOMContentLoaded", function (event) {
             startGame()
-            
+
         });
 
         function start() {
             interval = setInterval(() => {
-                applyMouvementV2(getCurrentStatutV2());
+                step()
                 applyCpt(cpt++);
             }, speed)
         }
 
-        function stop() {
+        function stop() {            
             clearInterval(interval)
         }
 
         function oneStep() {
-            applyMouvementV2(getCurrentStatutV2());
+            step()
             applyCpt(cpt++);
         }
 
@@ -76,7 +68,7 @@
             </table>
 
             <!--<%- include('./gameBoardV1.ejs'); %>-->
-            
+
 
             <div class="row mb-5">
                 <button type="button" onclick="stop()" class="mt-2 col btn btn-outline-danger btn-lg">Stop</button>
