@@ -162,6 +162,7 @@ function fromAPI(req) {
                 }
                 resolve(query)
             }).catch(err => {
+                console.error("err:" + err);
                 resolve({
                     "from": req.body.validator,
                     "fileName": undefined,
@@ -184,9 +185,7 @@ function primaryTest(req, folders) {
         Promise.all(promises)
             .then(responses => {
                 responses.forEach(response => {
-                    //console.log(response.data.name);
                     response.data.test_plan.forEach(el => {
-                        //console.log(el.referenced_test_case.name);
                         console.log(el.referenced_test_case._links.self.href + ";" + response.data.name + ";" + response.data.name + " - " + el.referenced_test_case.name + ";");
                     })
                 })
@@ -194,25 +193,11 @@ function primaryTest(req, folders) {
             }).catch(err => reject(err))
     })
 
-
-    /*folders.forEach(folder => {
-        var currentURL = folder.url
-        
-        axios.get(currentURL, proxy)
-            .then(res => {
-                res.data.test_plan.forEach(el => {
-
-                    console.log(res.data.name + " - " + el.referenced_test_case.name);
-                })
-            })
-            .catch(err => console.log("err"))
-    })*/
-
 }
 
 function test() {
-    var proxyJira = new Proxy("F1A0B124ED6981EE8C5C02CDEEBCD9F8")
-    var proxySquash = new Proxy("98F1437FF881DE01A32D7981F355A44E")
+    var proxyJira = new Proxy("5F0E02606324FE087C862CF040B914B3")
+    var proxySquash = new Proxy("F696939B49AD3630BE446FD46A871705")
     var jira = new Jira(proxyJira.getProxy())
     var squash = new Squash(proxySquash.getProxy())
     jira.getIssues("project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = 35330 ORDER BY priority DESC, updated DESC")

@@ -40,21 +40,25 @@ class apiSquash {
                 "reference": record.idJira,
                 "criticality": "MINOR",
                 "category": {
-                    "code": "REQ_JIRA_BUILD_" + helper.convertJiraType(record.typeJira)
+                    "code": "CAT_JIRA_" + helper.convertJiraType(record.typeJira)
                 },
                 "status": "UNDER_REVIEW",
                 "description": '<p><a href="' + guiJiraURL + record.idJira + '" target="_blank">Lien vers le ticket JIRA</a></p>',
+                
 
             },
             "parent": {
                 "_type": "requirement-folder",
                 "id": idFolderParent
             }
-        }
+        }       
         return new Promise((resolve, reject) => {
             this.create("requirements", data)
-                .then(success => resolve("ID nouvelle exigence : " + success.id + " - " + record.nameJira))
-                .catch(err => reject(err))
+                .then(success => {                    
+                    resolve("ID nouvelle exigence : " + success.id + " - " + record.nameJira)
+                }).catch(err => {
+                    reject(err)
+                })
         })
 
     }
@@ -186,11 +190,11 @@ class apiSquash {
         return new Promise((resolve, reject) => {
             var promesse = [this.createFolderIfNecessary(true, sprint), this.createFolderIfNecessary(false, sprint)]
             Promise.all(promesse)
-            .then(responses => {
-                this.createRequirements(responses[1], responses[0], result)
-                    .then(res => resolve(res))
-                    .catch(err => reject(err))
-            }).catch(err => reject(err))
+                .then(responses => {
+                    this.createRequirements(responses[1], responses[0], result)
+                        .then(res => resolve(res))
+                        .catch(err => reject(err))
+                }).catch(err => reject(err))
         })
     }
 }
