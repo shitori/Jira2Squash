@@ -13,5 +13,7 @@ router.post("/fromApi", controller.fromAPI)
 
 router.get("/primaryTest", controller.foldersTest)
 
+router.put("/copyCampaing", controller.copyCompaing)
+
 
 module.exports = router

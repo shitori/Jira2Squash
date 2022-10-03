@@ -1,5 +1,6 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
+const { response } = require('express');
 const helper = require('../helper')
 dotenv.config();
 const baseURL = process.env.SQUASH_BASE_URL
@@ -26,10 +27,22 @@ class apiSquash {
                 .then(res => {
                     resolve(res.data)
                 }).catch(error => {
-                    reject(error.data)
+                    reject(error)
                 });
         })
     }
+
+    modify(objectName, data) {
+        return new Promise((resolve, reject) => {
+            axios.post(baseURL + objectName + "/" + data.id, data, this.proxy)
+                .then(res => {
+                    resolve(res.data)
+                }).catch(error => {
+                    reject(error)
+                });
+        })
+    }
+
 
     createRequirement(idFolderParent, record) {
         let data = {
@@ -44,17 +57,17 @@ class apiSquash {
                 },
                 "status": "UNDER_REVIEW",
                 "description": '<p><a href="' + guiJiraURL + record.idJira + '" target="_blank">Lien vers le ticket JIRA</a></p>',
-                
+
 
             },
             "parent": {
                 "_type": "requirement-folder",
                 "id": idFolderParent
             }
-        }       
+        }
         return new Promise((resolve, reject) => {
             this.create("requirements", data)
-                .then(success => {                    
+                .then(success => {
                     resolve("ID nouvelle exigence : " + success.id + " - " + record.nameJira)
                 }).catch(err => {
                     reject(err)
@@ -153,6 +166,19 @@ class apiSquash {
         })
     }
 
+    getObject(objectType, idObject) {
+        return new Promise((resolve, reject) => {
+            let currentURL = baseURL + objectType + "/" + idObject
+            axios.get(currentURL, this.proxy)
+                .then(res => {
+                    console.log(res.data);
+                    resolve(res.data)
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
     findByName(objectType, name) {
         return new Promise((resolve, reject) => {
             let currentURL = baseURL + objectType + "?page=0&size=200000"
@@ -195,6 +221,71 @@ class apiSquash {
                         .then(res => resolve(res))
                         .catch(err => reject(err))
                 }).catch(err => reject(err))
+        })
+    }
+
+    copyCampaingOfSprint(sprint) {
+        return new Promise((resolve, reject) => {
+            this.findByName("campaign-folders", "Sprint " + sprint)
+                .then(res => { return this.getContents("campaign-folders", res.id) })
+                .then(res => {
+                    let searchObject = res._embedded.content.find(object => object.name === "Amélioration")
+                    return this.getObject("campaigns", searchObject.id)
+                }).then(res => {
+                    let iterations = res.iterations
+                    let promises = []
+                    iterations.forEach(iteration => {
+                        promises.push(this.getObject("iterations", iteration.id))
+                    })
+                    return Promise.all(promises)
+                }).then(responses => {
+                    let promises = []
+                    let searchObject = responses.find(object => object.name === "FCC Desktop")
+                    let responsesWithoutSearchObject = responses.filter(object => object.name !== "FCC Desktop")
+                    console.log(searchObject)
+                    responsesWithoutSearchObject.forEach(response => {
+                        searchObject.test_suites.forEach(object => {
+                            let data = {
+                                "_type": "test-suite",
+                                "name": object.name,
+                                "description": "<p>this is a sample test suite</p>",
+                                "parent": {
+                                    "_type": "iteration",
+                                    "id": response.id
+                                },
+                                "custom_fields": [],
+                                "test_plan": [],
+                            }
+                            promises.push(this.create("test-suites", data))
+                        })                      
+                    })
+                    return Promise.all(promises)
+                }).then(responses => {
+                    resolve(responses)
+                })
+                .catch(err => reject(err))
+
+        })
+    }
+
+    _testCreateTestSuite() {
+
+        let data = {
+            "_type": "test-suite",
+            "name": "TEST CREATE",
+            "description": "<p>this is a sample test suite</p>",
+            "parent": {
+                "_type": "iteration",
+                "id": 19357
+            },
+            "custom_fields": [],
+            "test_plan": [],
+        }
+        console.log(data);
+        return new Promise((resolve, reject) => {
+            this.create("test-suites", data)
+                .then(res => resolve(res))
+                .catch(err => reject(err))
         })
     }
 }
