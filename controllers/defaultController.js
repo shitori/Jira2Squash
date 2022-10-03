@@ -45,16 +45,7 @@ module.exports = {
     },
 
     game: (req, res) => {
-        let max = req.query.max
-        let array = []
-        for (let i = 0; i < max; i++) {
-            array[i] = []
-            for (let j = 0; j < max * 2; j++) {
-                array[i][j] = (helper.getRandomInt(101) < req.query.life ? (helper.getRandomInt(7) + 1) : 0)
-            }
-        }
-
-        res.render("gameOfLife", { array, max })
+        res.render("gameOfLife", {})
     }
 
 }
