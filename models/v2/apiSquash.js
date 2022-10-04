@@ -156,9 +156,6 @@ class apiSquash {
             let currentURL = baseURL + objectType + "/" + idObject + "/content?page=0&size=200000"
             axios.get(currentURL, this.proxy)
                 .then(res => {
-                    if (res.data._embedded) {
-                        console.info(res.data._embedded.content)
-                    }
                     resolve(res.data)
                 }).catch(err => {
                     reject(err)
@@ -171,7 +168,6 @@ class apiSquash {
             let currentURL = baseURL + objectType + "/" + idObject
             axios.get(currentURL, this.proxy)
                 .then(res => {
-                    console.log(res.data);
                     resolve(res.data)
                 }).catch(err => {
                     reject(err)
@@ -187,7 +183,6 @@ class apiSquash {
                     console.info(res.status == 200 ? "Objet " + name + " trouvé" : "Objet " + name + " non trouvé");
                     let objects = res.data._embedded[objectType]
                     let searchObject = objects.find(object => object.name === name)
-                    console.info(searchObject);
                     resolve(searchObject)
                 }).catch(error => {
                     reject(error)
@@ -224,6 +219,44 @@ class apiSquash {
         })
     }
 
+    getTestsSuiteOfIteractionP1() {
+        return new Promise((resolve, reject) => {
+            this.getObject("iterations", 19329)
+                .then(res => {
+                    let resLite = []
+                    res.test_suites.forEach(el => {
+                        console.log(el);
+                        resLite.push({ "name": el.name, "url": el._links.self.href })
+                    })
+
+
+                    resolve(resLite)
+
+                }).catch(err => reject(err))
+        })
+    }
+
+    primaryTest(folders) {
+        return new Promise((resolve, reject) => {
+            var promises = []
+            folders.forEach(folder => {
+                var currentURL = folder.url
+                promises.push(axios.get(currentURL, this.proxy))
+            })
+
+            Promise.all(promises)
+                .then(responses => {
+                    responses.forEach(response => {
+                        response.data.test_plan.forEach(el => {
+                            console.log("https://test-management.orangeapplicationsforbusiness.com/squash/test-case-workspace/test-case/" + response.data.id + "/content" + ";" + response.data.name + ";" + response.data.name + " - " + el.referenced_test_case.name + ";");
+                        })
+                    })
+                    resolve(responses)
+                }).catch(err => reject(err))
+        })
+
+    }
+
     copyCampaingOfSprint(sprint) {
         return new Promise((resolve, reject) => {
             this.findByName("campaign-folders", "Sprint " + sprint)
@@ -242,9 +275,10 @@ class apiSquash {
                     let promises = []
                     let searchObject = responses.find(object => object.name === "FCC Desktop")
                     let responsesWithoutSearchObject = responses.filter(object => object.name !== "FCC Desktop")
-                    console.log(searchObject)
-                    responsesWithoutSearchObject.forEach(response => {
-                        searchObject.test_suites.forEach(object => {
+                    searchObject.test_suites.forEach(object => {
+                        // get obkjet => object."test_plan" => test case => test case similaire => new test case => new test case in bla 
+                        console.log(object);
+                        responsesWithoutSearchObject.forEach(response => {
                             let data = {
                                 "_type": "test-suite",
                                 "name": object.name,
@@ -257,10 +291,14 @@ class apiSquash {
                                 "test_plan": [],
                             }
                             promises.push(this.create("test-suites", data))
-                        })                      
+                        })
                     })
                     return Promise.all(promises)
                 }).then(responses => {
+                    responses.forEach(response => {
+                        //console.log(response);
+                    })
+
                     resolve(responses)
                 })
                 .catch(err => reject(err))
@@ -269,7 +307,6 @@ class apiSquash {
     }
 
     _testCreateTestSuite() {
-
         let data = {
             "_type": "test-suite",
             "name": "TEST CREATE",
@@ -281,7 +318,6 @@ class apiSquash {
             "custom_fields": [],
             "test_plan": [],
         }
-        console.log(data);
         return new Promise((resolve, reject) => {
             this.create("test-suites", data)
                 .then(res => resolve(res))

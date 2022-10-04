@@ -13,6 +13,8 @@ router.post("/fromApi", controller.fromAPI)
 
 router.get("/primaryTest", controller.foldersTest)
 
+router.get('/testsInIteration', controller.testsIteraction)
+
 router.put("/copyCampaing", controller.copyCompaing)
 
 

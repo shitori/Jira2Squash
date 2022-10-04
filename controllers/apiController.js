@@ -25,6 +25,20 @@ module.exports = {
             .catch(error => res.json({ "data": error }))
     },
 
+    testsIteraction: (req, res) => {
+        console.log(req.query);
+        let squash = new Squash(new Proxy(req.query.tokenSessionSquash).getProxy())
+        squash.getTestsSuiteOfIteractionP1()
+            .then(result => {
+                return squash.primaryTest(result)                
+            })
+            .then(result => {
+                res.json({ "data": result })
+            })
+            .catch(err => res.json({ "err": err }))
+
+    },
+
     copyCompaing: (req, res) => {
         let squash = new Squash(new Proxy(req.body.tokenSessionSquash).getProxy())
         squash.copyCampaingOfSprint(req.body.sprintName).then(result => res.json({ "data": result })).catch(err => res.json({ "err": err }))
