@@ -1,5 +1,4 @@
 var maker = require('../models/maker')
-const squashFoldersCampgne = require('../models/exigenceFolders.json')
 var Squash = require('../models/v2/apiSquash')
 var Proxy = require('../models/v2/proxy')
 
