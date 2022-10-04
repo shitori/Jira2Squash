@@ -173,28 +173,6 @@ function fromAPI(req) {
     })
 }
 
-function primaryTest(req, folders) {
-    return new Promise((resolve, reject) => {
-        var proxy = new Proxy(req.query.tokenSquash).getProxy()
-        var promises = []
-        folders.forEach(folder => {
-            var currentURL = folder.url
-            promises.push(axios.get(currentURL, proxy))
-        })
-
-        Promise.all(promises)
-            .then(responses => {
-                responses.forEach(response => {
-                    response.data.test_plan.forEach(el => {
-                        console.log(el.referenced_test_case._links.self.href + ";" + response.data.name + ";" + response.data.name + " - " + el.referenced_test_case.name + ";");
-                    })
-                })
-                resolve(responses)
-            }).catch(err => reject(err))
-    })
-
-}
-
 function test() {
     var proxyJira = new Proxy("5F0E02606324FE087C862CF040B914B3")
     var proxySquash = new Proxy("F696939B49AD3630BE446FD46A871705")
@@ -210,4 +188,4 @@ function test() {
 
 
 
-module.exports = { writeOnSquash, writeOnSquashAPI, fromFile, fromAPI, test, primaryTest }
+module.exports = { writeOnSquash, writeOnSquashAPI, fromFile, fromAPI, test }

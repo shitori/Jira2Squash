@@ -19,18 +19,12 @@ module.exports = {
             .catch(err => res.json({ "message": "fail make file :" + err }))
     },
 
-    foldersTest: (req, res) => {
-        maker.primaryTest(req, squashFoldersCampgne)
-            .then(response => res.json({ "data": response }))
-            .catch(error => res.json({ "data": error }))
-    },
-
     testsIteraction: (req, res) => {
         console.log(req.query);
         let squash = new Squash(new Proxy(req.query.tokenSessionSquash).getProxy())
         squash.getTestsSuiteOfIteractionP1()
             .then(result => {
-                return squash.primaryTest(result)                
+                return squash.primaryTest(result)
             })
             .then(result => {
                 res.json({ "data": result })
