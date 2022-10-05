@@ -26,6 +26,7 @@ module.exports = {
                 return squash.primaryTest(result)
             })
             .then(result => {
+                console.log("ok !!");
                 res.json({ "data": result })
             })
             .catch(err => res.json({ "err": err }))

@@ -221,17 +221,14 @@ class apiSquash {
 
     getTestsSuiteOfIteractionP1() {
         return new Promise((resolve, reject) => {
-            this.getObject("iterations", 19329)
+            this.getObject("iterations", 19329) // id de l'itéraction dans squash
                 .then(res => {
                     let resLite = []
                     res.test_suites.forEach(el => {
                         console.log(el);
                         resLite.push({ "name": el.name, "url": el._links.self.href })
                     })
-
-
                     resolve(resLite)
-
                 }).catch(err => reject(err))
         })
     }
@@ -246,12 +243,15 @@ class apiSquash {
 
             Promise.all(promises)
                 .then(responses => {
+                    let stringResult = ""
                     responses.forEach(response => {
                         response.data.test_plan.forEach(el => {
-                            console.log("https://test-management.orangeapplicationsforbusiness.com/squash/test-case-workspace/test-case/" + response.data.id + "/content" + ";" + response.data.name + ";" + response.data.name + " - " + el.referenced_test_case.name + ";");
+                            let rowContent = "https://test-management.orangeapplicationsforbusiness.com/squash/test-case-workspace/test-case/" + el.referenced_test_case.id + "/content" + ";" + response.data.name + ";" + response.data.name + " - " + el.referenced_test_case.name + ";"
+                            console.log(rowContent);
+                            stringResult += rowContent + "\n"
                         })
                     })
-                    resolve(responses)
+                    resolve(stringResult)
                 }).catch(err => reject(err))
         })
 
