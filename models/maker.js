@@ -2,7 +2,6 @@ const xl = require('excel4node');
 const wb = new xl.Workbook();
 const ws = wb.addWorksheet('REQUIREMENT');
 const excelToJson = require('convert-excel-to-json');
-const axios = require('axios');
 
 var helper = require('../models/helper')
 
@@ -12,12 +11,8 @@ const Proxy = require("../models/v2/proxy")
 const Squash = require("../models/v2/apiSquash")
 
 const dotenv = require('dotenv');
-const { response } = require('express');
 
 dotenv.config();
-
-
-
 
 const headingColumnNames = [
     "ACTION",

@@ -1,70 +1,93 @@
 <script>
-  function showLoading(){
-    
+  function showLoading() {
+
     var form = document.getElementById("formFormApi");
     form.style.display = "none"
     var loading = document.getElementById("loading");
     loading.style.display = "block"
   }
+
+  function hideLoading(){
+    var form = document.getElementById("formFormApi");
+    form.style.display = "block"
+    var loading = document.getElementById("loading");
+    loading.style.display = "none"
+    window.stop();
+  }
 </script>
+<div id="loading" class="mt-5 text-center" style="display: none;">
+  <h2>Chargement en cours ...</h2>
+  <%- include('../loader.ejs'); %>
+  <div class="text-center">    
+    <button type="button" onclick="hideLoading()" class="btn btn-outline-danger btn-lg" name="validator"
+      value="api">Annuler</button>
+  </div>
+</div>
 <form action="/fromAPI" id="formFormApi" method="post" enctype="multipart/form-data">
-    <div class="mb-3">
-      <label for="inputSprint" class="form-label">Sprint n°</label>
-      <input type="input" class="form-control" id="inputSprint" name="inputSprint"
-        aria-describedby="sprintHelp">
-      <div id="sprintHelp" class="form-text">Valeur par défaut : undefined</div>
+  <div class="mb-3">
+    <div class="row">
+      <div class="col-3">
+        <label for="inputSprint" class="form-label">Sprint n°</label>
+        <input type="input" class="form-control" id="inputSprint" name="inputSprint" aria-describedby="sprintHelp">
+        <div id="sprintHelp" class="form-text">Valeur par défaut : undefined</div>
+      </div>
+      <div class="col-9">
+        <label for="inputSquash" class="form-label">Nom du fichier cible SQUASH (.xls)</label>
+        <input type="input" class="form-control" id="inputSquash" name="inputSquash" aria-describedby="squashHelp">
+        <div id="squashHelp" class="form-text">Valeur par défaut : dataForSquash(.xls)</div>
+      </div>
     </div>
-    <div class="mb-3">
-      <label for="inputSessionTokenJira" class="form-label">ID de session Jira</label>
-      <input type="input" class="form-control" id="inputSessionTokenJira" name="inputSessionTokenJira"
-        aria-describedby="sessionHelp" required>
-      <div id="sessionHelp" class="form-text">Se connecter à Jira et récupérer le cookie JSESSIONID</div>
+
+  </div>
+  <div class="mb-3">
+    <div class="row">
+      <div class="col-6">
+        <label for="inputSessionTokenJira" class="form-label">ID de session Jira</label>
+        <input type="input" class="form-control" id="inputSessionTokenJira" name="inputSessionTokenJira"
+          aria-describedby="sessionHelp" required>
+        <div id="sessionHelp" class="form-text">Se connecter à Jira et récupérer le cookie JSESSIONID</div>
+      </div>
+      <div class="col-6">
+        <label for="inputSessionTokenSquash" class="form-label">ID de session Squash</label>
+        <input type="input" class="form-control" id="inputSessionTokenSquash" name="inputSessionTokenSquash"
+          aria-describedby="sessionHelp" required>
+        <div id="sessionHelp" class="form-text">Se connecter à Squash et récupérer le cookie JSESSIONID,
+          uniquement necessaire
+          pour "Générer + Transférer" et "Transférer"</div>
+      </div>
     </div>
-    <div class="mb-3">
-      <div class="row">
-        <div class="col-9">
-          <label for="inputJiraRequest" class="form-label">Requête JIRA </label>
-          <label for="inputJiraRequest" class="visually-hidden">Requete Jira</label>
-          <input type="input" class="form-control" id="inputJiraRequest" name="inputJiraRequest"
-            aria-describedby="requestHelp">
-          <div id="requestHelp" class="form-text">Trier les tickets souhaités et récupérer la requête
-            avancée
-          </div>
+  </div>
+  <div class="mb-3">
+    <div class="row">
+      <div class="col-2">
+        <label for="inputJiraSprintRequest" class="form-label">ID de Sprint</label>
+        <label for="inputJiraSprintRequest" class="visually-hidden">ID Jira</label>
+        <input type="input" class="form-control" id="inputJiraSprintRequest" name="inputJiraSprintRequest"
+          aria-describedby="sprintIDHelp">
+        <div id="sprintIDHelp" class="form-text">Récupérer l'ID sur l'URL Jira (sprint=XXXXX)
         </div>
-        <div class="col-3">
-          <label for="inputJiraSprintRequest" class="form-label">OU l'ID de Sprint</label>
-          <label for="inputJiraSprintRequest" class="visually-hidden">ID Jira</label>
-          <input type="input" class="form-control" id="inputJiraSprintRequest" name="inputJiraSprintRequest"
-            aria-describedby="sprintIDHelp">
-          <div id="sprintIDHelp" class="form-text">Récupérer l'ID sur l'URL Jira (sprint=XXXXX)
-          </div>
+      </div>
+      <div class="col-1">
+        OU
+      </div>
+      <div class="col-9">
+        <label for="inputJiraRequest" class="form-label">Requête JIRA </label>
+        <label for="inputJiraRequest" class="visually-hidden">Requete Jira</label>
+        <input type="input" class="form-control" id="inputJiraRequest" name="inputJiraRequest"
+          aria-describedby="requestHelp">
+        <div id="requestHelp" class="form-text">Trier les tickets souhaités et récupérer la requête
+          avancée
         </div>
       </div>
     </div>
-    <div class="mb-3">
-      <label for="inputSquash" class="form-label">Nom du fichier cible SQUASH (.xls)</label>
-      <input type="input" class="form-control" id="inputSquash" name="inputSquash"
-        aria-describedby="squashHelp">
-      <div id="squashHelp" class="form-text">Valeur par défaut : dataForSquash(.xls)</div>
-    </div>
-    <div class="mb-3">
-      <label for="inputSessionTokenSquash" class="form-label">ID de session Squash</label>
-      <input type="input" class="form-control" id="inputSessionTokenSquash" name="inputSessionTokenSquash"
-        aria-describedby="sessionHelp" required>
-      <div id="sessionHelp" class="form-text">Se connecter à Squash et récupérer le cookie JSESSIONID,
-        uniquement necessaire
-        pour "Générer + Transférer" et "Transférer"</div>
-    </div>
-    <div class="text-center">
-      <button type="submit" onclick="showLoading()" class="btn btn-outline-success btn-lg" name="validator"
-        value="file">Générer</button>
-      <button type="submit" onclick="showLoading()" class="btn btn-outline-info btn-lg" name="validator" value="fileApi">Générer +
-        Transférer</button>
-      <button type="submit" onclick="showLoading()" class="btn btn-outline-primary btn-lg" name="validator"
-        value="api">Transférer</button>
-    </div>
-  </form>
-  <div id="loading" class="mt-5 text-center" style="display: none;">
-    <h2>Chargement en cours ...</h2>
-    <%- include('../loader.ejs'); %>
   </div>
+  <div class="text-center">
+    <button type="submit" onclick="showLoading()" class="btn btn-outline-success btn-lg" name="validator"
+      value="file">Générer</button>
+    <button type="submit" onclick="showLoading()" class="btn btn-outline-success btn-lg" name="validator"
+      value="fileApi">Générer +
+      Transférer</button>
+    <button type="submit" onclick="showLoading()" class="btn btn-outline-success btn-lg" name="validator"
+      value="api">Transférer</button>
+  </div>
+</form>
