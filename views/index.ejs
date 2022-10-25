@@ -6,14 +6,7 @@
     </title>
   </head>
   <script>
-    console.log('hello world')
-    var webSocket = new WebSocket('ws://localhost:3002/', 'test-protocol')
-    webSocket.onmessage = event => {
-        console.log(event.data);
-        let data = JSON.parse(event.data);
-        let message = data.message
-        
-    }
+    
   </script>
 
 

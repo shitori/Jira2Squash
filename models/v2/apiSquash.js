@@ -16,11 +16,24 @@ const bandeauFolderFileName = "Bandeau"
 const bandeauAcronymeSprint = "G2R2 - "
 const bandeauFolderParentName = "[NextGen]Nouveaux Bandeaux"
 
-
 class apiSquash {
 
     constructor(proxy) {
         this.proxy = proxy
+        this.forlderMax = 0
+        this.folderCurrent = 0
+        this.requirementMax = 0
+        this.requirementCurrent = 0
+    }
+
+    _setProgressBarRequirement(max) {
+        this.requirementMax = max;
+        this.requirementCurrent = 0;
+    }
+
+    _setProgressBarFolder(max) {
+        this.forlderMax = max;
+        this.folderCurrent = 0;
     }
 
     create(objectName, data) {
@@ -28,7 +41,7 @@ class apiSquash {
             let client = new WebSocket.Client('ws://localhost:3002/');
 
             client.on('open', function (message) {
-                console.log('Connection established!');
+                console.log('Connection established for create!');
             });
 
             client.on('message', function (message) {
@@ -36,12 +49,23 @@ class apiSquash {
             });
 
             client.on('close', function (message) {
-                console.log('Connection closed!', message.code, message.reason);                
+                console.log('Connection closed!', message.code, message.reason);
                 client = null;
             });
+
             axios.post(baseURL + objectName, data, this.proxy)
                 .then(res => {
-                    client.send("Finish for "+ objectName)
+                    if (objectName == 'requirement-folders') {
+                        this.folderCurrent++;
+                        client.send("Folders : " + this.folderCurrent + "/" + this.forlderMax)
+                    } else if (objectName == 'requirements') {
+                        this.requirementCurrent++;
+                        client.send("Requirements : " + this.requirementCurrent + "/" + this.requirementMax)
+                    } else {
+                        client.send("Finish for " + objectName)
+                    }
+
+
                     resolve(res.data)
                 }).catch(error => {
                     reject(error)
@@ -82,6 +106,7 @@ class apiSquash {
                 "id": idFolderParent
             }
         }
+
         return new Promise((resolve, reject) => {
             this.create("requirements", data)
                 .then(success => {
@@ -105,6 +130,7 @@ class apiSquash {
                 if (exigenceAlreadyExist == undefined) {
                     this.createRequirement(idFolder, record).then(res => resolve({ "message": res, "result": 1 })).catch(err => reject(err))
                 } else {
+
                     resolve({ "message": "L'exigence " + nameFolder + " existe déjà - " + record.nameJira, "result": 0 })
                 }
             }
@@ -114,6 +140,7 @@ class apiSquash {
 
 
     createRequirements(idB, idWB, result) {
+
         return new Promise((resolve, reject) => {
             var promises = [this.getContents("requirement-folders", idB), this.getContents("requirement-folders", idWB)]
             Promise.all(promises)
@@ -227,6 +254,8 @@ class apiSquash {
     importInSquashWithAPI(result, sprint) {
         return new Promise((resolve, reject) => {
             var promesse = [this.createFolderIfNecessary(true, sprint), this.createFolderIfNecessary(false, sprint)]
+            this._setProgressBarRequirement(result.length)
+            this._setProgressBarFolder(promesse.length)
             Promise.all(promesse)
                 .then(responses => {
                     this.createRequirements(responses[1], responses[0], result)

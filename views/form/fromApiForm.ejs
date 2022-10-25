@@ -1,6 +1,5 @@
 <script>
   function showLoading() {
-
     var form = document.getElementById("formFormApi");
     form.style.display = "none"
     var loading = document.getElementById("loading");
@@ -14,9 +13,21 @@
     loading.style.display = "none"
     window.stop();
   }
+
+  console.log('hello world')
+    var webSocket = new WebSocket('ws://localhost:3002/', 'test-protocol')
+    webSocket.onmessage = event => {
+        console.log(event.data);
+        let data = JSON.parse(event.data);
+        let message = data.message
+        let h3 = document.getElementById('ws_return')
+        h3.textContent = message        
+    }
+
 </script>
 <div id="loading" class="mt-5 text-center" style="display: none;">
   <h2>Chargement en cours ...</h2>
+  <h3 id="ws_return"></h3>
   <%- include('../loader.ejs'); %>
   <div class="text-center">    
     <button type="button" onclick="hideLoading()" class="btn btn-outline-danger btn-lg" name="validator"

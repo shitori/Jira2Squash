@@ -117,12 +117,11 @@ function fromAPI(req) {
         var squash = new Squash(new Proxy(req.body.inputSessionTokenSquash).getProxy())
         let client = new WebSocket.Client('ws://localhost:3002/');
 
-        client.on('open', function (message) {
-            console.log('Connection established!');
-            client.send("In fromAPI")
+        client.on('open', function (message) {            
+            client.send("Start of the transfer from Jira to Squash.") // !First Send
             jira.getIssues(req.body.inputJiraRequest)
                 .then(dataAPI => {
-                    client.send("Jira END")
+                    client.send("Get all Jira ticket's") // !Second Send
                     switch (req.body.validator) {
                         case 'file':
                             return writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
@@ -134,8 +133,7 @@ function fromAPI(req) {
                                 apiResult: squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
                             }
                     }
-                }).then(finalResult => {
-                    client.send("SQUASH END")
+                }).then(finalResult => {                    
                     var query = {}
                     switch (req.body.validator) {
                         case 'file':
