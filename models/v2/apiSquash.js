@@ -1,8 +1,10 @@
 const axios = require('axios');
-const dotenv = require('dotenv');
-const { response } = require('express');
 const helper = require('../helper')
+var WebSocket = require('faye-websocket');
+
+const dotenv = require('dotenv');
 dotenv.config();
+
 const baseURL = process.env.SQUASH_BASE_URL
 const guiJiraURL = process.env.JIRA_GUI_URL
 
@@ -23,12 +25,28 @@ class apiSquash {
 
     create(objectName, data) {
         return new Promise((resolve, reject) => {
+            let client = new WebSocket.Client('ws://localhost:3002/');
+
+            client.on('open', function (message) {
+                console.log('Connection established!');
+            });
+
+            client.on('message', function (message) {
+                console.log("Data from WebSocketServer '" + message.data + "'");
+            });
+
+            client.on('close', function (message) {
+                console.log('Connection closed!', message.code, message.reason);                
+                client = null;
+            });
             axios.post(baseURL + objectName, data, this.proxy)
                 .then(res => {
+                    client.send("Finish for "+ objectName)
                     resolve(res.data)
                 }).catch(error => {
                     reject(error)
                 });
+
         })
     }
 
@@ -42,7 +60,6 @@ class apiSquash {
                 });
         })
     }
-
 
     createRequirement(idFolderParent, record) {
         let data = {

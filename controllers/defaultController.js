@@ -19,6 +19,11 @@ module.exports = {
         res.redirect('/')
     },
 
+    testSocket: (req, res) => {
+        maker.testSocket()
+        res.redirect('/')
+    },
+
     fromFile: (req, res) => {
         maker.fromFile(req)
             .then(localPathFile => res.download(localPathFile))

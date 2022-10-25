@@ -15,5 +15,6 @@ router.get('/testsInIteration', controller.testsIteraction)
 
 router.put("/copyCampaing", controller.copyCompaing)
 
+router.post("/backup", controller.backup)
 
 module.exports = router

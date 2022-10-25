@@ -15,7 +15,7 @@ class apiJira {
         return new Promise((resolve, reject) => {
             axios.get(baseUrl + "search?jql=" + encodeURI(jql) + "&maxResults=10000", this.proxy)
                 .then(res => {
-                    console.info(`statusCode: ${res.status}`);
+                    //console.info(`statusCode: ${res.status}`);
                     let compactIssues = []
                     res.data.issues.forEach(issue => {
                         let compactIssue = {}
@@ -28,7 +28,7 @@ class apiJira {
                     });
                     resolve(compactIssues)
                 }).catch(error => {
-                    console.error("fail api jira, check JSession");
+                    //console.error("fail api jira, check JSession");
                     reject(error)
                 });
         })

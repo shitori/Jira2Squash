@@ -37,6 +37,9 @@ module.exports = {
         let squash = new Squash(new Proxy(req.body.tokenSessionSquash).getProxy())
         squash.copyCampaingOfSprint(req.body.sprintName).then(result => res.json({ "data": result })).catch(err => res.json({ "err": err }))
         //squash._testCreateTestSuite().then(result => res.json({ "data": result })).catch(err => res.json({ "err": err }))
+    },
 
+    backup: (req, res) => {
+        maker.backup().then(result => res.json({ "data": result }))
     }
 }

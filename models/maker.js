@@ -2,6 +2,8 @@ const xl = require('excel4node');
 const wb = new xl.Workbook();
 const ws = wb.addWorksheet('REQUIREMENT');
 const excelToJson = require('convert-excel-to-json');
+var WebSocket = require('faye-websocket');
+
 
 var helper = require('../models/helper')
 
@@ -113,58 +115,79 @@ function fromAPI(req) {
         req.body = helper.checkInput(req.body)
         var jira = new Jira(new Proxy(req.body.inputSessionTokenJira).getProxy())
         var squash = new Squash(new Proxy(req.body.inputSessionTokenSquash).getProxy())
-        jira.getIssues(req.body.inputJiraRequest)
-            .then(dataAPI => {
-                switch (req.body.validator) {
-                    case 'file':
-                        return writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
-                    case 'api':
-                        return squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
-                    default:
-                        return {
-                            fileResult: writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI),
-                            apiResult: squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
-                        }
-                }
-            }).then(finalResult => {
+        let client = new WebSocket.Client('ws://localhost:3002/');
 
-                var query = {}
-                switch (req.body.validator) {
-                    case 'file':
-                        query = {
-                            "from": req.body.validator,
-                            "fileName": sourceName,
-                            "message": "OK : " + finalResult,
-                            "moreInfo": undefined
-                        }
-                        break;
-                    case 'api':
-                        query = {
-                            "from": req.body.validator,
-                            "fileName": undefined,
-                            "message": "OK : " + finalResult.message,
-                            "moreInfo": finalResult.moreInfo
-                        }
-                        break;
-                    default:
-                        query = {
-                            "from": "other",
-                            "fileName": sourceName,
-                            "message": "OK : " + finalResult.apiResult.message + " / " + finalResult.fileResult,
-                            "moreInfo": finalResult.apiResult.moreInfo,
-                        }
-                        break;
-                }
-                resolve(query)
-            }).catch(err => {
-                console.error("err:" + err);
-                resolve({
-                    "from": req.body.validator,
-                    "fileName": undefined,
-                    "message": "KO : le transfert a échoué.",
-                    "moreInfo": err
+        client.on('open', function (message) {
+            console.log('Connection established!');
+            client.send("In fromAPI")
+            jira.getIssues(req.body.inputJiraRequest)
+                .then(dataAPI => {
+                    client.send("Jira END")
+                    switch (req.body.validator) {
+                        case 'file':
+                            return writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI)
+                        case 'api':
+                            return squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
+                        default:
+                            return {
+                                fileResult: writeOnSquashAPI(req.body.inputSprint, req.body.inputSquash, dataAPI),
+                                apiResult: squash.importInSquashWithAPI(dataAPI, req.body.inputSprint)
+                            }
+                    }
+                }).then(finalResult => {
+                    client.send("SQUASH END")
+                    var query = {}
+                    switch (req.body.validator) {
+                        case 'file':
+                            query = {
+                                "from": req.body.validator,
+                                "fileName": sourceName,
+                                "message": "OK : " + finalResult,
+                                "moreInfo": undefined
+                            }
+                            break;
+                        case 'api':
+                            query = {
+                                "from": req.body.validator,
+                                "fileName": undefined,
+                                "message": "OK : " + finalResult.message,
+                                "moreInfo": finalResult.moreInfo
+                            }
+                            break;
+                        default:
+                            query = {
+                                "from": "other",
+                                "fileName": sourceName,
+                                "message": "OK : " + finalResult.apiResult.message + " / " + finalResult.fileResult,
+                                "moreInfo": finalResult.apiResult.moreInfo,
+                            }
+                            break;
+                    }
+                    client.close()
+                    resolve(query)
+                }).catch(err => {
+                    console.error("err:" + err);
+                    client.close()
+                    resolve({
+                        "from": req.body.validator,
+                        "fileName": undefined,
+                        "message": "KO : le transfert a échoué.",
+                        "moreInfo": err
+                    })
                 })
-            })
+        });
+
+        client.on('message', function (message) {
+            console.log("Data from WebSocketServer '" + message.data + "'");
+        });
+
+        client.on('close', function (message) {
+            console.log('Connection closed!', message.code, message.reason);
+
+            client = null;
+        });
+
+
     })
 }
 
@@ -181,6 +204,48 @@ function test() {
         .catch(err => console.error(err))
 }
 
+function backup() {
+
+    return new Promise(resolve => {
+        var proxyJira = new Proxy("C10426B5125481226BDD5219700B6D43")
+        var proxySquash = new Proxy("F696939B49AD3630BE446FD46A871705")
+        var jira = new Jira(proxyJira.getProxy())
+        var squash = new Squash(proxySquash.getProxy())
+        var max = 36323
+        for (let index = 10000; index < 15000; index++) {
+            jira.getIssues("project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = " + index + " ORDER BY priority DESC, updated DESC")
+                .then(res => {
+                    console.info(index)
+
+                }).catch(err => {
+                    //console.info(index + ";" + "KO")
+                })
+        }
+        resolve("OK")
+    })
+
+}
+
+function testSocket() {
+    var client = new WebSocket.Client('ws://localhost:3002/');
+    client.on('open', function (message) {
+        console.log('Connection established!');
+        client.send("In testSocket")
+    });
 
 
-module.exports = { writeOnSquash, writeOnSquashAPI, fromFile, fromAPI, test }
+    client.on('message', function (message) {
+        console.log("Data from WebSocketServer '" + message.data + "'");
+    });
+
+    client.on('close', function (message) {
+        console.log('Connection closed!', message.code, message.reason);
+
+        client = null;
+    });
+
+}
+
+
+
+module.exports = { writeOnSquash, writeOnSquashAPI, fromFile, fromAPI, test, testSocket, backup }
