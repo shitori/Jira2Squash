@@ -6,7 +6,7 @@
     loading.style.display = "block"
   }
 
-  function hideLoading(){
+  function hideLoading() {
     var form = document.getElementById("formFormApi");
     form.style.display = "block"
     var loading = document.getElementById("loading");
@@ -15,24 +15,44 @@
   }
 
   console.log('hello world')
-    var webSocket = new WebSocket('ws://localhost:3002/', 'test-protocol')
-    webSocket.onmessage = event => {
-        console.log(event.data);
-        let data = JSON.parse(event.data);
+  var webSocket = new WebSocket('ws://localhost:3002/', 'test-protocol')
+  //webSocket.binaryType = "arraybuffer";
+  webSocket.onmessage = event => {
+    console.log(event);
+
+    if (event.data instanceof Blob) {
+      event.data.text().then(txt => {
+        console.log(txt)
+        let data = JSON.parse(txt)
         let message = data.message
+        let percent = data.percent
+
         let h3 = document.getElementById('ws_return')
-        h3.textContent = message        
+        let progressBar = document.getElementById('progress_bar')
+
+        h3.textContent = message
+        progressBar.setAttribute("style", "width: " + percent + "%")
+      })
+    } else {
+      console.log("Result: " + event.data);
     }
+
+
+  }
 
 </script>
 <div id="loading" class="mt-5 text-center" style="display: none;">
   <h2>Chargement en cours ...</h2>
   <h3 id="ws_return"></h3>
-  <%- include('../loader.ejs'); %>
-  <div class="text-center">    
-    <button type="button" onclick="hideLoading()" class="btn btn-outline-danger btn-lg" name="validator"
-      value="api">Annuler</button>
+  <div class="progress">
+    <div id="progress_bar" class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar"
+      style="width: 0%"></div>
   </div>
+  <%- include('../loader.ejs'); %>
+    <div class="text-center">
+      <button type="button" onclick="hideLoading()" class="btn btn-outline-danger btn-lg" name="validator"
+        value="api">Annuler</button>
+    </div>
 </div>
 <form action="/fromAPI" id="formFormApi" method="post" enctype="multipart/form-data">
   <div class="mb-3">

@@ -57,10 +57,18 @@ class apiSquash {
                 .then(res => {
                     if (objectName == 'requirement-folders') {
                         this.folderCurrent++;
-                        client.send("Folders : " + this.folderCurrent + "/" + this.forlderMax)
+                        let folderInfo = {
+                            message: "Folders : " + this.folderCurrent + "/" + this.forlderMax,
+                            percent: 30 + this.folderCurrent * 20 / this.forlderMax
+                        }
+                        client.send(JSON.stringify(folderInfo))
                     } else if (objectName == 'requirements') {
                         this.requirementCurrent++;
-                        client.send("Requirements : " + this.requirementCurrent + "/" + this.requirementMax)
+                        let requirementInfo = {
+                            message: "Requirements : " + this.requirementCurrent + "/" + this.requirementMax,
+                            percent: 50 + this.requirementCurrent * 50 / this.requirementMax
+                        }
+                        client.send(JSON.stringify(requirementInfo))
                     } else {
                         client.send("Finish for " + objectName)
                     }
