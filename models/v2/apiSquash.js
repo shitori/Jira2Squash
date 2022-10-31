@@ -24,6 +24,9 @@ class apiSquash {
         this.folderCurrent = 0
         this.requirementMax = 0
         this.requirementCurrent = 0
+        this.allTest = []
+        this.allExig = []
+
     }
 
     _setProgressBarRequirement(max) {
@@ -36,44 +39,53 @@ class apiSquash {
         this.folderCurrent = 0;
     }
 
+    _setClientWebsocket(client) {
+        client.on('open', function (message) {
+            console.log('Connection established for create!');
+        });
+
+        client.on('message', function (message) {
+            console.log("Data from WebSocketServer '" + message.data + "'");
+        });
+
+        client.on('close', function (message) {
+            console.log('Connection closed!', message.code, message.reason);
+            client = null;
+        });
+    }
+
+    _sendWSRequirementInfo(client) {
+        this.requirementCurrent++;
+        let requirementInfo = {
+            message: "Requirements : " + this.requirementCurrent + "/" + this.requirementMax,
+            percent: 50 + this.requirementCurrent * 50 / this.requirementMax
+        };
+        client.send(JSON.stringify(requirementInfo));
+    }
+
+    _sendWSFolderInfo(client) {
+        this.folderCurrent++;
+        let folderInfo = {
+            message: "Folders : " + this.folderCurrent + "/" + this.forlderMax,
+            percent: 30 + this.folderCurrent * 20 / this.forlderMax
+        };
+        client.send(JSON.stringify(folderInfo));
+    }
+
     create(objectName, data) {
         return new Promise((resolve, reject) => {
             let client = new WebSocket.Client('ws://localhost:3002/');
-
-            client.on('open', function (message) {
-                console.log('Connection established for create!');
-            });
-
-            client.on('message', function (message) {
-                console.log("Data from WebSocketServer '" + message.data + "'");
-            });
-
-            client.on('close', function (message) {
-                console.log('Connection closed!', message.code, message.reason);
-                client = null;
-            });
+            this._setClientWebsocket(client)
 
             axios.post(baseURL + objectName, data, this.proxy)
                 .then(res => {
                     if (objectName == 'requirement-folders') {
-                        this.folderCurrent++;
-                        let folderInfo = {
-                            message: "Folders : " + this.folderCurrent + "/" + this.forlderMax,
-                            percent: 30 + this.folderCurrent * 20 / this.forlderMax
-                        }
-                        client.send(JSON.stringify(folderInfo))
+                        this._sendWSFolderInfo(client);
                     } else if (objectName == 'requirements') {
-                        this.requirementCurrent++;
-                        let requirementInfo = {
-                            message: "Requirements : " + this.requirementCurrent + "/" + this.requirementMax,
-                            percent: 50 + this.requirementCurrent * 50 / this.requirementMax
-                        }
-                        client.send(JSON.stringify(requirementInfo))
+                        this._sendWSRequirementInfo(client);
                     } else {
                         client.send("Finish for " + objectName)
                     }
-
-
                     resolve(res.data)
                 }).catch(error => {
                     reject(error)
@@ -357,6 +369,101 @@ class apiSquash {
                 })
                 .catch(err => reject(err))
 
+        })
+    }
+
+    _recursiveTestCaseFolder(id) {
+        return new Promise((resolve, reject) => {
+            let testsFind = 0;
+            this.getContents("test-case-folders", id)
+                .then(data => {
+                    let promises = []
+                    if (data._embedded !== undefined) {
+                        data._embedded.content.forEach(async obj => {
+                            if (obj._type == "test-case-folder") {
+                                promises.push(this._recursiveTestCaseFolder(obj.id))
+
+                            } else {
+                                testsFind++;
+                                this.allTest.push({ id: obj.id, name: obj.name })
+
+                            }
+                        })
+
+                    }
+                    Promise.all(promises).then(promises => {
+                        promises.forEach(promise => {
+                            testsFind = testsFind + promise;
+                        })
+                        //console.log("testsFind = " + testsFind);
+                        resolve(testsFind)
+                    })
+
+                }).catch(err => {
+                    console.error(err);
+                    resolve(testsFind)
+                })
+        })
+
+    }
+
+    getAllTests() {
+        return new Promise((resolve, reject) => {
+            let promises = [this._recursiveTestCaseFolder(266783), this._recursiveTestCaseFolder(266782), this._recursiveTestCaseFolder(266784), this._recursiveTestCaseFolder(266785)]
+            Promise.all(promises).then(results => {
+                let concatResult = 0
+                results.forEach(result => {
+                    //console.log(result);
+                    concatResult += result
+                })
+                console.log("Cas de tests trouvés : " + concatResult);
+                resolve(this.allTest)
+            }).catch(err => reject(err))
+        })
+    }
+
+    //requirement-folder
+    _recursiveRequirementFolder(id) {
+        return new Promise((resolve, reject) => {
+            let exigencesFind = 0;
+            this.getContents("requirement-folders", id)
+                .then(data => {
+                    let promises = []
+                    if (data._embedded !== undefined) {
+                        data._embedded.content.forEach(async obj => {
+                            if (obj._type == "requirement-folder") {
+                                promises.push(this._recursiveRequirementFolder(obj.id))
+
+                            } else {
+                                exigencesFind++;
+                                this.allExig.push({ id: obj.id, name: obj.name })
+
+                            }
+                        })
+
+                    }
+                    Promise.all(promises).then(promises => {
+                        promises.forEach(promise => {
+                            exigencesFind = exigencesFind + promise;
+                        })
+                        resolve(exigencesFind)
+                    })
+
+                }).catch(err => {
+                    console.error(err);
+                    resolve(exigencesFind)
+                })
+        })
+    }
+
+    getAllExigences() {
+        return new Promise((resolve, reject) => {
+            this._recursiveRequirementFolder(750827)
+            .then(data =>{
+                console.log("Exigebces trouvées : " + data);
+                resolve(this.allExig)
+            }).catch(err => reject(err))
+            
         })
     }
 

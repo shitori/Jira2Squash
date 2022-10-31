@@ -16,10 +16,8 @@
 
   console.log('hello world')
   var webSocket = new WebSocket('ws://localhost:3002/', 'test-protocol')
-  //webSocket.binaryType = "arraybuffer";
   webSocket.onmessage = event => {
     console.log(event);
-
     if (event.data instanceof Blob) {
       event.data.text().then(txt => {
         console.log(txt)
@@ -36,20 +34,18 @@
     } else {
       console.log("Result: " + event.data);
     }
-
-
   }
 
 </script>
 <div id="loading" class="mt-5 text-center" style="display: none;">
   <h2>Chargement en cours ...</h2>
   <h3 id="ws_return"></h3>
-  <div class="progress">
-    <div id="progress_bar" class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar"
-      style="width: 0%"></div>
-  </div>
   <%- include('../loader.ejs'); %>
-    <div class="text-center">
+    <div class="progress">
+      <div id="progress_bar" class="progress-bar progress-bar-striped progress-bar-animated bg-warning"
+        role="progressbar" style="width: 0%"></div>
+    </div>
+    <div class="text-center m-2">
       <button type="button" onclick="hideLoading()" class="btn btn-outline-danger btn-lg" name="validator"
         value="api">Annuler</button>
     </div>

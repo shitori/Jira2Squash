@@ -41,5 +41,11 @@ module.exports = {
 
     backup: (req, res) => {
         maker.backup().then(result => res.json({ "data": result }))
+    },
+
+    getAllTestsFromSquash : (req , res) => {
+        let squash = new Squash(new Proxy(req.query.tokenSessionSquash).getProxy())
+        //squash.getAllTests().then(result => res.json({ "data": result })).catch(err => res.json({ "err": err }))
+        squash.getAllExigences().then(result => res.json({ "data": result })).catch(err => res.json({ "err": err }))
     }
 }

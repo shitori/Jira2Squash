@@ -17,4 +17,6 @@ router.put("/copyCampaing", controller.copyCompaing)
 
 router.post("/backup", controller.backup)
 
+router.get("/squash/test/",controller.getAllTestsFromSquash)
+
 module.exports = router
