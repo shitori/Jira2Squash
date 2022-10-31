@@ -19,4 +19,6 @@ router.post("/backup", controller.backup)
 
 router.get("/squash/test/",controller.getAllTestsFromSquash)
 
+router.get("/squash/link/",controller.prepareLinkBetweenTestsExigs)
+
 module.exports = router

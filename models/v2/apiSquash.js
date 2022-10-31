@@ -422,7 +422,27 @@ class apiSquash {
         })
     }
 
-    //requirement-folder
+    _isAno(id) {
+
+        this.getObject("requirements", id)
+            .then(data => {
+                //console.log(data.current_version.category.code);
+                return data.current_version.category.code == "CAT_JIRA_BUG"
+            }).catch(err => {
+                return err
+            })
+    }
+
+    _purgeAno(exigs) {
+        let exigsFiltred = []
+        exigs.forEach(exig => {
+            if (!this._isAno(exig.id)) {
+                exigsFiltred.push(exig)
+            }
+        })
+        return exigsFiltred
+    }
+
     _recursiveRequirementFolder(id) {
         return new Promise((resolve, reject) => {
             let exigencesFind = 0;
@@ -433,15 +453,13 @@ class apiSquash {
                         data._embedded.content.forEach(async obj => {
                             if (obj._type == "requirement-folder") {
                                 promises.push(this._recursiveRequirementFolder(obj.id))
-
                             } else {
                                 exigencesFind++;
                                 this.allExig.push({ id: obj.id, name: obj.name })
-
                             }
                         })
-
                     }
+
                     Promise.all(promises).then(promises => {
                         promises.forEach(promise => {
                             exigencesFind = exigencesFind + promise;
@@ -459,11 +477,10 @@ class apiSquash {
     getAllExigences() {
         return new Promise((resolve, reject) => {
             this._recursiveRequirementFolder(750827)
-            .then(data =>{
-                console.log("Exigebces trouvées : " + data);
-                resolve(this.allExig)
-            }).catch(err => reject(err))
-            
+                .then(data => {
+                    resolve(this.allExig)
+                }).catch(err => reject(err))
+
         })
     }
 

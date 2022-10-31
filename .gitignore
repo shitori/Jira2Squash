@@ -132,3 +132,4 @@ package-lock.json
 # local
 upload/
 app.exe
+backup/
