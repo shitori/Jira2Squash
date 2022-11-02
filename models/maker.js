@@ -118,14 +118,14 @@ function fromAPI(req) {
         let client = new WebSocket.Client('ws://localhost:3002/');
 
         client.on('open', function (message) {
-            let starter = {                
+            let starter = {
                 message: "Start of the transfer from Jira to Squash.",
                 percent: 1
             }
             client.send(JSON.stringify(starter)) // !First Send
             jira.getIssues(req.body.inputJiraRequest)
                 .then(dataAPI => {
-                    let endJira = {                        
+                    let endJira = {
                         message: "Get all Jira ticket's.",
                         percent: 30
                     }
@@ -210,24 +210,34 @@ function test() {
         .catch(err => console.error(err))
 }
 
-function backup() {
-
+function backup(req) {
+    // TODO jira OK --> SQUASH call API TODO
     return new Promise(resolve => {
-        var proxyJira = new Proxy("C10426B5125481226BDD5219700B6D43")
-        var proxySquash = new Proxy("F696939B49AD3630BE446FD46A871705")
+        var proxyJira = new Proxy(req.body.tokenSessionJira)
+        var proxySquash = new Proxy(req.body.tokenSessionSquash)
         var jira = new Jira(proxyJira.getProxy())
         var squash = new Squash(proxySquash.getProxy())
-        var max = 36323
-        for (let index = 10000; index < 15000; index++) {
-            jira.getIssues("project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = " + index + " ORDER BY priority DESC, updated DESC")
-                .then(res => {
-                    console.info(index)
+        var idSprint = require("./../backup/idSprints.json")
+        let promises = []
+        Object.entries(idSprint).forEach(el => {
+            //console.log(el);
+            let key = el[0]
+            let value = el[1]
+            if (value != "") {
+                promises.push(jira.getIssues("project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = " + value + " ORDER BY priority DESC, updated DESC"))
 
-                }).catch(err => {
-                    //console.info(index + ";" + "KO")
+            }
+        })
+        Promise.all(promises)
+            .then(results => {
+                let concatResult = []
+                results.forEach(result => {
+                    concatResult = concatResult.concat(result)
                 })
-        }
-        resolve("OK")
+                console.log("Tickets Jira trouvés :" + concatResult.length);
+                resolve(concatResult)
+            }).catch(err => resolve(err))
+
     })
 
 }

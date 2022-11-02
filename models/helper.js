@@ -77,4 +77,37 @@ function convertJiraType(jiraType) {
     }
 }
 
-module.exports = { checkInput, saveSourceFile, saveSourceFileBis, removeTmpFile, convertJiraType, getRandomInt }
+function wordPower(list) { // incremente +1 par mot
+    let wp = []
+    list.forEach(str => {
+        str.split(' ').forEach(word => {
+            word = removeUselessChar(word)
+            let wordIsPresent = false
+            wp.forEach(el => {
+                if ( el.word == word) {
+                    wordIsPresent = true
+                    el.occurence++
+                }
+            })
+            if (!wordIsPresent) {
+                wp.push({ "word": removeUselessChar(word), "occurence": 1 })
+            }
+        })
+    });
+    return wp
+}
+
+function removeUselessChar(word) {
+    return word.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+
+}
+
+function getOnlyNameFromObject(list) {
+    let names = []
+    list.forEach(el => {
+        names.push(el.name)
+    })
+    return names
+}
+
+module.exports = { checkInput, saveSourceFile, saveSourceFileBis, removeTmpFile, convertJiraType, getRandomInt, wordPower, getOnlyNameFromObject, removeUselessChar }

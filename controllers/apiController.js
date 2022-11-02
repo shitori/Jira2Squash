@@ -1,4 +1,5 @@
 var maker = require('../models/maker')
+var helper = require('../models/helper')
 var Squash = require('../models/v2/apiSquash')
 var Proxy = require('../models/v2/proxy')
 const fs = require('fs').promises;
@@ -41,7 +42,7 @@ module.exports = {
     },
 
     backup: (req, res) => {
-        maker.backup().then(result => res.json({ "data": result }))
+        maker.backup(req).then(result => res.json({ "data": result }))
     },
 
     getAllTestsFromSquash: (req, res) => {
@@ -57,7 +58,9 @@ module.exports = {
         if (req.query.useBackUp == "true") {
             let allTests = require('./../backup/allTests.json');
             let allExigs = require('./../backup/allExigs.json');
-            res.json({ "allTests": allTests, "allExigs": allExigs })
+            let wpTests = helper.wordPower(helper.getOnlyNameFromObject(allTests));
+            let wpExigs = helper.wordPower(helper.getOnlyNameFromObject(allExigs))
+            res.json({ /*allTests, allExigs,*/ wpTests, wpExigs })
         } else {
             let promises = [squash.getAllTests(), squash.getAllExigences()]
             Promise.all(promises)
@@ -69,6 +72,5 @@ module.exports = {
                     res.json({ "allTests": allTests, "allExigs": allExigs })
                 }).catch(err => res.json({ "err": err }))
         }
-
     }
 }
