@@ -1,0 +1,230 @@
+[
+    {
+        "name": "Test Sel cancel reconnection",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel conference call",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel conference call 2",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel double message",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel double mod status",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel transfert call",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel bad num agent",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel close shaded num",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel mobile number",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel num agent save if bad new",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel num anonymous",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel number agent save",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel obligated num",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel validate number",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel agent tabs",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel agent tabs 2",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel chat empty",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel directory research",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel display banner",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel filters",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel help request",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel lists agents",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel lists agents 2",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel lists agents sup",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel lists agents sup 2",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel sup tabs",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel callback accent",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel callback allowed",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel callback disabled",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel callback html",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel callback send",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel callback without appellant",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel callback without message",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel callback without queue",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel callback without subject",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel voice allowed",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel dashboard fa details",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel dashboard fa research",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel dashboard fa sup filters",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel dashboard filters",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel stats fa",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel listing shortlist EN",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel listing shortlist FR",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel loop language",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel conference call external",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel external num",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel no pause",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel outgoing call",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel send sms",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel sms bad number",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel sms len message",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel sms no message",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel template sms",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel template sms link",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel template sms mod",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel check tab wallboard",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel open wallboard",
+        "status": "OK"
+    }
+]

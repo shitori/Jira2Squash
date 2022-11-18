@@ -217,7 +217,7 @@ function backup(req) {
         var proxySquash = new Proxy(req.body.tokenSessionSquash)
         var jira = new Jira(proxyJira.getProxy())
         var squash = new Squash(proxySquash.getProxy())
-        var idSprint = require("./../backup/idSprints.json")
+        var idSprint = require("./../bdd/idSprints.json")
         let promises = []
         Object.entries(idSprint).forEach(el => {
             //console.log(el);
@@ -225,7 +225,6 @@ function backup(req) {
             let value = el[1]
             if (value != "") {
                 promises.push(jira.getIssues("project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = " + value + " ORDER BY priority DESC, updated DESC"))
-
             }
         })
         Promise.all(promises)
