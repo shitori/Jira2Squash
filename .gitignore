@@ -126,10 +126,11 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# node 
+# node
 package-lock.json
 
 # local
 upload/
 app.exe
 backup/
+tmp/

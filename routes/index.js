@@ -8,13 +8,15 @@ router.get('/', controller.home);
 
 router.get("/test", controller.test)
 
-router.get("/testSocket",controller.testSocket)
+router.get("/testSocket", controller.testSocket)
 
 router.post('/fromFile', controller.fromFile)
 
 router.post('/fromAPI', controller.fromAPI)
 
 router.post('/file', controller.getFile)
+
+router.post('/rf2squash', controller.rf2squash)
 
 
 

@@ -342,7 +342,7 @@ class apiSquash {
                     let searchObject = responses.find(object => object.name === "FCC Desktop")
                     let responsesWithoutSearchObject = responses.filter(object => object.name !== "FCC Desktop")
                     searchObject.test_suites.forEach(object => {
-                        // get obkjet => object."test_plan" => test case => test case similaire => new test case => new test case in bla 
+                        // get obkjet => object."test_plan" => test case => test case similaire => new test case => new test case in bla
                         console.log(object);
                         responsesWithoutSearchObject.forEach(response => {
                             let data = {
@@ -482,6 +482,21 @@ class apiSquash {
                 }).catch(err => reject(err))
 
         })
+    }
+
+    updateTestExcution(idTest) {
+        return new Promise((resolve, reject) => {
+            let data = {
+                "_type": "iteration-test-plan-item",
+                "id": idTest,
+                "execution_status": "READY",
+            }
+            console.log("idTest : " + idTest);
+            this.modify("iteration-test-plan-items", idTest, data)
+                .then(res => resolve(res))
+                .catch(err => reject(err))
+        })
+
     }
 
     _testCreateTestSuite() {

@@ -1,7 +1,36 @@
-var fs = require('fs')
+var fs = require('fs');
+
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
+}
+
+function saveJsonTmpFile(fileName, jsonString) {
+    return new Promise((resolve, reject) => {
+        let tmpName = "tmp/" + fileName + ".json"
+        fs.writeFile(tmpName, jsonString, (err) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(tmpName)
+            }
+
+        })
+    })
+}
+
+function saveTmpFile(file) {
+    return new Promise((resolve, reject) => {
+        let tmpName = "tmp/rfResult.xml"
+        fs.writeFile(tmpName, file.data, (err) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(tmpName)
+            }
+
+        })
+    })
 }
 
 function saveSourceFile(files) {
@@ -84,7 +113,7 @@ function wordPower(list) { // incremente +1 par mot
             word = removeUselessChar(word)
             let wordIsPresent = false
             wp.forEach(el => {
-                if ( el.word == word) {
+                if (el.word == word) {
                     wordIsPresent = true
                     el.occurence++
                 }
@@ -110,4 +139,4 @@ function getOnlyNameFromObject(list) {
     return names
 }
 
-module.exports = { checkInput, saveSourceFile, saveSourceFileBis, removeTmpFile, convertJiraType, getRandomInt, wordPower, getOnlyNameFromObject, removeUselessChar }
+module.exports = { checkInput, saveSourceFile, saveSourceFileBis, removeTmpFile, convertJiraType, getRandomInt, wordPower, getOnlyNameFromObject, removeUselessChar, saveTmpFile, saveJsonTmpFile }

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start-dev": "nodemon ./bin/www",
+    "start-dev": "nodemon ./bin/www ",
     "start": "node ./bin/www",
     "test": "jest"
   },
@@ -12,6 +12,10 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ]
+  },
+  "nodemonConfig": {
+    "watch": "*.*",
+    "ext": "js,mjs"
   },
   "dependencies": {
     "body-parser": "^1.20.0",

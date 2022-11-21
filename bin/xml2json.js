@@ -4,4 +4,4 @@ const sourceFilePath = "./../backup/test.xml"
 const cibleMappingFilePath = "./../backup/mappingSetUp.json"
 const cibleStatusTestsFilePath = "./../bdd/statusTests.json"
 
-xml2js.setUpToSquashFromXmlFile(sourceFilePath, cibleMappingFilePath, cibleStatusTestsFilePath)
+xml2js.setUpToSquashFromXmlFileWithOption(sourceFilePath, cibleMappingFilePath, cibleStatusTestsFilePath)

@@ -1,12 +1,15 @@
 const url = require('url')
 var maker = require('../models/maker')
 var helper = require('../models/helper')
+var xml2js = require('./../models/rf2squash/maker')
 
 const dotenv = require('dotenv');
 dotenv.config();
 
 const jiraHome = process.env.JIRA_HOME_URL
 const squashHome = process.env.SQUASH_HOME_URL
+
+
 
 module.exports = {
     home: (req, res) => {
@@ -51,6 +54,29 @@ module.exports = {
 
     game: (req, res) => {
         res.render("gameOfLife", {})
+    },
+
+    rf2squash: (req, res) => {
+        console.log(req.body)
+        console.log(req.files)
+
+        helper.saveTmpFile(req.files.formFile)
+            .then(tmpName => {
+
+                return xml2js.setUpToSquashFromXmlFile(tmpName)
+            }).then(info => {
+                console.log(info);
+
+                maker.setSquashCampagneFromJsonResult(req)
+                    .then(result => console.log(result)).catch(err => console.log(err))
+
+                res.download('./bdd/statusTests.json')
+                //TODO squash get good folder
+
+            }).catch(err => {
+                console.log(err)
+                res.redirect('/')
+            })
     }
 
 }

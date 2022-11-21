@@ -310,7 +310,7 @@ function setSquashCampagneFromJsonResult(req) {
 
                 helper.saveJsonTmpFile("shortResultJson", JSON.stringify(shortRes, null, 4))
                 helper.saveJsonTmpFile("resultJson", JSON.stringify(res, null, 4))
-                squash.updateTestE xcution(719474).then(res => console.log(res)).catch(err => console.log(err))
+                squash.updateTestExcution(719474).then(res => console.log(res)).catch(err => console.log(err))
                 resolve(shortRes)
             })
             .catch(err => reject(err))
