@@ -258,9 +258,67 @@ function testSocket() {
 
         client = null;
     });
+}
+
+function setSquashCampagneFromJsonResult(req) {
+    console.log(req);
+    return new Promise((resolve, reject) => {
+        var squash = new Squash(new Proxy(req.body.inputSessionTokenSquash).getProxy())
+        squash.getContents("campaign-folders", 9466) //? https://test-management.orangeapplicationsforbusiness.com/squash/campaign-workspace/campaign-folder/9466/content
+            .then(res => {
+                let findFolder = req.body.inputSprint == '' ? 'Sprint Robot FrameWork' : "Sprint " + req.inputSprint
+                let folder = res._embedded.content.find(cf => cf.name === findFolder)
+                return squash.getContents("campaign-folders", folder.id)
+
+
+            }).then(res => {
+                let folder = res._embedded.content.find(cf => cf.name === "PLTF V7")
+                return squash.getObject("campaigns", folder.id)
+            }).then(res => {
+                let hardP0 = res.iterations.find(iteration => iteration.name === "FCC Web Hardphone - P0")
+                let hardP1 = res.iterations.find(iteration => iteration.name === "FCC Web Hardphone - P1")
+                let soft = res.iterations.find(iteration => iteration.name === "FCC Web Softphone")
+                let promises = [squash.getObject("iterations", hardP0.id), squash.getObject("iterations", hardP1.id), squash.getObject("iterations", soft.id)]
+                return Promise.all(promises)
+
+            }).then(responses => {
+                let res = []
+                responses.forEach(response => {
+                    //console.log(response.test_suites);
+                    res = res.concat(response.test_suites)
+                })
+                let promises = []
+                res.forEach(tests => {
+                    promises.push(squash.getObject("test-suites", tests.id))
+                })
+                return Promise.all(promises)
+            }).then(responses => {
+                let res = []
+                responses.forEach(response => {
+                    //console.log(response.test_suites);
+                    res = res.concat(response.test_plan)
+                })
+                let shortRes = []
+                res.forEach(el => {
+                    shortRes.push({
+                        "id": el.id, "status": el.execution_status,
+                        "type": el._type,
+                        "refTestName": el.referenced_test_case.name,
+                        "refTestId": el.referenced_test_case.id
+                    })
+                })
+
+                helper.saveJsonTmpFile("shortResultJson", JSON.stringify(shortRes, null, 4))
+                helper.saveJsonTmpFile("resultJson", JSON.stringify(res, null, 4))
+                squash.updateTestE xcution(719474).then(res => console.log(res)).catch(err => console.log(err))
+                resolve(shortRes)
+            })
+            .catch(err => reject(err))
+    })
+
 
 }
 
 
 
-module.exports = { writeOnSquash, writeOnSquashAPI, fromFile, fromAPI, test, testSocket, backup }
+module.exports = { writeOnSquash, writeOnSquashAPI, fromFile, fromAPI, test, testSocket, backup, setSquashCampagneFromJsonResult }
