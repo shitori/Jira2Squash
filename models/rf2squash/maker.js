@@ -4,6 +4,8 @@ const fsp = require('fs').promises;
 const cibleMappingFilePath = "./backup/mappingSetUp.json"
 const cibleStatusTestsFilePath = "./bdd/statusTests.json"
 
+
+
 function setUpToSquashFromXmlFile(sourceFilePath) {
     return setUpToSquashFromXmlFileWithOption(sourceFilePath, cibleMappingFilePath, cibleStatusTestsFilePath)
 }

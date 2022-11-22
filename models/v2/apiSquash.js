@@ -96,13 +96,35 @@ class apiSquash {
 
     modify(objectName, data) {
         return new Promise((resolve, reject) => {
-            axios.post(baseURL + objectName + "/" + data.id, data, this.proxy)
+            axios.patch(baseURL + objectName + "/" + data.id, data, this.proxy)
                 .then(res => {
                     resolve(res.data)
                 }).catch(error => {
                     reject(error)
                 });
         })
+    }
+
+    changeStatus(idTest, status) {
+        //TODO create excution -> get id excution -> modify status excution
+        return new Promise((resolve, reject) => {
+            axios.post(baseURL + "iteration-test-plan-items/" + idTest + "/executions", {}, this.proxy)
+                .then(res => {
+                    let idExecution = res.data.id
+                    //console.log(res.data);
+                    let dataPatch = {
+                        "_type": "execution",
+                        "execution_status": status
+                    }
+                    return axios.patch(baseURL + "executions/" + idExecution + "?fields=execution_status", dataPatch, this.proxy)
+                }).then(res => {
+                    //console.log(res.data);
+                    resolve('Test ' + idTest + " mise à jour")
+                }).catch(error => {
+                    reject(error)
+                });
+        })
+
     }
 
     createRequirement(idFolderParent, record) {
@@ -484,6 +506,8 @@ class apiSquash {
         })
     }
 
+
+
     updateTestExcution(idTest) {
         return new Promise((resolve, reject) => {
             let data = {
@@ -492,7 +516,7 @@ class apiSquash {
                 "execution_status": "READY",
             }
             console.log("idTest : " + idTest);
-            this.modify("iteration-test-plan-items", idTest, data)
+            this.modify("iteration-test-plan-items", data)
                 .then(res => resolve(res))
                 .catch(err => reject(err))
         })

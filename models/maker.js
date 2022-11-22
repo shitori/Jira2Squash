@@ -4,6 +4,7 @@ const ws = wb.addWorksheet('REQUIREMENT');
 const excelToJson = require('convert-excel-to-json');
 var WebSocket = require('faye-websocket');
 
+var xml2js = require('./rf2squash/maker')
 
 var helper = require('../models/helper')
 
@@ -261,16 +262,15 @@ function testSocket() {
 }
 
 function setSquashCampagneFromJsonResult(req) {
-    console.log(req);
+    //console.log(req);
     return new Promise((resolve, reject) => {
         var squash = new Squash(new Proxy(req.body.inputSessionTokenSquash).getProxy())
         squash.getContents("campaign-folders", 9466) //? https://test-management.orangeapplicationsforbusiness.com/squash/campaign-workspace/campaign-folder/9466/content
             .then(res => {
                 let findFolder = req.body.inputSprint == '' ? 'Sprint Robot FrameWork' : "Sprint " + req.inputSprint
                 let folder = res._embedded.content.find(cf => cf.name === findFolder)
+                console.log("Sprint folder finded");
                 return squash.getContents("campaign-folders", folder.id)
-
-
             }).then(res => {
                 let folder = res._embedded.content.find(cf => cf.name === "PLTF V7")
                 return squash.getObject("campaigns", folder.id)
@@ -279,8 +279,8 @@ function setSquashCampagneFromJsonResult(req) {
                 let hardP1 = res.iterations.find(iteration => iteration.name === "FCC Web Hardphone - P1")
                 let soft = res.iterations.find(iteration => iteration.name === "FCC Web Softphone")
                 let promises = [squash.getObject("iterations", hardP0.id), squash.getObject("iterations", hardP1.id), squash.getObject("iterations", soft.id)]
+                console.log("3 Tests folders finded")
                 return Promise.all(promises)
-
             }).then(responses => {
                 let res = []
                 responses.forEach(response => {
@@ -291,11 +291,11 @@ function setSquashCampagneFromJsonResult(req) {
                 res.forEach(tests => {
                     promises.push(squash.getObject("test-suites", tests.id))
                 })
+                console.log("Tests suites concated")
                 return Promise.all(promises)
             }).then(responses => {
                 let res = []
                 responses.forEach(response => {
-                    //console.log(response.test_suites);
                     res = res.concat(response.test_plan)
                 })
                 let shortRes = []
@@ -310,10 +310,35 @@ function setSquashCampagneFromJsonResult(req) {
 
                 helper.saveJsonTmpFile("shortResultJson", JSON.stringify(shortRes, null, 4))
                 helper.saveJsonTmpFile("resultJson", JSON.stringify(res, null, 4))
-                squash.updateTestExcution(719474).then(res => console.log(res)).catch(err => console.log(err))
-                resolve(shortRes)
-            })
-            .catch(err => reject(err))
+
+
+                let resultRobotFrameWork = require('./../bdd/statusTests.json')
+                let mapping = require('./../bdd/mapping.json')
+
+                let changeStatusList = []
+
+                shortRes.forEach(el => {
+                    Object.entries(mapping).forEach(kv => {
+                        let key = kv[0]
+                        let value = kv[1]
+                        if (value.includes(el.refTestId)) {
+                            let findedResultRobotFrameWork = resultRobotFrameWork.find(rrb => rrb.name === key)
+                            //console.log(findedResultRobotFrameWork)
+                            if (findedResultRobotFrameWork !== undefined && findedResultRobotFrameWork.status == "OK") {
+                                console.log(el.id + " added");
+                                changeStatusList.push(squash.changeStatus(el.id, "SUCCESS"))
+                            }
+                        }
+                    })
+
+                })
+                console.log(changeStatusList.length + " will be changed ! ");
+                return Promise.all(changeStatusList)
+            }).then(responses => {
+                //responses.forEach(response => console.log({}))
+                console.log("Mise à jour terminé");
+                resolve(responses)
+            }).catch(err => reject(err))
     })
 
 

@@ -68,14 +68,14 @@ module.exports = {
                 console.log(info);
 
                 maker.setSquashCampagneFromJsonResult(req)
-                    .then(result => console.log(result)).catch(err => console.log(err))
+                    .then(result => res.json(result))
 
-                res.download('./bdd/statusTests.json')
-                //TODO squash get good folder
+                //res.download('./bdd/statusTests.json')
+
 
             }).catch(err => {
-                console.log(err)
-                res.redirect('/')
+                console.log("Fail rf2squash")
+                res.json({ "error": err })
             })
     }
 
