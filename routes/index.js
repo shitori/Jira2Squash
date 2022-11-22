@@ -18,6 +18,8 @@ router.post('/file', controller.getFile)
 
 router.post('/rf2squash', controller.rf2squash)
 
+router.post('/rf2squashnofile', controller.rf2squashnofile)
+
 
 
 module.exports = router;

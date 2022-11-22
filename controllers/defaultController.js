@@ -2,6 +2,7 @@ const url = require('url')
 var maker = require('../models/maker')
 var helper = require('../models/helper')
 var xml2js = require('./../models/rf2squash/maker')
+var Jenkins = require('./../models/jenkins')
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -77,6 +78,23 @@ module.exports = {
                 console.log("Fail rf2squash")
                 res.json({ "error": err })
             })
-    }
+    },
 
+    rf2squashnofile: (req, res) => {
+        let jenkins = new Jenkins()
+        jenkins.getOutputResultRobotFrameWork()
+            .then(file => {
+                console.log(file)
+                return helper.saveTmpFile(file)
+            }).then(tmpName => {
+                return xml2js.setUpToSquashFromXmlFile(tmpName)
+            }).then(info => {
+                console.log(info);
+                return maker.setSquashCampagneFromJsonResult(req)
+            }).then(result => {
+                res.json(result)
+            }).catch(err => {
+                res.json({ "error": err })
+            })
+    }
 }
