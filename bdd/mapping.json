@@ -20,10 +20,14 @@
     "Test Sel display banner": [],
     "Test Sel filters": [],
     "Test Sel help request": [],
+    "Test Sel indicator my activites": [],
+    "Test Sel indicator my activites sup": [],
     "Test Sel lists agents": [],
     "Test Sel lists agents 2": [],
     "Test Sel lists agents sup": [280647],
     "Test Sel lists agents sup 2": [280646],
+    "Test Sel no site": [],
+    "Test Sel queue progress" : [271634,271635,268958],
     "Test Sel sup tabs": [],
     "Test Sel callback accent": [323645],
     "Test Sel callback allowed": [268756],
@@ -39,6 +43,8 @@
     "Test Sel dashboard fa research": [271644],
     "Test Sel dashboard fa sup filters": [27165],
     "Test Sel dashboard filters": [],
+    "Test Sel legends calls dial" : [271649],
+    "Test Sel legends FA dial" : [272297],
     "Test Sel stats fa": [],
     "Test Sel listing shortlist EN": [],
     "Test Sel listing shortlist FR": [],
@@ -56,8 +62,5 @@
     "Test Sel template sms mod": [],
     "Test Sel check tab wallboard": [],
     "Test Sel open wallboard": [],
-    "Test Sel legends calls dial" : [271649],
-    "Test Sel legends FA dial" : [272297],
-    "Test Sel queue progress" : [271634,271635,268958],
-    "other" : []
+    "Other" : []
 }

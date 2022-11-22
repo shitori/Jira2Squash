@@ -13,7 +13,7 @@
     },
     {
         "name": "Test Sel double message",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel double mod status",
@@ -25,7 +25,7 @@
     },
     {
         "name": "Test Sel bad num agent",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel close shaded num",
@@ -84,6 +84,14 @@
         "status": "OK"
     },
     {
+        "name": "Test Sel indicator my activites",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel indicator my activites sup",
+        "status": "OK"
+    },
+    {
         "name": "Test Sel lists agents",
         "status": "OK"
     },
@@ -97,6 +105,14 @@
     },
     {
         "name": "Test Sel lists agents sup 2",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel no site",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel queue progress",
         "status": "OK"
     },
     {
@@ -160,6 +176,14 @@
         "status": "OK"
     },
     {
+        "name": "Test Sel legends calls dial",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel legends FA dial",
+        "status": "OK"
+    },
+    {
         "name": "Test Sel stats fa",
         "status": "OK"
     },
@@ -177,19 +201,19 @@
     },
     {
         "name": "Test Sel conference call external",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel external num",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel no pause",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel outgoing call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel send sms",

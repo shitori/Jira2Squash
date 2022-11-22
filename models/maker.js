@@ -325,14 +325,14 @@ function setSquashCampagneFromJsonResult(req) {
                             let findedResultRobotFrameWork = resultRobotFrameWork.find(rrb => rrb.name === key)
                             //console.log(findedResultRobotFrameWork)
                             if (findedResultRobotFrameWork !== undefined && findedResultRobotFrameWork.status == "OK") {
-                                console.log(el.id + " added");
+                                console.log(el.refTestName + " ajouté");
                                 changeStatusList.push(squash.changeStatus(el.id, "SUCCESS"))
                             }
                         }
                     })
 
                 })
-                console.log(changeStatusList.length + " will be changed ! ");
+                console.log(changeStatusList.length + " tests will be changed ! ");
                 return Promise.all(changeStatusList)
             }).then(responses => {
                 //responses.forEach(response => console.log({}))
