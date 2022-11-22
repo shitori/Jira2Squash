@@ -2,7 +2,7 @@ var dotenv = require('dotenv');
 dotenv.config();
 
 class Proxy {
-  
+
   constructor(id) {
     this.infoCO = {
       proxy: {

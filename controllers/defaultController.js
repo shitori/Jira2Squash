@@ -84,7 +84,6 @@ module.exports = {
         let jenkins = new Jenkins()
         jenkins.getOutputResultRobotFrameWork()
             .then(file => {
-                console.log(file)
                 return helper.saveTmpFile(file)
             }).then(tmpName => {
                 return xml2js.setUpToSquashFromXmlFile(tmpName)
@@ -92,7 +91,18 @@ module.exports = {
                 console.log(info);
                 return maker.setSquashCampagneFromJsonResult(req)
             }).then(result => {
-                res.json(result)
+                let moreInfo = ""
+                result.forEach(element => {
+                    moreInfo += element + "\n"
+                });
+                res.render('success',
+                    {
+                        "message": "Squash mise à jour",
+                        "from": undefined,
+                        "fileName": undefined,
+                        "moreInfo": moreInfo,
+
+                    })
             }).catch(err => {
                 res.json({ "error": err })
             })
