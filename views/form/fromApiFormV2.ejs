@@ -1,0 +1,95 @@
+<script>
+  function showLoading() {
+    var form = document.getElementById("formFormApi");
+    form.style.display = "none"
+    var loading = document.getElementById("loading");
+    loading.style.display = "block"
+  }
+
+  function hideLoading() {
+    var form = document.getElementById("formFormApi");
+    form.style.display = "block"
+    var loading = document.getElementById("loading");
+    loading.style.display = "none"
+    window.stop();
+  }
+
+  function updateSprintFolderName(value) {
+    console.log(value);
+    document.getElementById("inputSprintBis").value = value
+  }
+
+  console.log('hello world')
+  var webSocket = new WebSocket('ws://localhost:3002/', 'test-protocol')
+  webSocket.onmessage = event => {
+    console.log(event);
+    if (event.data instanceof Blob) {
+      event.data.text().then(txt => {
+        console.log(txt)
+        let data = JSON.parse(txt)
+        let message = data.message
+        let percent = data.percent
+
+        let h3 = document.getElementById('ws_return')
+        let progressBar = document.getElementById('progress_bar')
+
+        h3.textContent = message
+        progressBar.setAttribute("style", "width: " + percent + "%")
+      })
+    } else {
+      console.log("Result: " + event.data);
+    }
+  }
+
+</script>
+<div id="loading" class="mt-5 text-center" style="display: none;">
+  <h2>Chargement en cours ...</h2>
+  <h3 id="ws_return"></h3>
+  <%- include('../loader.ejs'); %>
+    <div class="progress">
+      <div id="progress_bar" class="progress-bar progress-bar-striped progress-bar-animated bg-warning"
+        role="progressbar" style="width: 0%"></div>
+    </div>
+    <div class="text-center m-2">
+      <button type="button" onclick="hideLoading()" class="btn btn-outline-danger btn-lg" name="validator"
+        value="api">Annuler</button>
+    </div>
+</div>
+<form action="/fromAPI" id="formFormApi" method="post" enctype="multipart/form-data">
+  <div class="mb-3">
+    <div class="row">
+      <div class="col-6">
+        <label for="inputSprintJira" class="form-label">Numéro de Sprint dans Jira</label>
+        <input type="input" class="form-control" id="inputSprintJira" name="inputSprintJira"
+          aria-describedby="sprintHelp" onchange="updateSprintFolderName(this.value)">
+        <div id="sprintHelp" class="form-text">Le numéro du sprint doit bien être présent dans Jira</div>
+      </div>
+      <div class="col-6">
+        <label for="inputSprint" class="form-label">Nom du dossier dans Squash</label>
+        <input type="input" class="form-control" id="inputSprintBis" name="inputSprint" aria-describedby="sprintHelp">
+        <div id="sprintHelp" class="form-text">Valeur par défaut : undefined</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="mb-3">
+    <div class="row">
+      <div class="col-6">
+        <label for="inputSessionTokenJira" class="form-label">ID de session Jira</label>
+        <input type="input" class="form-control" id="inputSessionTokenJira" name="inputSessionTokenJira"
+          aria-describedby="sessionHelp" required>
+        <div id="sessionHelp" class="form-text">Se connecter à Jira et récupérer le cookie JSESSIONID</div>
+      </div>
+      <div class="col-6">
+        <label for="inputSessionTokenSquash" class="form-label">ID de session Squash</label>
+        <input type="input" class="form-control" id="inputSessionTokenSquash" name="inputSessionTokenSquash"
+          aria-describedby="sessionHelp" required>
+        <div id="sessionHelp" class="form-text">Se connecter à Squash et récupérer le cookie JSESSIONID</div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center">
+    <button type="submit" onclick="showLoading()" class="btn btn-outline-success btn-lg" name="validator"
+      value="api">Transférer</button>
+  </div>
+</form>

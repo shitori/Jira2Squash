@@ -132,15 +132,18 @@ function fromFile(req) {
 }
 
 function fromAPI(req) {
-    return new Promise((resolve) => {
+    return new Promise( (resolve) => {
         var sourceName = req.body.inputSquash
-        req.body = helper.checkInput(req.body)
         var jira = new Jira(
             new Proxy(req.body.inputSessionTokenJira).getProxy()
         )
         var squash = new Squash(
             new Proxy(req.body.inputSessionTokenSquash).getProxy()
         )
+        if (req.body.inputSprintJira !== undefined && req.body.inputSprintJira !== '') {
+            req.body.inputJiraSprintRequest =  jira.getSprintID(req.body.inputSprintJira)
+        }
+        req.body = helper.checkInput(req.body)
         let client = new WebSocket.Client('ws://localhost:3002/')
 
         client.on('open', () => {
