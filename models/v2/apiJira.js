@@ -10,15 +10,15 @@ class apiJira {
         this.proxy = proxy
     }
 
-    async getSprintID(sprintName){
-        let res = await axios.get(urlSuggestion+sprintName)
-        return res.data.suggestions[0].id
-        /*return new Promise((resolve, reject) => {
-            axios.get(urlSuggestion+sprintName)
-            .then(res => {
-                resolve(res.data.suggestions[0].id)
-            }).catch(err => reject(err))
-        })*/
+    getSprintID(sprintName) {
+        return new Promise((resolve, reject) => {
+            axios.get(urlSuggestion + sprintName, this.proxy)
+                .then(res => {
+                    resolve(res.data.suggestions[0].id)
+                }).catch(err => {
+                    reject(err)
+                })
+        })
     }
 
     getIssues(jql) {
@@ -26,9 +26,9 @@ class apiJira {
             axios
                 .get(
                     baseUrl +
-                        'search?jql=' +
-                        encodeURI(jql) +
-                        '&maxResults=10000',
+                    'search?jql=' +
+                    encodeURI(jql) +
+                    '&maxResults=10000',
                     this.proxy
                 )
                 .then((res) => {

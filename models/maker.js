@@ -141,105 +141,116 @@ function fromAPI(req) {
             new Proxy(req.body.inputSessionTokenSquash).getProxy()
         )
         if (req.body.inputSprintJira !== undefined && req.body.inputSprintJira !== '') {
-            req.body.inputJiraSprintRequest =  jira.getSprintID(req.body.inputSprintJira)
-        }
-        req.body = helper.checkInput(req.body)
-        let client = new WebSocket.Client('ws://localhost:3002/')
 
-        client.on('open', () => {
-            let starter = {
-                message: 'Start of the transfer from Jira to Squash.',
-                percent: 1,
-            }
-            client.send(JSON.stringify(starter)) // !First Send
-            jira.getIssues(req.body.inputJiraRequest)
-                .then((dataAPI) => {
-                    let endJira = {
-                        message: "Get all Jira ticket's.",
-                        percent: 30,
-                    }
-                    client.send(JSON.stringify(endJira)) // !Second Send
-                    switch (req.body.validator) {
-                        case 'file':
-                            return writeOnSquashAPI(
+             jira.getSprintID(req.body.inputSprintJira).then(res => {
+                req.body.inputJiraSprintRequest = res
+                excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
+             }).catch(err => {throw err})
+
+        }else {
+            excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
+        }
+
+    })
+}
+
+function excuteProcessFromAPI(req, jira, squash, sourceName, resolve) {
+    req.body = helper.checkInput(req.body)
+
+    let client = new WebSocket.Client('ws://localhost:3002/')
+
+    client.on('open', () => {
+        let starter = {
+            message: 'Start of the transfer from Jira to Squash.',
+            percent: 1,
+        }
+        client.send(JSON.stringify(starter)) // !First Send
+        jira.getIssues(req.body.inputJiraRequest)
+            .then((dataAPI) => {
+                let endJira = {
+                    message: "Get all Jira ticket's.",
+                    percent: 30,
+                }
+                client.send(JSON.stringify(endJira)) // !Second Send
+                switch (req.body.validator) {
+                    case 'file':
+                        return writeOnSquashAPI(
+                            req.body.inputSprint,
+                            req.body.inputSquash,
+                            dataAPI
+                        )
+                    case 'api':
+                        return squash.importInSquashWithAPI(
+                            dataAPI,
+                            req.body.inputSprint
+                        )
+                    default:
+                        return {
+                            fileResult: writeOnSquashAPI(
                                 req.body.inputSprint,
                                 req.body.inputSquash,
                                 dataAPI
-                            )
-                        case 'api':
-                            return squash.importInSquashWithAPI(
+                            ),
+                            apiResult: squash.importInSquashWithAPI(
                                 dataAPI,
                                 req.body.inputSprint
-                            )
-                        default:
-                            return {
-                                fileResult: writeOnSquashAPI(
-                                    req.body.inputSprint,
-                                    req.body.inputSquash,
-                                    dataAPI
-                                ),
-                                apiResult: squash.importInSquashWithAPI(
-                                    dataAPI,
-                                    req.body.inputSprint
-                                ),
-                            }
-                    }
+                            ),
+                        }
+                }
+            })
+            .then((finalResult) => {
+                var query = {}
+                switch (req.body.validator) {
+                    case 'file':
+                        query = {
+                            from: req.body.validator,
+                            fileName: sourceName,
+                            message: 'OK : ' + finalResult,
+                            moreInfo: undefined,
+                        }
+                        break
+                    case 'api':
+                        query = {
+                            from: req.body.validator,
+                            fileName: undefined,
+                            message: 'OK : ' + finalResult.message,
+                            moreInfo: finalResult.moreInfo,
+                        }
+                        break
+                    default:
+                        query = {
+                            from: 'other',
+                            fileName: sourceName,
+                            message: 'OK : ' +
+                                finalResult.apiResult.message +
+                                ' / ' +
+                                finalResult.fileResult,
+                            moreInfo: finalResult.apiResult.moreInfo,
+                        }
+                        break
+                }
+                client.close()
+                resolve(query)
+            })
+            .catch((err) => {
+                client.close()
+                resolve({
+                    from: req.body.validator,
+                    fileName: undefined,
+                    message: 'KO : le transfert a échoué.',
+                    moreInfo: err,
                 })
-                .then((finalResult) => {
-                    var query = {}
-                    switch (req.body.validator) {
-                        case 'file':
-                            query = {
-                                from: req.body.validator,
-                                fileName: sourceName,
-                                message: 'OK : ' + finalResult,
-                                moreInfo: undefined,
-                            }
-                            break
-                        case 'api':
-                            query = {
-                                from: req.body.validator,
-                                fileName: undefined,
-                                message: 'OK : ' + finalResult.message,
-                                moreInfo: finalResult.moreInfo,
-                            }
-                            break
-                        default:
-                            query = {
-                                from: 'other',
-                                fileName: sourceName,
-                                message:
-                                    'OK : ' +
-                                    finalResult.apiResult.message +
-                                    ' / ' +
-                                    finalResult.fileResult,
-                                moreInfo: finalResult.apiResult.moreInfo,
-                            }
-                            break
-                    }
-                    client.close()
-                    resolve(query)
-                })
-                .catch((err) => {
-                    client.close()
-                    resolve({
-                        from: req.body.validator,
-                        fileName: undefined,
-                        message: 'KO : le transfert a échoué.',
-                        moreInfo: err,
-                    })
-                })
-        })
+            })
+    })
 
-        client.on('message', function (message) {
-            console.info("Data from WebSocketServer '" + message.data + "'")
-        })
+    client.on('message', function (message) {
+        console.info("Data from WebSocketServer '" + message.data + "'")
+    })
 
-        client.on('close', function (message) {
-            console.info('Connection closed!', message.code, message.reason)
+    client.on('close', function (message) {
+        console.info('Connection closed!', message.code, message.reason)
 
-            client = null
-        })
+        client = null
     })
 }
 
