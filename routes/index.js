@@ -1,14 +1,14 @@
-var express = require('express');
-var router = express.Router();
+var express = require('express')
+var router = express.Router()
 
-const controller = require("../controllers/defaultController")
+const controller = require('../controllers/defaultController')
 
 /* GET home page. */
-router.get('/', controller.home);
+router.get('/', controller.home)
 
-router.get("/test", controller.test)
+router.get('/test', controller.test)
 
-router.get("/testSocket", controller.testSocket)
+router.get('/testSocket', controller.testSocket)
 
 router.post('/fromFile', controller.fromFile)
 
@@ -20,6 +20,4 @@ router.post('/rf2squash', controller.rf2squash)
 
 router.post('/rf2squashnofile', controller.rf2squashnofile)
 
-
-
-module.exports = router;
+module.exports = router
