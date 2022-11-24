@@ -64,7 +64,7 @@ module.exports = {
 
     rf2squashnofile: (req, res) => {
         maker
-            .setSquashCampagneFromJsonResultV3(req)
+            .setSquashCampagneFromJsonResult(req)
             .then((result) => {
                 let moreInfo = ''
                 result.forEach((element) => {
