@@ -1,7 +1,6 @@
 var maker = require('../models/maker')
 var helper = require('../models/helper')
 var xml2js = require('./../models/rf2squash/maker')
-var Jenkins = require('./../models/jenkins')
 
 const dotenv = require('dotenv')
 dotenv.config()
@@ -64,18 +63,8 @@ module.exports = {
     },
 
     rf2squashnofile: (req, res) => {
-        let jenkins = new Jenkins()
-        jenkins
-            .getOutputResultRobotFrameWork()
-            .then((file) => {
-                return helper.saveTmpFile(file)
-            })
-            .then((tmpName) => {
-                return xml2js.setUpToSquashFromXmlFile(tmpName)
-            })
-            .then(() => {
-                return maker.setSquashCampagneFromJsonResult(req)
-            })
+        maker
+            .setSquashCampagneFromJsonResultV3(req)
             .then((result) => {
                 let moreInfo = ''
                 result.forEach((element) => {

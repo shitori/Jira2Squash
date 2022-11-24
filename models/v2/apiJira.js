@@ -3,7 +3,8 @@ const dotenv = require('dotenv')
 dotenv.config()
 const baseUrl = process.env.JIRA_BASE_URL
 
-const urlSuggestion = "https://jira-build.orangeapplicationsforbusiness.com/rest/greenhopper/1.0/sprint/picker?excludeCompleted=false&query=sprint+"
+const urlSuggestion =
+    'https://jira-build.orangeapplicationsforbusiness.com/rest/greenhopper/1.0/sprint/picker?excludeCompleted=false&query=sprint+'
 
 class apiJira {
     constructor(proxy) {
@@ -12,10 +13,12 @@ class apiJira {
 
     getSprintID(sprintName) {
         return new Promise((resolve, reject) => {
-            axios.get(urlSuggestion + sprintName, this.proxy)
-                .then(res => {
+            axios
+                .get(urlSuggestion + sprintName, this.proxy)
+                .then((res) => {
                     resolve(res.data.suggestions[0].id)
-                }).catch(err => {
+                })
+                .catch((err) => {
                     reject(err)
                 })
         })
@@ -26,9 +29,9 @@ class apiJira {
             axios
                 .get(
                     baseUrl +
-                    'search?jql=' +
-                    encodeURI(jql) +
-                    '&maxResults=10000',
+                        'search?jql=' +
+                        encodeURI(jql) +
+                        '&maxResults=10000',
                     this.proxy
                 )
                 .then((res) => {

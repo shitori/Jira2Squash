@@ -637,6 +637,7 @@ class apiSquash {
     }
 
     updateTestExcution(idTest) {
+        //TODO modifi to test-suite
         return new Promise((resolve, reject) => {
             let data = {
                 _type: 'iteration-test-plan-item',
@@ -666,6 +667,134 @@ class apiSquash {
             this.create('test-suites', data)
                 .then((res) => resolve(res))
                 .catch((err) => reject(err))
+        })
+    }
+
+    setSquashCampagneFromJsonResult(req, resultRobotFrameWork, mapping) {
+        //console.log(req);
+        return new Promise((resolve, reject) => {
+            this.getContents('campaign-folders', 9466) //? https://test-management.orangeapplicationsforbusiness.com/squash/campaign-workspace/campaign-folder/9466/content
+                .then((res) => {
+                    let findFolder =
+                        req.body.inputSprint == ''
+                            ? 'Sprint Robot FrameWork'
+                            : 'Sprint ' + req.inputSprint
+                    let folder = res._embedded.content.find(
+                        (cf) => cf.name === findFolder
+                    )
+                    console.info('Sprint folder finded')
+                    return this.getContents('campaign-folders', folder.id)
+                })
+                .then((res) => {
+                    let folder = res._embedded.content.find(
+                        (cf) => cf.name === 'PLTF V7'
+                    )
+                    return this.getObject('campaigns', folder.id)
+                })
+                .then((res) => {
+                    let hardP0 = res.iterations.find(
+                        (iteration) =>
+                            iteration.name === 'FCC Web Hardphone - P0'
+                    )
+                    let hardP1 = res.iterations.find(
+                        (iteration) =>
+                            iteration.name === 'FCC Web Hardphone - P1'
+                    )
+                    let soft = res.iterations.find(
+                        (iteration) => iteration.name === 'FCC Web Softphone'
+                    )
+                    let promises = [
+                        this.getObject('iterations', hardP0.id),
+                        this.getObject('iterations', hardP1.id),
+                        this.getObject('iterations', soft.id),
+                    ]
+                    console.info('3 Tests folders finded')
+                    return Promise.all(promises)
+                })
+                .then((responses) => {
+                    let res = []
+                    responses.forEach((response) => {
+                        res = res.concat(response.test_suites)
+                    })
+                    let promises = []
+                    res.forEach((tests) => {
+                        promises.push(this.getObject('test-suites', tests.id))
+                    })
+                    console.info('Tests suites concated')
+                    return Promise.all(promises)
+                })
+                .then((responses) => {
+                    let res = []
+                    responses.forEach((response) => {
+                        res = res.concat(response.test_plan)
+                    })
+                    console.info('Tests plan concated')
+                    let shortRes = []
+                    res.forEach((el) => {
+                        shortRes.push({
+                            id: el.id,
+                            status: el.execution_status,
+                            type: el._type,
+                            refTestName: el.referenced_test_case.name,
+                            refTestId: el.referenced_test_case.id,
+                        })
+                    })
+                    console.info('Shortres maked')
+
+                    helper.saveJsonTmpFile(
+                        'shortResultJson',
+                        JSON.stringify(shortRes, null, 4)
+                    )
+                    helper.saveJsonTmpFile(
+                        'resultJson',
+                        JSON.stringify(res, null, 4)
+                    )
+
+                    let changeStatusList = []
+
+                    shortRes.forEach((el) => {
+                        Object.entries(mapping).forEach((kv) => {
+                            let key = kv[0]
+                            let value = kv[1]
+                            if (value.includes(el.refTestId)) {
+                                let findedResultRobotFrameWork =
+                                    resultRobotFrameWork.find(
+                                        (rrb) => rrb.name === key
+                                    )
+                                //console.log(findedResultRobotFrameWork)
+                                if (
+                                    findedResultRobotFrameWork !== undefined &&
+                                    findedResultRobotFrameWork.status == 'OK'
+                                ) {
+                                    console.info(el.refTestName + ' ajouté')
+                                    changeStatusList.push(
+                                        this.changeStatus(el.id, 'SUCCESS')
+                                    )
+                                } else if (
+                                    findedResultRobotFrameWork !== undefined &&
+                                    findedResultRobotFrameWork.status == 'KO'
+                                ) {
+                                    console.info(el.refTestName + ' ajouté')
+                                    changeStatusList.push(
+                                        this.changeStatus(el.id, 'FAILURE')
+                                    )
+                                }
+                            }
+                        })
+                    })
+                    console.info(
+                        changeStatusList.length + ' tests will be changed ! '
+                    )
+                    return Promise.all(changeStatusList)
+                })
+                .then((responses) => {
+                    console.info('Mise à jour terminé')
+                    resolve(responses)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    reject(err)
+                })
         })
     }
 }

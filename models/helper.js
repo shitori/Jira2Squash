@@ -11,6 +11,7 @@ function saveJsonTmpFile(fileName, jsonString) {
             if (err) {
                 reject(err)
             } else {
+                console.info('tmp file ' + tmpName + ' saved')
                 resolve(tmpName)
             }
         })

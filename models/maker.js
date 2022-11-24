@@ -10,9 +10,11 @@ var helper = require('../models/helper')
 const Jira = require('../models/v2/apiJira')
 const Proxy = require('../models/v2/proxy')
 const Squash = require('../models/v2/apiSquash')
+const Jenkins = require('./../models/jenkins')
+
+var xml2js = require('./../models/rf2squash/maker')
 
 const dotenv = require('dotenv')
-
 dotenv.config()
 
 const headingColumnNames = [
@@ -132,7 +134,7 @@ function fromFile(req) {
 }
 
 function fromAPI(req) {
-    return new Promise( (resolve) => {
+    return new Promise((resolve) => {
         var sourceName = req.body.inputSquash
         var jira = new Jira(
             new Proxy(req.body.inputSessionTokenJira).getProxy()
@@ -140,17 +142,21 @@ function fromAPI(req) {
         var squash = new Squash(
             new Proxy(req.body.inputSessionTokenSquash).getProxy()
         )
-        if (req.body.inputSprintJira !== undefined && req.body.inputSprintJira !== '') {
-
-             jira.getSprintID(req.body.inputSprintJira).then(res => {
-                req.body.inputJiraSprintRequest = res
-                excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
-             }).catch(err => {throw err})
-
-        }else {
+        if (
+            req.body.inputSprintJira !== undefined &&
+            req.body.inputSprintJira !== ''
+        ) {
+            jira.getSprintID(req.body.inputSprintJira)
+                .then((res) => {
+                    req.body.inputJiraSprintRequest = res
+                    excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
+                })
+                .catch((err) => {
+                    throw err
+                })
+        } else {
             excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
         }
-
     })
 }
 
@@ -221,7 +227,8 @@ function excuteProcessFromAPI(req, jira, squash, sourceName, resolve) {
                         query = {
                             from: 'other',
                             fileName: sourceName,
-                            message: 'OK : ' +
+                            message:
+                                'OK : ' +
                                 finalResult.apiResult.message +
                                 ' / ' +
                                 finalResult.fileResult,
@@ -450,6 +457,177 @@ function setSquashCampagneFromJsonResult(req) {
     })
 }
 
+function subFun(req, squash) {
+    return new Promise((resolve, reject) => {
+        squash
+            .getContents('campaign-folders', 9466) //? https://test-management.orangeapplicationsforbusiness.com/squash/campaign-workspace/campaign-folder/9466/content
+            .then((res) => {
+                let findFolder =
+                    req.body.inputSprint == ''
+                        ? 'Sprint Robot FrameWork'
+                        : 'Sprint ' + req.inputSprint
+                let folder = res._embedded.content.find(
+                    (cf) => cf.name === findFolder
+                )
+                console.info('Sprint folder finded')
+                return squash.getContents('campaign-folders', folder.id)
+            })
+            .then((res) => {
+                let folder = res._embedded.content.find(
+                    (cf) => cf.name === 'PLTF V7'
+                )
+                return squash.getObject('campaigns', folder.id)
+            })
+            .then((res) => {
+                let hardP0 = res.iterations.find(
+                    (iteration) => iteration.name === 'FCC Web Hardphone - P0'
+                )
+                let hardP1 = res.iterations.find(
+                    (iteration) => iteration.name === 'FCC Web Hardphone - P1'
+                )
+                let soft = res.iterations.find(
+                    (iteration) => iteration.name === 'FCC Web Softphone'
+                )
+                let promises = [
+                    squash.getObject('iterations', hardP0.id),
+                    squash.getObject('iterations', hardP1.id),
+                    squash.getObject('iterations', soft.id),
+                ]
+                console.info('3 Tests folders finded')
+                return Promise.all(promises)
+            })
+            .then((responses) => {
+                let res = []
+                responses.forEach((response) => {
+                    res = res.concat(response.test_suites)
+                })
+                let promises = []
+                res.forEach((tests) => {
+                    promises.push(squash.getObject('test-suites', tests.id))
+                })
+                console.info('Tests suites concated')
+                return Promise.all(promises)
+            })
+            .then((responses) => {
+                let res = []
+                responses.forEach((response) => {
+                    res = res.concat(response.test_plan)
+                })
+                let shortRes = []
+                res.forEach((el) => {
+                    shortRes.push({
+                        id: el.id,
+                        status: el.execution_status,
+                        type: el._type,
+                        refTestName: el.referenced_test_case.name,
+                        refTestId: el.referenced_test_case.id,
+                    })
+                })
+
+                helper.saveJsonTmpFile(
+                    'shortResultJson',
+                    JSON.stringify(shortRes, null, 4)
+                )
+                helper.saveJsonTmpFile(
+                    'resultJson',
+                    JSON.stringify(res, null, 4)
+                )
+
+                resolve(shortRes)
+            })
+            .catch((err) => reject(err))
+    })
+}
+
+function setSquashCampagneFromJsonResultV2(req, resultRobotFrameWork, mapping) {
+    //TODO extract to api Squash
+    //console.log(req);
+    return new Promise((resolve, reject) => {
+        var squash = new Squash(
+            new Proxy(req.body.inputSessionTokenSquash).getProxy()
+        )
+        subFun(req, squash)
+            .then((shortRes) => {
+                let changeStatusList = []
+
+                shortRes.forEach((el) => {
+                    Object.entries(mapping).forEach((kv) => {
+                        let key = kv[0]
+                        let value = kv[1]
+                        if (value.includes(el.refTestId)) {
+                            let findedResultRobotFrameWork =
+                                resultRobotFrameWork.find(
+                                    (rrb) => rrb.name === key
+                                )
+                            //console.log(findedResultRobotFrameWork)
+                            if (
+                                findedResultRobotFrameWork !== undefined &&
+                                findedResultRobotFrameWork.status == 'OK'
+                            ) {
+                                console.info(el.refTestName + ' ajouté')
+                                changeStatusList.push(
+                                    squash.changeStatus(el.id, 'SUCCESS')
+                                )
+                            } else if (
+                                findedResultRobotFrameWork !== undefined &&
+                                findedResultRobotFrameWork.status == 'KO'
+                            ) {
+                                console.info(el.refTestName + ' ajouté')
+                                changeStatusList.push(
+                                    squash.changeStatus(el.id, 'FAILURE')
+                                )
+                            }
+                        }
+                    })
+                })
+                console.info(
+                    changeStatusList.length + ' tests will be changed ! '
+                )
+                return Promise.all(changeStatusList)
+            })
+            .then((responses) => {
+                console.info('Mise à jour terminé')
+                resolve(responses)
+            })
+            .catch((err) => reject(err))
+    })
+}
+
+function setSquashCampagneFromJsonResultV3(req) {
+    //TODO extract to api Squash
+    //console.log(req);
+    return new Promise((resolve, reject) => {
+        let resultRobotFrameWork = require('./../bdd/statusTests.json')
+        let mapping = require('./../bdd/mapping.json')
+        var squash = new Squash(
+            new Proxy(req.body.inputSessionTokenSquash).getProxy()
+        )
+        let jenkins = new Jenkins()
+        jenkins
+            .getOutputResultRobotFrameWork()
+            .then((file) => {
+                return helper.saveTmpFile(file)
+            })
+            .then((tmpName) => {
+                return xml2js.setUpToSquashFromXmlFile(tmpName)
+            })
+            .then(() => {
+                //todo mODI inejet require
+                //return maker.setSquashCampagneFromJsonResult(req)
+
+                return squash.setSquashCampagneFromJsonResult(
+                    req,
+                    resultRobotFrameWork,
+                    mapping
+                )
+            })
+            .then((res) => {
+                resolve(res)
+            })
+            .catch((err) => reject(err))
+    })
+}
+
 module.exports = {
     writeOnSquash,
     writeOnSquashAPI,
@@ -459,4 +637,6 @@ module.exports = {
     testSocket,
     backup,
     setSquashCampagneFromJsonResult,
+    setSquashCampagneFromJsonResultV2,
+    setSquashCampagneFromJsonResultV3,
 }
