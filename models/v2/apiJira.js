@@ -1,10 +1,12 @@
 const axios = require('axios')
+
 const dotenv = require('dotenv')
 dotenv.config()
-const baseUrl = process.env.JIRA_BASE_URL
 
+const baseUrl = process.env.JIRA_BASE_URL
 const urlSuggestion =
-    'https://jira-build.orangeapplicationsforbusiness.com/rest/greenhopper/1.0/sprint/picker?excludeCompleted=false&query=sprint+'
+    process.env.JIRA_SUGGESTION_URL +
+    'sprint/picker?excludeCompleted=false&query=sprint+'
 
 class apiJira {
     constructor(proxy) {
@@ -49,7 +51,6 @@ class apiJira {
                     resolve(compactIssues)
                 })
                 .catch((error) => {
-                    //console.error("fail api jira, check JSession");
                     reject(error)
                 })
         })

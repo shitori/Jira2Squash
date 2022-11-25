@@ -2,8 +2,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 const axios = require('axios')
 
-const URL_OUTPUT =
-    'http://172.27.0.229:8080/jenkins2/view/FCC%20GUI%20-%20Tests%20Robot%20Framework/job/Flexible%20NextGen%20Tests%20automatis%C3%A9s%20RobotFramework%20-%20WINDOWS/ws/Tests_Robot/tests/output.xml'
+const URL_OUTPUT = process.env.JENKINS_OUTPUT_URL
 
 class Jenkins {
     constructor() {

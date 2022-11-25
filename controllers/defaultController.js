@@ -15,7 +15,6 @@ module.exports = {
 
     test: (req, res) => {
         maker.test()
-
         res.redirect('/')
     },
 

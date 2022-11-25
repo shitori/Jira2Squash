@@ -49,7 +49,6 @@ module.exports = {
             .copyCampaingOfSprint(req.body.sprintName)
             .then((result) => res.json({ data: result }))
             .catch((err) => res.json({ err: err }))
-        //squash._testCreateTestSuite().then(result => res.json({ "data": result })).catch(err => res.json({ "err": err }))
     },
 
     backup: (req, res) => {
@@ -64,10 +63,10 @@ module.exports = {
             .getAllTests()
             .then((result) => res.json({ data: result }))
             .catch((err) => res.json({ err: err }))
-        //squash.getAllExigences().then(result => res.json({ "data": result })).catch(err => res.json({ "err": err }))
     },
 
     prepareLinkBetweenTestsExigs: (req, res) => {
+        //TODO a finir
         let squash = new Squash(
             new Proxy(req.query.tokenSessionSquash).getProxy()
         )

@@ -330,8 +330,6 @@ function testSocket() {
 }
 
 function setSquashCampagneFromJsonResult(req) {
-    //TODO extract to api Squash
-    //console.log(req);
     return new Promise((resolve, reject) => {
         let resultRobotFrameWork = require('./../bdd/statusTests.json')
         let mapping = require('./../bdd/mapping.json')
@@ -348,9 +346,6 @@ function setSquashCampagneFromJsonResult(req) {
                 return xml2js.setUpToSquashFromXmlFile(tmpName)
             })
             .then(() => {
-                //todo mODI inejet require
-                //return maker.setSquashCampagneFromJsonResult(req)
-
                 return squash.setSquashCampagneFromJsonResult(
                     req,
                     resultRobotFrameWork,
