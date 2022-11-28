@@ -1,6 +1,4 @@
 var maker = require('../models/maker')
-var helper = require('../models/helper')
-var xml2js = require('./../models/rf2squash/maker')
 
 const dotenv = require('dotenv')
 dotenv.config()
@@ -35,22 +33,6 @@ module.exports = {
         res.download('upload/' + req.body.fileName + '.xls')
     },
 
-    rf2squash: (req, res) => {
-        helper
-            .saveTmpFile(req.files.formFile)
-            .then((tmpName) => {
-                return xml2js.setUpToSquashFromXmlFile(tmpName)
-            })
-            .then(() => {
-                maker
-                    .setSquashCampagneFromJsonResult(req)
-                    .then((result) => res.json(result))
-            })
-            .catch((err) => {
-                res.json({ error: err })
-            })
-    },
-
     rf2squashnofile: (req, res) => {
         maker
             .setSquashCampagneFromJsonResult(req)
@@ -67,7 +49,12 @@ module.exports = {
                 })
             })
             .catch((err) => {
-                res.json({ error: err })
+                res.render('success', {
+                    message: 'Une erreur s\'est produit pendant la mise à jour de Squash par RobotFramework',
+                    from: undefined,
+                    fileName: undefined,
+                    moreInfo: err,
+                })
             })
     },
 }

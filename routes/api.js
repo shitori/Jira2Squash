@@ -2,6 +2,8 @@ var express = require('express')
 var router = express.Router()
 
 const controller = require('../controllers/apiController')
+const controller_test = require('../controllers/testController')
+const controller_prototype = require('../controllers/protoController')
 
 router.post('/test', (req, res) => {
     res.json({ message: 'test', body: req.body })
@@ -11,14 +13,18 @@ router.post('/fromFile', controller.fromFile)
 
 router.post('/fromApi', controller.fromAPI)
 
-router.get('/testsInIteration', controller.testsIteraction)
-
-router.put('/copyCampaing', controller.copyCompaing)
-
 router.post('/backup', controller.backup)
 
-router.get('/squash/test/', controller.getAllTestsFromSquash)
+//! PROTOTYPE A FINIR
 
-router.get('/squash/link/', controller.prepareLinkBetweenTestsExigs)
+router.put('/copyCampaing', controller_prototype.copyCompaing)
+
+router.get('/squash/link/', controller_prototype.prepareLinkBetweenTestsExigs)
+
+router.get('/squash/test/', controller_prototype.getAllTestsFromSquash)
+
+//! TEST
+
+router.get('/testsInIteration', controller_test.testsIteraction)
 
 module.exports = router

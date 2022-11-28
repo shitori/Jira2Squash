@@ -3,6 +3,7 @@ var router = express.Router()
 
 const controller = require('../controllers/defaultController')
 const controller_test = require('../controllers/testController')
+const controller_prototype = require('../controllers/protoController')
 
 router.get('/', controller.home)
 
@@ -12,9 +13,11 @@ router.post('/fromAPI', controller.fromAPI)
 
 router.post('/file', controller.getFile)
 
-router.post('/rf2squash', controller.rf2squash)
-
 router.post('/rf2squashnofile', controller.rf2squashnofile)
+
+//! PROTOTYPE A FINIR
+
+router.post('/rf2squash', controller_prototype.rf2squash)
 
 // ! TEST
 

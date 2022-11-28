@@ -1,7 +1,7 @@
 {
-    "sourceFile": "sourceFilePath",
+    "sourceFile": "sourceFilePath TO_CHANGE",
     "header": {
-        "rows": "headerSize"
+        "rows": "headerSize TO_CHANGE"
     },
     "columnToKey": {
         "A": "idJira",
