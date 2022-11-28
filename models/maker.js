@@ -37,13 +37,13 @@ function writeOnExcel(sprintName, squashFileName, footerSize, result) {
             ws.cell(rowIndex, columnIndex++).string('C') // Action
             ws.cell(rowIndex, columnIndex++).string(
                 '/fcc-next-gen/' +
-                (record.nameJira.toLowerCase().includes('wallboard')
-                    ? 'New Wallboard/WB - '
-                    : '[NextGen]Nouveaux Bandeaux/G2R2 - ') +
-                'Sprint ' +
-                sprintName +
-                '/' +
-                record.nameJira.replaceAll('/', '\\')
+                    (record.nameJira.toLowerCase().includes('wallboard')
+                        ? 'New Wallboard/WB - '
+                        : '[NextGen]Nouveaux Bandeaux/G2R2 - ') +
+                    'Sprint ' +
+                    sprintName +
+                    '/' +
+                    record.nameJira.replaceAll('/', '\\')
             ) // REQ PATH
             ws.cell(rowIndex, columnIndex++).number(1) // REQ VERSION NUM
             ws.cell(rowIndex, columnIndex++).string(record.idJira) // REQ VERSION REFERENCE
@@ -51,13 +51,13 @@ function writeOnExcel(sprintName, squashFileName, footerSize, result) {
             ws.cell(rowIndex, columnIndex++).string('MINOR') // REQ VERSION CRITICALITY
             ws.cell(rowIndex, columnIndex++).string(
                 'REQ_JIRA_BUILD_' +
-                (record.typeJira == 'Récit' ? 'STORY' : 'BUG')
+                    (record.typeJira == 'Récit' ? 'STORY' : 'BUG')
             ) // REQ VERSION CATEGORY
             ws.cell(rowIndex, columnIndex++).string('UNDER_REVIEW') // REQ VERSION STATUS
             ws.cell(rowIndex, columnIndex++).string(
                 '<p><a href="https://jira-build.orangeapplicationsforbusiness.com/browse/' +
-                record.idJira +
-                '" target="_blank">Lien vers le ticket JIRA</a></p>'
+                    record.idJira +
+                    '" target="_blank">Lien vers le ticket JIRA</a></p>'
             ) // REQ VERSION DESCRIPTION
 
             rowIndex++
@@ -155,7 +155,6 @@ function excuteProcessFromAPI(req, jira, squash, sourceName, resolve) {
                 let endJira = {
                     message: "Get all Jira ticket's.",
                     percent: 30,
-
                 }
                 client.send(JSON.stringify(endJira)) // !Second Send
                 switch (req.body.validator) {
@@ -257,8 +256,8 @@ function backup(req) {
                 promises.push(
                     jira.getIssues(
                         'project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = ' +
-                        value +
-                        ' ORDER BY priority DESC, updated DESC'
+                            value +
+                            ' ORDER BY priority DESC, updated DESC'
                     )
                 )
             }

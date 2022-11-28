@@ -50,7 +50,8 @@ module.exports = {
             })
             .catch((err) => {
                 res.render('success', {
-                    message: 'Une erreur s\'est produit pendant la mise à jour de Squash par RobotFramework',
+                    message:
+                        "Une erreur s'est produit pendant la mise à jour de Squash par RobotFramework",
                     from: undefined,
                     fileName: undefined,
                     moreInfo: err,

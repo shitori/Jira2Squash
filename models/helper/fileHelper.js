@@ -67,10 +67,6 @@ function saveSourceFileBis(files) {
     })
 }
 
-
-
-
-
 function removeTmpFile(filePath) {
     fs.unlink(filePath, (err) => {
         if (err) {
@@ -80,13 +76,6 @@ function removeTmpFile(filePath) {
         }
     })
 }
-
-
-
-
-
-
-
 
 module.exports = {
     saveSourceFile,

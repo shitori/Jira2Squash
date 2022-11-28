@@ -161,7 +161,8 @@ class apiSquash {
                 reference: record.idJira,
                 criticality: 'MINOR',
                 category: {
-                    code: 'CAT_JIRA_' + dHelper.convertJiraType(record.typeJira),
+                    code:
+                        'CAT_JIRA_' + dHelper.convertJiraType(record.typeJira),
                 },
                 status: 'UNDER_REVIEW',
                 description:

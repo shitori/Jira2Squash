@@ -1,14 +1,6 @@
-
-
 function getRandomInt(max) {
     return Math.floor(Math.random() * max)
 }
-
-
-
-
-
-
 
 function checkInput(body) {
     body.inputWB = !(body.inputWB === undefined)
@@ -31,8 +23,6 @@ function checkInput(body) {
 function _setEmptyField(field, defaultValue) {
     return field == '' ? defaultValue : field
 }
-
-
 
 function convertJiraType(jiraType) {
     switch (jiraType) {
@@ -86,5 +76,4 @@ module.exports = {
     getRandomInt,
     wordPower,
     getOnlyNameFromObject,
-
 }
