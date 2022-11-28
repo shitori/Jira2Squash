@@ -20,6 +20,10 @@
         "status": "OK"
     },
     {
+        "name": "Test Sel legal break",
+        "status": "OK"
+    },
+    {
         "name": "Test Sel transfert call",
         "status": "OK"
     },
@@ -188,8 +192,20 @@
         "status": "OK"
     },
     {
+        "name": "Test Sel incoming call",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel legal break sup",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel reject incoming call",
+        "status": "KO"
+    },
+    {
         "name": "Test Sel listing shortlist EN",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel listing shortlist FR",

@@ -138,7 +138,7 @@ class apiSquash {
                     )
                 })
                 .then(() => {
-                    resolve('Test ' + idTest + ' mise à jour')
+                    resolve('Test ' + idTest + ' mise à jour avec le status : ' + status)
                 })
                 .catch((error) => {
                     reject(error)
