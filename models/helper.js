@@ -8,7 +8,6 @@ function readJsonFile(fileName) {
     return JSON.parse(fs.readFileSync(fileName))
 }
 
-
 function saveJsonTmpFile(fileName, jsonString) {
     return new Promise((resolve, reject) => {
         let tmpName = 'tmp/' + fileName + '.json'
@@ -77,10 +76,10 @@ function checkInput(body) {
     body.inputFooter = setEmptyField(body.inputFooter, 1)
     body.inputJiraRequest =
         body.inputJiraSprintRequest !== undefined &&
-            body.inputJiraSprintRequest !== ''
+        body.inputJiraSprintRequest !== ''
             ? 'project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = ' +
-            body.inputJiraSprintRequest +
-            ' ORDER BY priority DESC, updated DESC'
+              body.inputJiraSprintRequest +
+              ' ORDER BY priority DESC, updated DESC'
             : body.inputJiraRequest
 
     return body
@@ -158,5 +157,5 @@ module.exports = {
     removeUselessChar,
     saveTmpFile,
     saveJsonTmpFile,
-    readJsonFile
+    readJsonFile,
 }

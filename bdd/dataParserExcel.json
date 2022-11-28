@@ -1,0 +1,12 @@
+{
+    "sourceFile": "sourceFilePath",
+    "header": {
+        "rows": "headerSize"
+    },
+    "columnToKey": {
+        "A": "idJira",
+        "B": "nameJira",
+        "C": "typeJira"
+    },
+    "sheets": ["general_report"]
+}

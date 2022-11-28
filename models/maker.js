@@ -17,21 +17,8 @@ var xml2js = require('./../models/rf2squash/maker')
 const dotenv = require('dotenv')
 dotenv.config()
 
-const headingColumnNames = [
-    'ACTION',
-    'REQ_PATH',
-    'REQ_VERSION_NUM',
-    'REQ_VERSION_REFERENCE',
-    'REQ_VERSION_NAME',
-    'REQ_VERSION_CRITICALITY',
-    'REQ_VERSION_CATEGORY',
-    'REQ_VERSION_STATUS',
-    'REQ_VERSION_DESCRIPTION',
-    'REQ_VERSION_CREATED_ON',
-    'REQ_VERSION_CREATED_BY',
-    'REQ_VERSION_MILESTONE',
-    'REQ_VERSION_CUF_<code du cuf>',
-]
+const headingColumnNames =
+    require('./../bdd/headingColimnNamesExcel.json').header
 
 function writeOnExcel(sprintName, squashFileName, footerSize, result) {
     //Write Column Title in Excel file
@@ -49,13 +36,13 @@ function writeOnExcel(sprintName, squashFileName, footerSize, result) {
             ws.cell(rowIndex, columnIndex++).string('C') // Action
             ws.cell(rowIndex, columnIndex++).string(
                 '/fcc-next-gen/' +
-                (record.nameJira.toLowerCase().includes('wallboard')
-                    ? 'New Wallboard/WB - '
-                    : '[NextGen]Nouveaux Bandeaux/G2R2 - ') +
-                'Sprint ' +
-                sprintName +
-                '/' +
-                record.nameJira.replaceAll('/', '\\')
+                    (record.nameJira.toLowerCase().includes('wallboard')
+                        ? 'New Wallboard/WB - '
+                        : '[NextGen]Nouveaux Bandeaux/G2R2 - ') +
+                    'Sprint ' +
+                    sprintName +
+                    '/' +
+                    record.nameJira.replaceAll('/', '\\')
             ) // REQ PATH
             ws.cell(rowIndex, columnIndex++).number(1) // REQ VERSION NUM
             ws.cell(rowIndex, columnIndex++).string(record.idJira) // REQ VERSION REFERENCE
@@ -63,13 +50,13 @@ function writeOnExcel(sprintName, squashFileName, footerSize, result) {
             ws.cell(rowIndex, columnIndex++).string('MINOR') // REQ VERSION CRITICALITY
             ws.cell(rowIndex, columnIndex++).string(
                 'REQ_JIRA_BUILD_' +
-                (record.typeJira == 'Récit' ? 'STORY' : 'BUG')
+                    (record.typeJira == 'Récit' ? 'STORY' : 'BUG')
             ) // REQ VERSION CATEGORY
             ws.cell(rowIndex, columnIndex++).string('UNDER_REVIEW') // REQ VERSION STATUS
             ws.cell(rowIndex, columnIndex++).string(
                 '<p><a href="https://jira-build.orangeapplicationsforbusiness.com/browse/' +
-                record.idJira +
-                '" target="_blank">Lien vers le ticket JIRA</a></p>'
+                    record.idJira +
+                    '" target="_blank">Lien vers le ticket JIRA</a></p>'
             ) // REQ VERSION DESCRIPTION
 
             rowIndex++
@@ -87,19 +74,10 @@ function writeOnSquash(
     footerSize,
     sourceFilePath
 ) {
-    const dataParser = {
-        sourceFile: sourceFilePath,
-        header: {
-            // Is the number of rows that will be skipped and will not be present at our result object. Counting from top to bottom
-            rows: headerSize, // 2, 3, 4, etc.
-        },
-        columnToKey: {
-            A: 'idJira',
-            B: 'nameJira',
-            C: 'typeJira',
-        },
-        sheets: ['general_report'],
-    }
+    const dataParser = helper.readJsonFile('./bdd/dataParserExcel.json')
+
+    dataParser.header.rows = headerSize
+    dataParser.sourceFile = sourceFilePath
 
     var result = excelToJson(dataParser)
 
@@ -261,21 +239,6 @@ function excuteProcessFromAPI(req, jira, squash, sourceName, resolve) {
     })
 }
 
-function test() {
-    var proxyJira = new Proxy('5F0E02606324FE087C862CF040B914B3')
-    var proxySquash = new Proxy('F696939B49AD3630BE446FD46A871705')
-    var jira = new Jira(proxyJira.getProxy())
-    var squash = new Squash(proxySquash.getProxy())
-    jira.getIssues(
-        'project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = 35330 ORDER BY priority DESC, updated DESC'
-    )
-        .then((res) => {
-            return squash.importInSquashWithAPI(res, 999)
-        })
-        .then((squashReturn) => console.info(squashReturn))
-        .catch((err) => console.error(err))
-}
-
 function backup(req) {
     // TODO jira OK --> SQUASH call API TODO
     return new Promise((resolve) => {
@@ -292,8 +255,8 @@ function backup(req) {
                 promises.push(
                     jira.getIssues(
                         'project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = ' +
-                        value +
-                        ' ORDER BY priority DESC, updated DESC'
+                            value +
+                            ' ORDER BY priority DESC, updated DESC'
                     )
                 )
             }
@@ -311,27 +274,8 @@ function backup(req) {
     })
 }
 
-function testSocket() {
-    var client = new WebSocket.Client('ws://localhost:3002/')
-    client.on('open', function () {
-        console.info('Connection established!')
-        client.send('In testSocket')
-    })
-
-    client.on('message', function (message) {
-        console.info("Data from WebSocketServer '" + message.data + "'")
-    })
-
-    client.on('close', function (message) {
-        console.info('Connection closed!', message.code, message.reason)
-
-        client = null
-    })
-}
-
 function setSquashCampagneFromJsonResult(req) {
     return new Promise((resolve, reject) => {
-
         var squash = new Squash(
             new Proxy(req.body.inputSessionTokenSquash).getProxy()
         )
@@ -345,7 +289,9 @@ function setSquashCampagneFromJsonResult(req) {
                 return xml2js.setUpToSquashFromXmlFile(tmpName)
             })
             .then(() => {
-                let resultRobotFrameWork = helper.readJsonFile('./bdd/statusTests.json')
+                let resultRobotFrameWork = helper.readJsonFile(
+                    './bdd/statusTests.json'
+                )
                 let mapping = helper.readJsonFile('./bdd/mapping.json')
                 return squash.setSquashCampagneFromJsonResult(
                     req,
@@ -356,7 +302,10 @@ function setSquashCampagneFromJsonResult(req) {
             .then((res) => {
                 resolve(res)
             })
-            .catch((err) => { console.error(err); reject(err) })
+            .catch((err) => {
+                console.error(err)
+                reject(err)
+            })
     })
 }
 
@@ -365,8 +314,6 @@ module.exports = {
     writeOnSquashAPI,
     fromFile,
     fromAPI,
-    test,
-    testSocket,
     backup,
     setSquashCampagneFromJsonResult,
 }

@@ -13,16 +13,6 @@ module.exports = {
         res.render('index', { title: 'Jira2Squash', jiraHome, squashHome })
     },
 
-    test: (req, res) => {
-        maker.test()
-        res.redirect('/')
-    },
-
-    testSocket: (req, res) => {
-        maker.testSocket()
-        res.redirect('/')
-    },
-
     fromFile: (req, res) => {
         maker
             .fromFile(req)

@@ -1,0 +1,17 @@
+{
+    "header": [
+        "ACTION",
+        "REQ_PATH",
+        "REQ_VERSION_NUM",
+        "REQ_VERSION_REFERENCE",
+        "REQ_VERSION_NAME",
+        "REQ_VERSION_CRITICALITY",
+        "REQ_VERSION_CATEGORY",
+        "REQ_VERSION_STATUS",
+        "REQ_VERSION_DESCRIPTION",
+        "REQ_VERSION_CREATED_ON",
+        "REQ_VERSION_CREATED_BY",
+        "REQ_VERSION_MILESTONE",
+        "REQ_VERSION_CUF_<code du cuf>"
+    ]
+}
