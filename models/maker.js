@@ -4,7 +4,8 @@ const ws = wb.addWorksheet('REQUIREMENT')
 const excelToJson = require('convert-excel-to-json')
 var WebSocket = require('faye-websocket')
 
-var helper = require('../models/helper')
+var dHelper = require('./helper/defaultHelper')
+var fileHelper = require('./helper/fileHelper')
 
 //v2
 const Jira = require('../models/v2/apiJira')
@@ -36,13 +37,13 @@ function writeOnExcel(sprintName, squashFileName, footerSize, result) {
             ws.cell(rowIndex, columnIndex++).string('C') // Action
             ws.cell(rowIndex, columnIndex++).string(
                 '/fcc-next-gen/' +
-                    (record.nameJira.toLowerCase().includes('wallboard')
-                        ? 'New Wallboard/WB - '
-                        : '[NextGen]Nouveaux Bandeaux/G2R2 - ') +
-                    'Sprint ' +
-                    sprintName +
-                    '/' +
-                    record.nameJira.replaceAll('/', '\\')
+                (record.nameJira.toLowerCase().includes('wallboard')
+                    ? 'New Wallboard/WB - '
+                    : '[NextGen]Nouveaux Bandeaux/G2R2 - ') +
+                'Sprint ' +
+                sprintName +
+                '/' +
+                record.nameJira.replaceAll('/', '\\')
             ) // REQ PATH
             ws.cell(rowIndex, columnIndex++).number(1) // REQ VERSION NUM
             ws.cell(rowIndex, columnIndex++).string(record.idJira) // REQ VERSION REFERENCE
@@ -50,13 +51,13 @@ function writeOnExcel(sprintName, squashFileName, footerSize, result) {
             ws.cell(rowIndex, columnIndex++).string('MINOR') // REQ VERSION CRITICALITY
             ws.cell(rowIndex, columnIndex++).string(
                 'REQ_JIRA_BUILD_' +
-                    (record.typeJira == 'Récit' ? 'STORY' : 'BUG')
+                (record.typeJira == 'Récit' ? 'STORY' : 'BUG')
             ) // REQ VERSION CATEGORY
             ws.cell(rowIndex, columnIndex++).string('UNDER_REVIEW') // REQ VERSION STATUS
             ws.cell(rowIndex, columnIndex++).string(
                 '<p><a href="https://jira-build.orangeapplicationsforbusiness.com/browse/' +
-                    record.idJira +
-                    '" target="_blank">Lien vers le ticket JIRA</a></p>'
+                record.idJira +
+                '" target="_blank">Lien vers le ticket JIRA</a></p>'
             ) // REQ VERSION DESCRIPTION
 
             rowIndex++
@@ -74,7 +75,7 @@ function writeOnSquash(
     footerSize,
     sourceFilePath
 ) {
-    const dataParser = helper.readJsonFile('./bdd/dataParserExcel.json')
+    const dataParser = fileHelper.readJsonFile('./bdd/dataParserExcel.json')
 
     dataParser.header.rows = headerSize
     dataParser.sourceFile = sourceFilePath
@@ -91,8 +92,8 @@ function writeOnSquashAPI(sprintName, squashFileName, dataAPI) {
 
 function fromFile(req) {
     return new Promise((resolve, reject) => {
-        req.body = helper.checkInput(req.body)
-        helper
+        req.body = dHelper.checkInput(req.body)
+        fileHelper
             .saveSourceFile(req.files)
             .then((sourcePath) => {
                 writeOnSquash(
@@ -102,7 +103,7 @@ function fromFile(req) {
                     req.body.inputFooter,
                     sourcePath
                 )
-                helper.removeTmpFile(sourcePath)
+                fileHelper.removeTmpFile(sourcePath)
                 setTimeout(() => {
                     resolve(req.body.inputSquash)
                 }, 1000)
@@ -139,7 +140,7 @@ function fromAPI(req) {
 }
 
 function excuteProcessFromAPI(req, jira, squash, sourceName, resolve) {
-    req.body = helper.checkInput(req.body)
+    req.body = dHelper.checkInput(req.body)
 
     let client = new WebSocket.Client('ws://localhost:3002/')
 
@@ -255,8 +256,8 @@ function backup(req) {
                 promises.push(
                     jira.getIssues(
                         'project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = ' +
-                            value +
-                            ' ORDER BY priority DESC, updated DESC'
+                        value +
+                        ' ORDER BY priority DESC, updated DESC'
                     )
                 )
             }
@@ -283,16 +284,16 @@ function setSquashCampagneFromJsonResult(req) {
         jenkins
             .getOutputResultRobotFrameWork()
             .then((file) => {
-                return helper.saveTmpFile(file)
+                return fileHelper.saveTmpFile(file)
             })
             .then((tmpName) => {
                 return xml2js.setUpToSquashFromXmlFile(tmpName)
             })
             .then(() => {
-                let resultRobotFrameWork = helper.readJsonFile(
+                let resultRobotFrameWork = fileHelper.readJsonFile(
                     './bdd/statusTests.json'
                 )
-                let mapping = helper.readJsonFile('./bdd/mapping.json')
+                let mapping = fileHelper.readJsonFile('./bdd/mapping.json')
                 return squash.setSquashCampagneFromJsonResult(
                     req,
                     resultRobotFrameWork,

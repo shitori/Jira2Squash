@@ -1,5 +1,6 @@
 const axios = require('axios')
-const helper = require('../helper')
+const dHelper = require('../helper/defaultHelper')
+const fileHelper = require('../helper/fileHelper')
 var WebSocket = require('faye-websocket')
 
 const dotenv = require('dotenv')
@@ -160,7 +161,7 @@ class apiSquash {
                 reference: record.idJira,
                 criticality: 'MINOR',
                 category: {
-                    code: 'CAT_JIRA_' + helper.convertJiraType(record.typeJira),
+                    code: 'CAT_JIRA_' + dHelper.convertJiraType(record.typeJira),
                 },
                 status: 'UNDER_REVIEW',
                 description:
@@ -746,11 +747,11 @@ class apiSquash {
                     })
                     console.info('Shortres maked')
 
-                    helper.saveJsonTmpFile(
+                    fileHelper.saveJsonTmpFile(
                         'shortResultJson',
                         JSON.stringify(shortRes, null, 4)
                     )
-                    helper.saveJsonTmpFile(
+                    fileHelper.saveJsonTmpFile(
                         'resultJson',
                         JSON.stringify(res, null, 4)
                     )

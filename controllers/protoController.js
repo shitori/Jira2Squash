@@ -1,4 +1,5 @@
-var helper = require('../models/helper')
+var dHelper = require('../models/helper/defaultHelper')
+var fileHelper = require('../models/helper/fileHelper')
 var Squash = require('../models/v2/apiSquash')
 var Proxy = require('../models/v2/proxy')
 const fs = require('fs').promises
@@ -29,11 +30,11 @@ module.exports = {
         if (req.query.useBackUp == 'true') {
             let allTests = require('./../backup/allTests.json')
             let allExigs = require('./../backup/allExigs.json')
-            let wpTests = helper.wordPower(
-                helper.getOnlyNameFromObject(allTests)
+            let wpTests = dHelper.wordPower(
+                dHelper.getOnlyNameFromObject(allTests)
             )
-            let wpExigs = helper.wordPower(
-                helper.getOnlyNameFromObject(allExigs)
+            let wpExigs = dHelper.wordPower(
+                dHelper.getOnlyNameFromObject(allExigs)
             )
             res.json({ /*allTests, allExigs,*/ wpTests, wpExigs })
         } else {
@@ -67,7 +68,7 @@ module.exports = {
     },
 
     rf2squash: (req, res) => {
-        helper
+        fileHelper
             .saveTmpFile(req.files.formFile)
             .then((tmpName) => {
                 return xml2js.setUpToSquashFromXmlFile(tmpName)
