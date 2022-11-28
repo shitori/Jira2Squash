@@ -112,7 +112,7 @@ class apiSquash {
     }
 
     changeStatus(idTest, status) {
-        //TODO create excution -> get id excution -> modify status excution
+        //TODO change parent itération -> maybe useless
         return new Promise((resolve, reject) => {
             axios
                 .post(

@@ -155,6 +155,7 @@ function excuteProcessFromAPI(req, jira, squash, sourceName, resolve) {
                 let endJira = {
                     message: "Get all Jira ticket's.",
                     percent: 30,
+
                 }
                 client.send(JSON.stringify(endJira)) // !Second Send
                 switch (req.body.validator) {
