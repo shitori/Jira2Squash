@@ -193,19 +193,19 @@
     },
     {
         "name": "Test Sel incoming call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel legal break sup",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel reject incoming call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel listing shortlist EN",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel listing shortlist FR",
@@ -261,7 +261,7 @@
     },
     {
         "name": "Test Sel check tab wallboard",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel open wallboard",
