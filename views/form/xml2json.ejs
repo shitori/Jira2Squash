@@ -1,4 +1,56 @@
-<form action="/rf2squashnofile" method="post" enctype="multipart/form-data">
+
+<script>
+  function showLoadingRf2Sq() {
+    var form = document.getElementById("rf2squash");
+    form.style.display = "none"
+    var loading = document.getElementById("loading_rf2sq");
+    loading.style.display = "block"
+  }
+
+  function hideLoadingRf2Sq() {
+    var form = document.getElementById("rf2squash");
+    form.style.display = "block"
+    var loading = document.getElementById("loading_rf2sq");
+    loading.style.display = "none"
+    window.stop();
+  }
+
+  var webSocketRf2Sq = new WebSocket('ws://localhost:3002/', 'test-protocol')
+  webSocketRf2Sq.onmessage = event => {
+    console.log(event);
+    if (event.data instanceof Blob) {
+      event.data.text().then(txt => {
+        console.log(txt)
+        let data = JSON.parse(txt)
+        let message = data.message
+        let percent = data.percent
+
+        let h3 = document.getElementById('ws_return_rf2sq')
+        let progressBar = document.getElementById('progress_bar_rf2sq')
+
+        h3.textContent = message
+        progressBar.setAttribute("style", "width: " + percent + "%")
+      })
+    } else {
+      console.log("Result: " + event.data);
+    }
+  }
+
+</script>
+<div id="loading_rf2sq" class="mt-5 text-center" style="display: none;">
+  <h2>Chargement en cours ...</h2>
+  <h3 id="ws_return_rf2sq"></h3>
+  <%- include('../loader.ejs'); %>
+    <div class="progress">
+      <div id="progress_bar_rf2sq" class="progress-bar progress-bar-striped progress-bar-animated bg-warning"
+        role="progressbar" style="width: 0%"></div>
+    </div>
+    <div class="text-center m-2">
+      <button type="button" onclick="hideLoadingRf2Sq()" class="btn btn-outline-danger btn-lg" name="validator"
+        value="api">Annuler</button>
+    </div>
+</div>
+<form action="/rf2squashnofile" id="rf2squash" method="post" enctype="multipart/form-data">
   <div class="mb-3 row">
     <div class="col-3"><label for="inputSprint" class="form-label">Sprint n°</label>
       <input type="input" class="form-control" id="inputSprint" name="inputSprint" aria-describedby="sprintHelp">
@@ -13,6 +65,6 @@
     </div>
   </div>
   <div class="text-center">
-    <button type="submit" class="btn btn-outline-success btn-lg" name="validator" value="api">Transférer</button>
+    <button type="submit" class="btn btn-outline-success btn-lg" name="validator" onclick="showLoadingRf2Sq()" value="api">Transférer</button>
   </div>
 </form>
