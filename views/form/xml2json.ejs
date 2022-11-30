@@ -74,23 +74,73 @@
     }).then(res => {
       console.log(res)
       showResultRf2Sq()
+
+      /*var pre = document.getElementById("result_rf2sq_info")
+      pre.textContent = res.moreInfo*/
+      let result = res.result
+      let contantCard = document.getElementById('result_rf2sq_detail')
+      contantCard.innerHTML = ""
+      let success = 0
+      let fail = 0
+      result.forEach(element => {
+        if (element.status !== "SUCCESS") {
+          success++
+          createCard(contantCard, element)
+        }
+      })
+      result.forEach(element => {
+        if (element.status === "SUCCESS") {
+          fail++
+          createCard(contantCard, element)
+        }
+      })
+
       var h2 = document.getElementById("result_rf2sq_title")
-      var pre = document.getElementById("result_rf2sq_info")
-      h2.textContent = res.message
-      pre.textContent = res.moreInfo
+      h2.textContent = res.message + ", " + success + " success et " + fail + " fails"
     }).catch(err => console.log(err))
   }
-
+  function createCard(contantCard, element) {
+    let div = document.createElement('div');
+    div.className = (element.status == "SUCCESS" ? 'card m-2 mx-auto bg-success bg-gradient' : 'card m-2 mx-auto bg-danger bg-gradient')
+    div.style.width = '35rem'
+    div.innerHTML = `
+          <div class="card-body">
+            <h5 class="card-title "> `+ (element.status == "SUCCESS" ? `✅ ` : `❌ `) + element.testName + ` ` + ` </h5>
+            <p class="card-text text-center">ID test : `+ element.realId + ` / ID execution : ` + element.id + `</p>
+          </div>
+        `
+    contantCard.appendChild(div)
+  }
 </script>
 <div id="result_rf2sq" class="mt-5 " style="display: none;">
   <h2 id="result_rf2sq_title" class="text-center"></h2>
-  <pre id="result_rf2sq_info" class="text-left"></pre>
+  <!--pre id="result_rf2sq_info" class="text-left"></pre-->
   <div class="text-center"><a
       href="https://test-management.orangeapplicationsforbusiness.com/squash/requirement-workspace/" target="_blank"
       class="btn btn-outline-success btn-lg" type="button">Voir dans Squash</a>
     <input class="btn btn-outline-danger btn-lg" type="button" value="Nouvelle itération"
       onclick="hideLoadingRf2Sq()" />
   </div>
+  <div class="row" id="result_rf2sq_detail">
+    <div class="card m-2 bg-success bg-gradient mx-auto" style="width: 10rem;">
+      <div class="card-body ">
+        <h5 class="card-title">idTest ✅ / ❌ </h5>
+        <p class="card-text">dhkjfhsd :fdshfsgdj</p>
+      </div>
+    </div>
+    <div class="card m-2 bg-danger bg-gradient mx-auto" style="width: 10rem;">
+      <div class="card-body ">
+        <h5 class="card-title">idTest ✓ / ❌ </h5>
+      </div>
+    </div>
+  </div>
+  <div class="text-center"><a
+      href="https://test-management.orangeapplicationsforbusiness.com/squash/requirement-workspace/" target="_blank"
+      class="btn btn-outline-success btn-lg" type="button">Voir dans Squash</a>
+    <input class="btn btn-outline-danger btn-lg" type="button" value="Nouvelle itération"
+      onclick="hideLoadingRf2Sq()" />
+  </div>
+
 </div>
 <div id="loading_rf2sq" class="mt-5 text-center" style="display: none;">
   <h2>Chargement en cours ...</h2>

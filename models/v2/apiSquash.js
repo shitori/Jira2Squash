@@ -150,9 +150,9 @@ class apiSquash {
         })
     }
 
-    changeStatus(idTest, status) {
+    changeStatus(test, status) {
         //TODO change parent itération -> maybe useless
-
+        let idTest = test.id
         return new Promise((resolve, reject) => {
             axios
                 .post(
@@ -180,12 +180,17 @@ class apiSquash {
                 })
                 .then(() => {
                     this._sendWSExcutionStatusInfo(this.client)
-                    resolve(
-                        'Test ' +
+                    resolve({
+                        message:
+                            'Test ' +
                             idTest +
                             ' mise à jour avec le status : ' +
-                            status
-                    )
+                            status,
+                        id: idTest,
+                        status: status,
+                        testName: test.refTestName,
+                        realId: test.refTestId,
+                    })
                 })
                 .catch((error) => {
                     reject(error)
@@ -836,7 +841,7 @@ class apiSquash {
                                 ) {
                                     console.info(el.refTestName + ' ajouté')
                                     changeStatusList.push(
-                                        this.changeStatus(el.id, 'SUCCESS')
+                                        this.changeStatus(el, 'SUCCESS')
                                     )
                                 } else if (
                                     findedResultRobotFrameWork !== undefined &&
@@ -844,7 +849,7 @@ class apiSquash {
                                 ) {
                                     console.info(el.refTestName + ' ajouté')
                                     changeStatusList.push(
-                                        this.changeStatus(el.id, 'FAILURE')
+                                        this.changeStatus(el, 'FAILURE')
                                     )
                                 }
                             }

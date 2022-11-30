@@ -33,11 +33,12 @@ module.exports = {
             .then((result) => {
                 let moreInfo = ''
                 result.forEach((element) => {
-                    moreInfo += element + '\n'
+                    moreInfo += element.message + '\n'
                 })
                 res.json({
                     message: 'Squash mise à jour',
                     moreInfo: moreInfo,
+                    result: result,
                 })
             })
             .catch((err) => {
