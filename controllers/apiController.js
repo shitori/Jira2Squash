@@ -25,4 +25,28 @@ module.exports = {
     backup: (req, res) => {
         maker.backup(req).then((result) => res.json({ data: result }))
     },
+
+    rf2squashnofile: (req, res) => {
+        console.info(req.body)
+        maker
+            .setSquashCampagneFromJsonResult(req)
+            .then((result) => {
+                let moreInfo = ''
+                result.forEach((element) => {
+                    moreInfo += element + '\n'
+                })
+                res.json({
+                    message: 'Squash mise à jour',
+                    moreInfo: moreInfo,
+                })
+            })
+            .catch((err) => {
+                res.json({
+                    message:
+                        "Une erreur s'est produit pendant la mise à jour de Squash par RobotFramework",
+
+                    moreInfo: err,
+                })
+            })
+    },
 }

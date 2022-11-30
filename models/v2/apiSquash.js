@@ -24,8 +24,12 @@ class apiSquash {
         this.folderCurrent = 0
         this.requirementMax = 0
         this.requirementCurrent = 0
+        this.changeStatusMax = 0
+        this.changeStatusCurrent = 0
         this.allTest = []
         this.allExig = []
+        this.client = new WebSocket.Client('ws://localhost:3002/')
+        this._setClientWebsocket(this.client)
     }
 
     _setProgressBarRequirement(max) {
@@ -36,6 +40,11 @@ class apiSquash {
     _setProgressBarFolder(max) {
         this.forlderMax = max
         this.folderCurrent = 0
+    }
+
+    _setProgressBarStatus(max) {
+        this.changeStatusMax = max
+        this.changeStatusCurrent = 0
     }
 
     _setClientWebsocket(client) {
@@ -53,6 +62,22 @@ class apiSquash {
         })
     }
 
+    _closeClientWebsocket(client) {
+        client.close()
+    }
+
+    _sendWSinfoHard(client, message, percent) {
+        let info = {
+            message: message,
+            percent: percent,
+        }
+        this._sendWSinfoSoft(client, info)
+    }
+
+    _sendWSinfoSoft(client, info) {
+        client.send(JSON.stringify(info))
+    }
+
     _sendWSRequirementInfo(client) {
         this.requirementCurrent++
         let requirementInfo = {
@@ -63,7 +88,7 @@ class apiSquash {
                 this.requirementMax,
             percent: 50 + (this.requirementCurrent * 50) / this.requirementMax,
         }
-        client.send(JSON.stringify(requirementInfo))
+        this._sendWSinfoSoft(client, requirementInfo)
     }
 
     _sendWSFolderInfo(client) {
@@ -72,7 +97,21 @@ class apiSquash {
             message: 'Folders : ' + this.folderCurrent + '/' + this.forlderMax,
             percent: 30 + (this.folderCurrent * 20) / this.forlderMax,
         }
-        client.send(JSON.stringify(folderInfo))
+        this._sendWSinfoSoft(client, folderInfo)
+    }
+
+    _sendWSExcutionStatusInfo(client) {
+        this.changeStatusCurrent++
+        let changeStatusInfo = {
+            message:
+                'Tests status changed : ' +
+                this.changeStatusCurrent +
+                '/' +
+                this.changeStatusMax,
+            percent:
+                50 + (this.changeStatusCurrent * 50) / this.changeStatusMax,
+        }
+        this._sendWSinfoSoft(client, changeStatusInfo)
     }
 
     create(objectName, data) {
@@ -113,6 +152,7 @@ class apiSquash {
 
     changeStatus(idTest, status) {
         //TODO change parent itération -> maybe useless
+
         return new Promise((resolve, reject) => {
             axios
                 .post(
@@ -139,6 +179,7 @@ class apiSquash {
                     )
                 })
                 .then(() => {
+                    this._sendWSExcutionStatusInfo(this.client)
                     resolve(
                         'Test ' +
                             idTest +
@@ -693,12 +734,22 @@ class apiSquash {
                     return this.getContents('campaign-folders', folder.id)
                 })
                 .then((res) => {
+                    this._sendWSinfoHard(
+                        this.client,
+                        'Squash campaing parent folder finded',
+                        35
+                    )
                     let folder = res._embedded.content.find(
                         (cf) => cf.name === 'PLTF V7'
                     )
                     return this.getObject('campaigns', folder.id)
                 })
                 .then((res) => {
+                    this._sendWSinfoHard(
+                        this.client,
+                        'Squash campaing folder finded',
+                        40
+                    )
                     let hardP0 = res.iterations.find(
                         (iteration) =>
                             iteration.name === 'FCC Web Hardphone - P0'
@@ -719,6 +770,11 @@ class apiSquash {
                     return Promise.all(promises)
                 })
                 .then((responses) => {
+                    this._sendWSinfoHard(
+                        this.client,
+                        'Squash Test folder finded',
+                        45
+                    )
                     let res = []
                     responses.forEach((response) => {
                         res = res.concat(response.test_suites)
@@ -731,6 +787,11 @@ class apiSquash {
                     return Promise.all(promises)
                 })
                 .then((responses) => {
+                    this._sendWSinfoHard(
+                        this.client,
+                        'Squash Test suites finded and concated',
+                        50
+                    )
                     let res = []
                     responses.forEach((response) => {
                         res = res.concat(response.test_plan)
@@ -789,6 +850,7 @@ class apiSquash {
                             }
                         })
                     })
+                    this._setProgressBarStatus(changeStatusList.length)
                     console.info(
                         changeStatusList.length + ' tests will be changed ! '
                     )

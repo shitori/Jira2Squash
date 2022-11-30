@@ -15,6 +15,8 @@ router.post('/fromApi', controller.fromAPI)
 
 router.post('/backup', controller.backup)
 
+router.post('/rf2squashnofile', controller.rf2squashnofile)
+
 //! PROTOTYPE A FINIR
 
 router.put('/copyCampaing', controller_prototype.copyCompaing)

@@ -5,11 +5,11 @@
     },
     {
         "name": "Test Sel conference call",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel conference call 2",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel double message",
@@ -26,6 +26,10 @@
     {
         "name": "Test Sel transfert call",
         "status": "OK"
+    },
+    {
+        "name": "Test Sel transfert fa",
+        "status": "KO"
     },
     {
         "name": "Test Sel bad num agent",
@@ -117,7 +121,7 @@
     },
     {
         "name": "Test Sel queue progress",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel sup tabs",
@@ -125,7 +129,7 @@
     },
     {
         "name": "Test Sel callback accent",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel callback allowed",
@@ -137,11 +141,11 @@
     },
     {
         "name": "Test Sel callback html",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel callback send",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel callback without appellant",
@@ -193,19 +197,19 @@
     },
     {
         "name": "Test Sel incoming call",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel legal break sup",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel reject incoming call",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel listing shortlist EN",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel listing shortlist FR",
@@ -217,19 +221,19 @@
     },
     {
         "name": "Test Sel conference call external",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel external num",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel no pause",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel outgoing call",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel send sms",

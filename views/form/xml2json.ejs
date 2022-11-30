@@ -1,4 +1,3 @@
-
 <script>
   function showLoadingRf2Sq() {
     var form = document.getElementById("rf2squash");
@@ -12,7 +11,18 @@
     form.style.display = "block"
     var loading = document.getElementById("loading_rf2sq");
     loading.style.display = "none"
-    window.stop();
+    var result = document.getElementById("result_rf2sq");
+    result.style.display = "none"
+    //window.stop();
+  }
+
+  function showResultRf2Sq() {
+    var form = document.getElementById("rf2squash");
+    form.style.display = "none"
+    var loading = document.getElementById("loading_rf2sq");
+    loading.style.display = "none"
+    var result = document.getElementById("result_rf2sq");
+    result.style.display = "block"
   }
 
   var webSocketRf2Sq = new WebSocket('ws://localhost:3002/', 'test-protocol')
@@ -36,7 +46,49 @@
     }
   }
 
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function callApiRf2Sq() {
+    let payload = {
+      inputSessionTokenSquash: document.querySelectorAll("[id='inputSessionTokenSquash']")[1].value,
+      inputSprint: document.querySelectorAll("[id='inputSprint']")[1].value
+    }
+
+    let data = new FormData()
+    //data.append("json",JSON.stringify(payload))
+    data.append("inputSessionTokenSquash", document.querySelectorAll("[id='inputSessionTokenSquash']")[1].value)
+    data.append("inputSprint", document.querySelectorAll("[id='inputSprint']")[1].value)
+    fetch("/api/rf2squashnofile", {
+      method: "POST",
+      body: data
+    }).then(async res => {
+      console.log("debut de la sessions redirection")
+      while (document.getElementById("progress_bar_rf2sq").style.width !== "100%") {
+        await sleep(1000)
+        console.log("wait");
+      }
+      console.log("fin de la sessions redirection")
+      return res.json()
+    }).then(res => {
+      console.log(res)
+      showResultRf2Sq()
+      var h2 = document.getElementById("result_rf2sq_title")
+      var pre = document.getElementById("result_rf2sq_info")
+      h2.textContent = res.message
+      pre.textContent = res.moreInfo
+    }).catch(err => console.log(err))
+  }
+
 </script>
+<div id="result_rf2sq" class="mt-5 text-center" style="display: none;">
+  <h2 id="result_rf2sq_title"></h2>
+  <pre id="result_rf2sq_info" class="text-left"></pre>
+  <a href="https://test-management.orangeapplicationsforbusiness.com/squash/requirement-workspace/" target="_blank"
+    class="btn btn-outline-success btn-lg" type="button">Voir dans Squash</a>
+  <input class="btn btn-outline-danger btn-lg" type="button" value="Nouvelle itération" onclick="hideLoadingRf2Sq()" />
+</div>
 <div id="loading_rf2sq" class="mt-5 text-center" style="display: none;">
   <h2>Chargement en cours ...</h2>
   <h3 id="ws_return_rf2sq"></h3>
@@ -60,11 +112,13 @@
       <input type="input" class="form-control" id="inputSessionTokenSquash" name="inputSessionTokenSquash"
         aria-describedby="sessionHelp" required>
       <div id="sessionHelp" class="form-text">Se connecter à <a
-          href="https://test-management.orangeapplicationsforbusiness.com/squash/home-workspace" target="_blank">Squash</a> et récupérer
+          href="https://test-management.orangeapplicationsforbusiness.com/squash/home-workspace"
+          target="_blank">Squash</a> et récupérer
         le cookie JSESSIONID</div>
     </div>
   </div>
   <div class="text-center">
-    <button type="submit" class="btn btn-outline-success btn-lg" name="validator" onclick="showLoadingRf2Sq()" value="api">Transférer</button>
+    <button type="button" class="btn btn-outline-success btn-lg" name="validator"
+      onclick="showLoadingRf2Sq();callApiRf2Sq()" value="api">Transférer</button>
   </div>
 </form>

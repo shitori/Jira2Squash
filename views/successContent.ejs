@@ -1,0 +1,38 @@
+<%- include('./commonHeader.ejs'); %>
+
+    <head>
+        <title>
+            Travail terminé
+        </title>
+    </head>
+
+    <body class="container bg-dark">
+        <div class="mt-5 p-5 border rounded-5 bg-light">
+            <div class="text-center">
+                <h1>
+                    <%= message %>
+                </h1>
+            </div>
+            <pre><%= moreInfo %></pre>
+
+            <% if (fileName) {%>
+                <form action="/file" method="post" enctype="multipart/form-data">
+                    <input name="fileName" type="hidden" value="<%= fileName %>">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-info btn-lg" type="submit">Recuperer le fichier
+                            Excel</button>
+                    </div>
+                </form>
+                <% } %>
+                    <div class="d-grid gap-2 mt-1">
+                        <a href="https://test-management.orangeapplicationsforbusiness.com/squash/requirement-workspace/"
+                            target="_blank" class="btn btn-outline-success btn-lg" type="button">Voir dans Squash</a>
+                        <a href="https://jira-build.orangeapplicationsforbusiness.com/secure/RapidBoard.jspa?rapidView=4572&projectKey=FCCNB"
+                            target="_blank" class="btn btn-outline-success btn-lg" type="button">Voir dans Jira</a>
+                        <a href="/" class="btn btn-outline-danger btn-lg" type="button">Retour à l'accueil</a>
+                    </div>
+        </div>
+
+    </body>
+
+    </html>
