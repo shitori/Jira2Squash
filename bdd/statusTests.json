@@ -121,7 +121,7 @@
     },
     {
         "name": "Test Sel queue progress",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel sup tabs",
@@ -145,6 +145,10 @@
     },
     {
         "name": "Test Sel callback send",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel callback svi",
         "status": "KO"
     },
     {
@@ -213,7 +217,7 @@
     },
     {
         "name": "Test Sel listing shortlist FR",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel loop language",
@@ -237,7 +241,7 @@
     },
     {
         "name": "Test Sel send sms",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel sms bad number",
@@ -253,15 +257,15 @@
     },
     {
         "name": "Test Sel template sms",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel template sms link",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel template sms mod",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel check tab wallboard",

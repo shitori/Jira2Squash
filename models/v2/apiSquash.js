@@ -30,6 +30,7 @@ class apiSquash {
         this.allExig = []
         this.client = new WebSocket.Client('ws://localhost:3002/')
         this._setClientWebsocket(this.client)
+        this.delay
     }
 
     _setProgressBarRequirement(max) {
@@ -157,13 +158,14 @@ class apiSquash {
             axios
                 .post(
                     baseURL +
-                        'iteration-test-plan-items/' +
-                        idTest +
-                        '/executions',
+                    'iteration-test-plan-items/' +
+                    idTest +
+                    '/executions',
                     {},
                     this.proxy
                 )
                 .then((res) => {
+                    console.info("execution create");
                     let idExecution = res.data.id
                     let dataPatch = {
                         _type: 'execution',
@@ -171,9 +173,9 @@ class apiSquash {
                     }
                     return axios.patch(
                         baseURL +
-                            'executions/' +
-                            idExecution +
-                            '?fields=execution_status',
+                        'executions/' +
+                        idExecution +
+                        '?fields=execution_status',
                         dataPatch,
                         this.proxy
                     )
@@ -193,6 +195,9 @@ class apiSquash {
                     })
                 })
                 .catch((error) => {
+                    this._sendWSExcutionStatusInfo(this.client)
+                    console.error("error in changeStatus");
+                    console.error(error)
                     reject(error)
                 })
         })
@@ -228,9 +233,9 @@ class apiSquash {
                 .then((success) => {
                     resolve(
                         'ID nouvelle exigence : ' +
-                            success.id +
-                            ' - ' +
-                            record.nameJira
+                        success.id +
+                        ' - ' +
+                        record.nameJira
                     )
                 })
                 .catch((err) => {
@@ -275,6 +280,7 @@ class apiSquash {
                 this.getContents('requirement-folders', idB),
                 this.getContents('requirement-folders', idWB),
             ]
+            this.delay = 0
             Promise.all(promises)
                 .then((responses) => {
                     var resWallboard = responses[1]
@@ -283,19 +289,21 @@ class apiSquash {
                         if (
                             record.nameJira.toLowerCase().includes('wallboard')
                         ) {
-                            result[index] = this.createRequirementIfNecessary(
+                            result[index] = new Promise(resolve => setTimeout(resolve, this.delay)).then(() => this.createRequirementIfNecessary(
                                 idWB,
                                 resWallboard,
                                 record,
                                 wallboardFolderFileName
-                            )
+                            ))
+                            this.delay += 1000
                         } else {
-                            result[index] = this.createRequirementIfNecessary(
+                            result[index] = new Promise(resolve => setTimeout(resolve, this.delay)).then(() => this.createRequirementIfNecessary(
                                 idB,
                                 resBandeau,
                                 record,
                                 bandeauFolderFileName
-                            )
+                            ))
+                            this.delay += 1000
                         }
                     })
                     Promise.all(result)
@@ -366,6 +374,7 @@ class apiSquash {
     }
 
     getContents(objectType, idObject) {
+        console.info(this.proxy);
         return new Promise((resolve, reject) => {
             let currentURL =
                 baseURL +
@@ -373,6 +382,7 @@ class apiSquash {
                 '/' +
                 idObject +
                 '/content?page=0&size=200000'
+            console.info(currentURL);
             axios
                 .get(currentURL, this.proxy)
                 .then((res) => {
@@ -453,7 +463,10 @@ class apiSquash {
                         .then((res) => resolve(res))
                         .catch((err) => reject(err))
                 })
-                .catch((err) => reject(err))
+                .catch((err) => {
+                    console.error(err)
+                    reject(err)
+                })
         })
     }
 
@@ -824,7 +837,7 @@ class apiSquash {
                     )
 
                     let changeStatusList = []
-
+                    this.delay = 0
                     shortRes.forEach((el) => {
                         Object.entries(mapping).forEach((kv) => {
                             let key = kv[0]
@@ -840,17 +853,15 @@ class apiSquash {
                                     findedResultRobotFrameWork.status == 'OK'
                                 ) {
                                     console.info(el.refTestName + ' ajouté')
-                                    changeStatusList.push(
-                                        this.changeStatus(el, 'SUCCESS')
-                                    )
+                                    changeStatusList.push(new Promise(resolve => setTimeout(resolve, this.delay)).then(() => this.changeStatus(el, 'SUCCESS')))
+                                    this.delay += 1000
                                 } else if (
                                     findedResultRobotFrameWork !== undefined &&
                                     findedResultRobotFrameWork.status == 'KO'
                                 ) {
                                     console.info(el.refTestName + ' ajouté')
-                                    changeStatusList.push(
-                                        this.changeStatus(el, 'FAILURE')
-                                    )
+                                    changeStatusList.push(new Promise(resolve => setTimeout(resolve, this.delay)).then(() => this.changeStatus(el, 'FAILURE')))
+                                    this.delay += 1000
                                 }
                             }
                         })
@@ -866,6 +877,7 @@ class apiSquash {
                     resolve(responses)
                 })
                 .catch((err) => {
+                    console.error("error in setSquashCampagneFromJsonResult")
                     console.error(err)
                     reject(err)
                 })

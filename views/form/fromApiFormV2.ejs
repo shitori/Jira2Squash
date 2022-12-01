@@ -74,17 +74,23 @@
   </div>
   <div class="mb-3">
     <div class="row">
-      <div class="col-6">
+      <div class="col-4">
         <label for="inputSessionTokenJira" class="form-label">ID de session Jira</label>
         <input type="input" class="form-control" id="inputSessionTokenJira" name="inputSessionTokenJira"
           aria-describedby="sessionHelp" required>
         <div id="sessionHelp" class="form-text">Se connecter à Jira et récupérer le cookie JSESSIONID</div>
       </div>
-      <div class="col-6">
-        <label for="inputSessionTokenSquash" class="form-label">ID de session Squash</label>
+      <div class="col-4">
+        <label for="inputSessionTokenSquash" class="form-label">ID de session Squash 1</label>
         <input type="input" class="form-control" id="inputSessionTokenSquash" name="inputSessionTokenSquash"
           aria-describedby="sessionHelp" required>
-        <div id="sessionHelp" class="form-text">Se connecter à Squash et récupérer le cookie JSESSIONID</div>
+        <div id="sessionHelp" class="form-text">Se connecter à Squash et récupérer le cookie "JSESSIONID"</div>
+      </div>
+      <div class="col-4">
+        <label for="inputSessionTokenSquashBis" class="form-label">ID de session Squash 2</label>
+        <input type="input" class="form-control" id="inputSessionTokenSquashBis" name="inputSessionTokenSquashBis"
+          aria-describedby="sessionHelp" required>
+        <div id="sessionHelp" class="form-text">Se connecter à Squash et récupérer le cookie "squashtm"</div>
       </div>
     </div>
   </div>

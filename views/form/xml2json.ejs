@@ -157,17 +157,25 @@
 </div>
 <form action="/rf2squashnofile" id="rf2squash" method="post" enctype="multipart/form-data">
   <div class="mb-3 row">
-    <div class="col-3"><label for="inputSprint" class="form-label">Sprint n°</label>
+    <div class="col-4"><label for="inputSprint" class="form-label">Sprint n°</label>
       <input type="input" class="form-control" id="inputSprint" name="inputSprint" aria-describedby="sprintHelp">
       <div id="sprintHelp" class="form-text">Valeur par défaut : Robot FrameWork</div>
     </div>
-    <div class="col-9"><label for="inputSessionTokenSquash" class="form-label">ID de session Squash</label>
+    <div class="col-4"><label for="inputSessionTokenSquash" class="form-label">ID de session Squash 1</label>
       <input type="input" class="form-control" id="inputSessionTokenSquash" name="inputSessionTokenSquash"
         aria-describedby="sessionHelp" required>
       <div id="sessionHelp" class="form-text">Se connecter à <a
-          href="https://test-management.orangeapplicationsforbusiness.com/squash/home-workspace"
+          href="<%=squashHome%>"
           target="_blank">Squash</a> et récupérer
-        le cookie JSESSIONID</div>
+        le cookie "JSESSIONID"</div>
+    </div>
+    <div class="col-4"><label for="inputSessionTokenSquashBis" class="form-label">ID de session Squash 2</label>
+      <input type="input" class="form-control" id="inputSessionTokenSquashBis" name="inputSessionTokenSquashBis"
+        aria-describedby="sessionHelp" required>
+      <div id="sessionHelp" class="form-text">Se connecter à <a
+          href="<%=squashHome%>"
+          target="_blank">Squash</a> et récupérer
+        le cookie "squashtm"</div>
     </div>
   </div>
   <div class="text-center">
