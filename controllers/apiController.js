@@ -8,7 +8,12 @@ module.exports = {
         maker
             .fromAPI(req)
             .then((dataQuery) => {
-                res.json(dataQuery)
+                res.json({
+                    message: dataQuery.message,
+                    from: dataQuery.from,
+                    fileName: dataQuery.fileName,
+                    moreInfo: dataQuery.moreInfo,
+                })
             })
             .catch((err) => {
                 res.json(err)

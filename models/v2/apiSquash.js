@@ -117,35 +117,31 @@ class apiSquash {
 
     create(objectName, data) {
         return new Promise((resolve, reject) => {
-            let client = new WebSocket.Client('ws://localhost:3002/')
-            this._setClientWebsocket(client)
+            /*let client = new WebSocket.Client('ws://localhost:3002/')
+            this._setClientWebsocket(client)*/
 
             axios
                 .post(baseURL + objectName, data, this.proxy)
                 .then((res) => {
                     if (objectName == 'requirement-folders') {
-                        this._sendWSFolderInfo(client)
+                        this._sendWSFolderInfo(this.client)
                     } else if (objectName == 'requirements') {
-                        this._sendWSRequirementInfo(client)
+                        this._sendWSRequirementInfo(this.client)
                     } else {
-                        client.send('Finish for ' + objectName)
+                        this.client.send('Finish for ' + objectName)
                     }
                     resolve(res.data)
                 })
                 .catch((error) => {
-                    reject(error)
-                })
-        })
-    }
-
-    modify(objectName, data) {
-        return new Promise((resolve, reject) => {
-            axios
-                .patch(baseURL + objectName + '/' + data.id, data, this.proxy)
-                .then((res) => {
-                    resolve(res.data)
-                })
-                .catch((error) => {
+                    if (objectName == 'requirement-folders') {
+                        this._sendWSFolderInfo(this.client)
+                    } else if (objectName == 'requirements') {
+                        this._sendWSRequirementInfo(this.client)
+                    } else {
+                        this.client.send('Finish for ' + objectName)
+                    }
+                    console.error('error in create')
+                    console.error(error)
                     reject(error)
                 })
         })
@@ -706,21 +702,6 @@ class apiSquash {
                 .then(() => {
                     resolve(this.allExig)
                 })
-                .catch((err) => reject(err))
-        })
-    }
-
-    updateTestExcution(idTest) {
-        //TODO modifi to test-suite
-        return new Promise((resolve, reject) => {
-            let data = {
-                _type: 'iteration-test-plan-item',
-                id: idTest,
-                execution_status: 'READY',
-            }
-            console.info('idTest : ' + idTest)
-            this.modify('iteration-test-plan-items', data)
-                .then((res) => resolve(res))
                 .catch((err) => reject(err))
         })
     }

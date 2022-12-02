@@ -4,6 +4,8 @@
     form.style.display = "none"
     var loading = document.getElementById("loading");
     loading.style.display = "block"
+    var result = document.getElementById("result");
+    result.style.display = "none"
   }
 
   function hideLoading() {
@@ -11,7 +13,17 @@
     form.style.display = "block"
     var loading = document.getElementById("loading");
     loading.style.display = "none"
-    window.stop();
+    var result = document.getElementById("result");
+    result.style.display = "none"
+  }
+
+  function showResult() {
+    var form = document.getElementById("formFormApi");
+    form.style.display = "none"
+    var loading = document.getElementById("loading");
+    loading.style.display = "none"
+    var result = document.getElementById("result");
+    result.style.display = "block"
   }
 
   function updateSprintFolderName(value) {
@@ -19,7 +31,6 @@
     document.getElementById("inputSprint").value = value
   }
 
-  console.log('hello world')
   var webSocket = new WebSocket('ws://localhost:3002/', 'test-protocol')
   webSocket.onmessage = event => {
     console.log(event);
@@ -41,7 +52,52 @@
     }
   }
 
+  function callApi() {
+    let payload = {
+      inputSprintJira: document.getElementById("inputSprintJira").value,
+      inputSprint: document.getElementById("inputSprint").value,
+      inputSessionTokenJira: document.getElementById("inputSessionTokenJira").value,
+      inputSessionTokenSquash: document.getElementById("inputSessionTokenSquash").value,
+      inputSessionTokenSquashBis: document.getElementById("inputSessionTokenSquashBis").value,
+      validator: "api"
+    }
+    let data = new FormData()
+    Object.entries(payload).forEach(el => {
+      data.append(el[0], el[1])
+    })
+    fetch("/api/fromApi", {
+      method: "POST",
+      body: data,
+    }).then(async res => {
+      console.log("debut de la sessions redirection")
+      while (document.getElementById("progress_bar").style.width !== "100%") {
+        await sleep(1000)
+        console.log("wait");
+      }
+      console.log("fin de la sessions redirection")
+      return res.json()
+    }).then(res => {
+      console.log("dataRecu: ");
+      console.log(res);
+      showResult()
+      var pre = document.getElementById("result_info")
+      pre.textContent = res.moreInfo
+      var h2 = document.getElementById("result_title")
+      h2.textContent = res.message
+    }).catch(err => console.log(err))
+  }
+
 </script>
+<div id="result" class="mt-5 " style="display: none;">
+  <h2 id="result_title" class="text-center">hngf;kjhn</h2>
+  <pre id="result_info" class="text-left">ghnk;fh;kjn</pre>
+  <div class="text-center"><a
+      href="https://test-management.orangeapplicationsforbusiness.com/squash/requirement-workspace/" target="_blank"
+      class="btn btn-outline-success btn-lg" type="button">Voir dans Squash</a>
+    <input class="btn btn-outline-danger btn-lg" type="button" value="Nouvelle itération" onclick="hideLoading()" />
+  </div>
+
+</div>
 <div id="loading" class="mt-5 text-center" style="display: none;">
   <h2>Chargement en cours ...</h2>
   <h3 id="ws_return"></h3>
@@ -70,7 +126,6 @@
         <div id="sprintHelp" class="form-text">Valeur par défaut : undefined</div>
       </div>
     </div>
-
   </div>
   <div class="mb-3">
     <div class="row">
@@ -78,24 +133,27 @@
         <label for="inputSessionTokenJira" class="form-label">ID de session Jira</label>
         <input type="input" class="form-control" id="inputSessionTokenJira" name="inputSessionTokenJira"
           aria-describedby="sessionHelp" required>
-        <div id="sessionHelp" class="form-text">Se connecter à <a href="<%=jiraHome%>" target="_blank">Jira</a> et récupérer le cookie "JSESSIONID"</div>
+        <div id="sessionHelp" class="form-text">Se connecter à <a href="<%=jiraHome%>" target="_blank">Jira</a> et
+          récupérer le cookie "JSESSIONID"</div>
       </div>
       <div class="col-4">
         <label for="inputSessionTokenSquash" class="form-label">ID de session Squash 1</label>
         <input type="input" class="form-control" id="inputSessionTokenSquash" name="inputSessionTokenSquash"
           aria-describedby="sessionHelp" required>
-        <div id="sessionHelp" class="form-text">Se connecter à <a href="<%=squashHome%>" target="_blank">Squash</a> et récupérer le cookie "JSESSIONID"</div>
+        <div id="sessionHelp" class="form-text">Se connecter à <a href="<%=squashHome%>" target="_blank">Squash</a> et
+          récupérer le cookie "JSESSIONID"</div>
       </div>
       <div class="col-4">
         <label for="inputSessionTokenSquashBis" class="form-label">ID de session Squash 2</label>
         <input type="input" class="form-control" id="inputSessionTokenSquashBis" name="inputSessionTokenSquashBis"
           aria-describedby="sessionHelp" required>
-        <div id="sessionHelp" class="form-text">Se connecter à <a href="<%=squashHome%>" target="_blank">Squash</a> et récupérer le cookie "squashtm"</div>
+        <div id="sessionHelp" class="form-text">Se connecter à <a href="<%=squashHome%>" target="_blank">Squash</a> et
+          récupérer le cookie "squashtm"</div>
       </div>
     </div>
   </div>
   <div class="text-center">
-    <button type="submit" onclick="showLoading()" class="btn btn-outline-success btn-lg" name="validator"
+    <button type="button" onclick="showLoading();callApi()" class="btn btn-outline-success btn-lg" name="validator"
       value="api">Transférer</button>
   </div>
 </form>
