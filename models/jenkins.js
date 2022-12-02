@@ -3,6 +3,7 @@ dotenv.config()
 const axios = require('axios')
 
 const URL_OUTPUT = process.env.JENKINS_OUTPUT_URL
+const URL_HTML = process.env.JENKINS_HTML_URL
 
 class Jenkins {
     constructor() {
@@ -26,6 +27,15 @@ class Jenkins {
         return new Promise((resolve, reject) => {
             axios
                 .get(URL_OUTPUT, this.proxy)
+                .then((res) => resolve(res))
+                .catch((err) => reject(err))
+        })
+    }
+
+    getHTMLResultRobotFrameWork() {
+        return new Promise((resolve, reject) => {
+            axios
+                .get(URL_HTML, this.proxy)
                 .then((res) => resolve(res))
                 .catch((err) => reject(err))
         })

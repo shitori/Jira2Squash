@@ -115,11 +115,13 @@
 <div id="result_rf2sq" class="mt-5 " style="display: none;">
   <h2 id="result_rf2sq_title" class="text-center"></h2>
   <!--pre id="result_rf2sq_info" class="text-left"></pre-->
-  <div class="text-center"><a
-      href="https://test-management.orangeapplicationsforbusiness.com/squash/requirement-workspace/" target="_blank"
+  <div class="text-center">
+    <a href="https://test-management.orangeapplicationsforbusiness.com/squash/requirement-workspace/" target="_blank"
       class="btn btn-outline-success btn-lg" type="button">Voir dans Squash</a>
     <input class="btn btn-outline-danger btn-lg" type="button" value="Nouvelle itération"
       onclick="hideLoadingRf2Sq()" />
+    <a href="/rfhtml" target="_blank" class="btn btn-outline-primary btn-lg" type="button">Voir détail Robot
+      FrameWork</a>
   </div>
   <div class="row" id="result_rf2sq_detail">
     <div class="card m-2 bg-success bg-gradient mx-auto" style="width: 10rem;">
@@ -139,6 +141,8 @@
       class="btn btn-outline-success btn-lg" type="button">Voir dans Squash</a>
     <input class="btn btn-outline-danger btn-lg" type="button" value="Nouvelle itération"
       onclick="hideLoadingRf2Sq()" />
+    <a href="/rfhtml" target="_blank" class="btn btn-outline-primary btn-lg" type="button">Voir détail Robot
+      FrameWork</a>
   </div>
 
 </div>
@@ -164,17 +168,15 @@
     <div class="col-4"><label for="inputSessionTokenSquash" class="form-label">ID de session Squash 1</label>
       <input type="input" class="form-control" id="inputSessionTokenSquash" name="inputSessionTokenSquash"
         aria-describedby="sessionHelp" required>
-      <div id="sessionHelp" class="form-text">Se connecter à <a
-          href="<%=squashHome%>"
-          target="_blank">Squash</a> et récupérer
+      <div id="sessionHelp" class="form-text">Se connecter à <a href="<%=squashHome%>" target="_blank">Squash</a> et
+        récupérer
         le cookie "JSESSIONID"</div>
     </div>
     <div class="col-4"><label for="inputSessionTokenSquashBis" class="form-label">ID de session Squash 2</label>
       <input type="input" class="form-control" id="inputSessionTokenSquashBis" name="inputSessionTokenSquashBis"
         aria-describedby="sessionHelp" required>
-      <div id="sessionHelp" class="form-text">Se connecter à <a
-          href="<%=squashHome%>"
-          target="_blank">Squash</a> et récupérer
+      <div id="sessionHelp" class="form-text">Se connecter à <a href="<%=squashHome%>" target="_blank">Squash</a> et
+        récupérer
         le cookie "squashtm"</div>
     </div>
   </div>

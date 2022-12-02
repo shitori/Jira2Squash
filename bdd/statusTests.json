@@ -21,11 +21,11 @@
     },
     {
         "name": "Test Sel legal break",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel transfert call",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel transfert fa",
@@ -89,7 +89,7 @@
     },
     {
         "name": "Test Sel help request",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel indicator my activites",

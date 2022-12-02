@@ -38,13 +38,13 @@ function writeOnExcel(sprintName, squashFileName, footerSize, result) {
             ws.cell(rowIndex, columnIndex++).string('C') // Action
             ws.cell(rowIndex, columnIndex++).string(
                 '/fcc-next-gen/' +
-                (record.nameJira.toLowerCase().includes('wallboard')
-                    ? 'New Wallboard/WB - '
-                    : '[NextGen]Nouveaux Bandeaux/G2R2 - ') +
-                'Sprint ' +
-                sprintName +
-                '/' +
-                record.nameJira.replaceAll('/', '\\')
+                    (record.nameJira.toLowerCase().includes('wallboard')
+                        ? 'New Wallboard/WB - '
+                        : '[NextGen]Nouveaux Bandeaux/G2R2 - ') +
+                    'Sprint ' +
+                    sprintName +
+                    '/' +
+                    record.nameJira.replaceAll('/', '\\')
             ) // REQ PATH
             ws.cell(rowIndex, columnIndex++).number(1) // REQ VERSION NUM
             ws.cell(rowIndex, columnIndex++).string(record.idJira) // REQ VERSION REFERENCE
@@ -52,13 +52,13 @@ function writeOnExcel(sprintName, squashFileName, footerSize, result) {
             ws.cell(rowIndex, columnIndex++).string('MINOR') // REQ VERSION CRITICALITY
             ws.cell(rowIndex, columnIndex++).string(
                 'REQ_JIRA_BUILD_' +
-                (record.typeJira == 'Récit' ? 'STORY' : 'BUG')
+                    (record.typeJira == 'Récit' ? 'STORY' : 'BUG')
             ) // REQ VERSION CATEGORY
             ws.cell(rowIndex, columnIndex++).string('UNDER_REVIEW') // REQ VERSION STATUS
             ws.cell(rowIndex, columnIndex++).string(
                 '<p><a href="https://jira-build.orangeapplicationsforbusiness.com/browse/' +
-                record.idJira +
-                '" target="_blank">Lien vers le ticket JIRA</a></p>'
+                    record.idJira +
+                    '" target="_blank">Lien vers le ticket JIRA</a></p>'
             ) // REQ VERSION DESCRIPTION
 
             rowIndex++
@@ -119,7 +119,12 @@ function fromAPI(req) {
         var jira = new Jira(
             new Proxy(req.body.inputSessionTokenJira).getProxy()
         )
-        var squash = new Squash(new ProxySquash(req.body.inputSessionTokenSquash, req.body.inputSessionTokenSquashBis).getProxy())
+        var squash = new Squash(
+            new ProxySquash(
+                req.body.inputSessionTokenSquash,
+                req.body.inputSessionTokenSquashBis
+            ).getProxy()
+        )
         if (
             req.body.inputSprintJira !== undefined &&
             req.body.inputSprintJira !== ''
@@ -240,9 +245,38 @@ function excuteProcessFromAPI(req, jira, squash, sourceName, resolve) {
     })
 }
 
+function getRobotFrameWorkReport() {
+    return new Promise((resolve, reject) => {
+        let jenkins = new Jenkins()
+        jenkins
+            .getHTMLResultRobotFrameWork()
+            .then((file) => {
+                resolve(fileHelper.saveHtmlFile(file))
+            })
+            .catch((err) => reject(err))
+    })
+}
+
+function getRobotFrameWorkReportLog() {
+    return new Promise((resolve, reject) => {
+        let jenkins = new Jenkins()
+        jenkins
+            .getHTMLLogResultRobotFrameWork()
+            .then((file) => {
+                resolve(fileHelper.saveLogFile(file))
+            })
+            .catch((err) => reject(err))
+    })
+}
+
 function setSquashCampagneFromJsonResult(req) {
     return new Promise((resolve, reject) => {
-        var squash = new Squash(new ProxySquash(req.body.inputSessionTokenSquash, req.body.inputSessionTokenSquashBis).getProxy())
+        var squash = new Squash(
+            new ProxySquash(
+                req.body.inputSessionTokenSquash,
+                req.body.inputSessionTokenSquashBis
+            ).getProxy()
+        )
 
         let client = new WebSocket.Client('ws://localhost:3002/')
         let jenkins = new Jenkins()
@@ -299,7 +333,7 @@ function setSquashCampagneFromJsonResult(req) {
                 })
                 .catch((err) => {
                     client.close()
-                    console.error("error in setSquashCampagneFromJsonResult")
+                    console.error('error in setSquashCampagneFromJsonResult')
                     reject(err)
                 })
         })
@@ -332,8 +366,8 @@ function backup(req) {
                 promises.push(
                     jira.getIssues(
                         'project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = ' +
-                        value +
-                        ' ORDER BY priority DESC, updated DESC'
+                            value +
+                            ' ORDER BY priority DESC, updated DESC'
                     )
                 )
             }
@@ -358,4 +392,5 @@ module.exports = {
     fromAPI,
     backup,
     setSquashCampagneFromJsonResult,
+    getRobotFrameWorkReport,
 }

@@ -33,6 +33,18 @@ module.exports = {
         res.download('upload/' + req.body.fileName + '.xls')
     },
 
+    getRobotFrameWorkHtml: (req, res) => {
+        maker
+            .getRobotFrameWorkReport()
+            .then((tmpFilePath) => {
+                res.download(tmpFilePath)
+            })
+            .catch((err) => {
+                console.log(err)
+                res.redirect('/')
+            })
+    },
+
     rf2squashnofile: (req, res) => {
         maker
             .setSquashCampagneFromJsonResult(req)

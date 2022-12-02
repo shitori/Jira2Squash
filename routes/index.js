@@ -15,6 +15,8 @@ router.post('/file', controller.getFile)
 
 router.post('/rf2squashnofile', controller.rf2squashnofile)
 
+router.get('/rfhtml', controller.getRobotFrameWorkHtml)
+
 //! PROTOTYPE A FINIR
 
 router.post('/rf2squash', controller_prototype.rf2squash)

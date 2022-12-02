@@ -35,6 +35,19 @@ function saveTmpFile(file) {
     })
 }
 
+function saveHtmlFile(file) {
+    return new Promise((resolve, reject) => {
+        let tmpName = 'tmp/rfResult.html'
+        fs.writeFile(tmpName, file.data, (err) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(tmpName)
+            }
+        })
+    })
+}
+
 function saveSourceFile(files) {
     return new Promise((resolve, reject) => {
         if (!files) {
@@ -82,6 +95,7 @@ module.exports = {
     saveSourceFileBis,
     removeTmpFile,
     saveTmpFile,
+    saveHtmlFile,
     saveJsonTmpFile,
     readJsonFile,
 }
