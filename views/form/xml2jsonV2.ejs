@@ -51,14 +51,10 @@
   }
 
   function callApiRf2Sq() {
-    let payload = {
-      inputSessionTokenSquash: document.querySelectorAll("[id='inputSessionTokenSquash']")[1].value,
-      inputSprint: document.querySelectorAll("[id='inputSprint']")[0].value
-    }
+
 
     let data = new FormData()
-    //data.append("json",JSON.stringify(payload))
-    data.append("inputSessionTokenSquash", document.querySelectorAll("[id='inputSessionTokenSquash']")[1].value)
+    data.append("inputSessionTokenSquash", undefined)
     data.append("inputSprint", document.querySelectorAll("[id='inputSprint']")[0].value)
     fetch("/api/rf2squashnofile", {
       method: "POST",
@@ -161,27 +157,13 @@
 </div>
 <form action="/rf2squashnofile" id="rf2squash" method="post" enctype="multipart/form-data">
   <div class="mb-3 row">
-    <div class="col-2"><label for="inputSprint" class="form-label">Sprint n°</label>
+    <div class="col"><label for="inputSprint" class="form-label">Sprint n°</label>
       <input type="input" class="form-control" id="inputSprint" name="inputSprint" aria-describedby="sprintHelp">
       <div id="sprintHelp" class="form-text">Valeur par défaut : Robot FrameWork</div>
-    </div>
-    <div class="col-5"><label for="inputSessionTokenSquash" class="form-label">ID de session Squash 1</label>
-      <input type="input" class="form-control" id="inputSessionTokenSquash" name="inputSessionTokenSquash"
-        aria-describedby="sessionHelp" required>
-      <div id="sessionHelp" class="form-text">Se connecter à <a href="<%=squashHome%>" target="_blank">Squash</a> et
-        récupérer
-        le cookie "JSESSIONID"</div>
-    </div>
-    <div class="col-5"><label for="inputSessionTokenSquashBis" class="form-label">ID de session Squash 2</label>
-      <input type="input" class="form-control" id="inputSessionTokenSquashBis" name="inputSessionTokenSquashBis"
-        aria-describedby="sessionHelp" required>
-      <div id="sessionHelp" class="form-text">Se connecter à <a href="<%=squashHome%>" target="_blank">Squash</a> et
-        récupérer
-        le cookie "squashtm"</div>
     </div>
   </div>
   <div class="text-center">
     <button type="button" class="btn btn-outline-success btn-lg" name="validator"
-      onclick="showLoadingRf2Sq();callApiRf2Sq()" value="api">Transférer</button>
+      onclick="showLoadingRf2Sq();callApiRf2Sq()" value="api">Robot FrameWork ➡️ Squash</button>
   </div>
 </form>

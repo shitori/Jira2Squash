@@ -11,6 +11,7 @@ var fileHelper = require('./helper/fileHelper')
 const Jira = require('../models/v2/apiJira')
 const Proxy = require('../models/v2/proxy')
 const ProxySquash = require('../models/v2/proxySquash')
+const ProxySquashV2 = require('../models/v2/proxySquashV2')
 const Squash = require('../models/v2/apiSquash')
 const Jenkins = require('./../models/jenkins')
 
@@ -119,12 +120,7 @@ function fromAPI(req) {
         var jira = new Jira(
             new Proxy(req.body.inputSessionTokenJira).getProxy()
         )
-        var squash = new Squash(
-            new ProxySquash(
-                req.body.inputSessionTokenSquash,
-                req.body.inputSessionTokenSquashBis
-            ).getProxy()
-        )
+        var squash = new Squash(new ProxySquashV2().getProxy())
         if (
             req.body.inputSprintJira !== undefined &&
             req.body.inputSprintJira !== ''
@@ -271,12 +267,7 @@ function getRobotFrameWorkReportLog() {
 
 function setSquashCampagneFromJsonResult(req) {
     return new Promise((resolve, reject) => {
-        var squash = new Squash(
-            new ProxySquash(
-                req.body.inputSessionTokenSquash,
-                req.body.inputSessionTokenSquashBis
-            ).getProxy()
-        )
+        var squash = new Squash(new ProxySquashV2().getProxy())
 
         let client = new WebSocket.Client('ws://localhost:3002/')
         let jenkins = new Jenkins()
@@ -353,10 +344,10 @@ function setSquashCampagneFromJsonResult(req) {
 function backup(req) {
     // TODO jira OK --> SQUASH call API TODO
     return new Promise((resolve) => {
-        var proxyJira = new Proxy(req.body.tokenSessionJira)
-        var jira = new Jira(proxyJira.getProxy())
-        //var proxySquash = new Proxy(req.body.tokenSessionSquash)
-        //var squash = new Squash(proxySquash.getProxy())
+        let jira = new Jira(new Proxy(req.body.tokenSessionJira).getProxy())
+        var squash = new Squash(
+            new Proxy(req.body.tokenSessionSquash).getProxy()
+        )
         var idSprint = require('./../bdd/idSprints.json')
         let promises = []
         Object.entries(idSprint).forEach((el) => {

@@ -9,8 +9,8 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 function test() {
-    var proxyJira = new Proxy('5F0E02606324FE087C862CF040B914B3')
-    var proxySquash = new Proxy('F696939B49AD3630BE446FD46A871705')
+    var proxyJira = new Proxy('') //TODO mettre à jour
+    var proxySquash = new Proxy('') //TODO mettre JSSESIONID
     var jira = new Jira(proxyJira.getProxy())
     var squash = new Squash(proxySquash.getProxy())
     jira.getIssues(

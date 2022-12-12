@@ -5,11 +5,11 @@
     },
     {
         "name": "Test Sel conference call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel conference call 2",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel double message",
@@ -21,15 +21,15 @@
     },
     {
         "name": "Test Sel legal break",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel transfert call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel transfert fa",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel bad num agent",
@@ -41,14 +41,6 @@
     },
     {
         "name": "Test Sel mobile number",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel num agent save if bad new",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel num anonymous",
         "status": "OK"
     },
     {
@@ -64,16 +56,24 @@
         "status": "OK"
     },
     {
+        "name": "!Test Sel lists agents",
+        "status": "OK"
+    },
+    {
+        "name": "!Test Sel lists agents sup",
+        "status": "OK"
+    },
+    {
         "name": "Test Sel agent tabs",
         "status": "OK"
     },
     {
         "name": "Test Sel agent tabs 2",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel chat empty",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel directory research",
@@ -89,7 +89,7 @@
     },
     {
         "name": "Test Sel help request",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel indicator my activites",
@@ -97,22 +97,6 @@
     },
     {
         "name": "Test Sel indicator my activites sup",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel lists agents",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel lists agents 2",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel lists agents sup",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel lists agents sup 2",
         "status": "OK"
     },
     {
@@ -141,11 +125,11 @@
     },
     {
         "name": "Test Sel callback html",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel callback send",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel callback svi",
@@ -205,7 +189,7 @@
     },
     {
         "name": "Test Sel legal break sup",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel reject incoming call",
@@ -213,11 +197,11 @@
     },
     {
         "name": "Test Sel listing shortlist EN",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel listing shortlist FR",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel loop language",
@@ -261,11 +245,11 @@
     },
     {
         "name": "Test Sel template sms link",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel template sms mod",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel check tab wallboard",
