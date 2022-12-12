@@ -8,6 +8,8 @@ const urlSuggestion =
     process.env.JIRA_SUGGESTION_URL +
     'sprint/picker?excludeCompleted=false&query=sprint+'
 
+const urlAgile = process.env.JIRA_AGILE_URL + 'board/4572/sprint'
+
 class JiraService {
     constructor(proxy) {
         this.proxy = proxy
@@ -31,9 +33,9 @@ class JiraService {
             axios
                 .get(
                     baseUrl +
-                        'search?jql=' +
-                        encodeURI(jql) +
-                        '&maxResults=10000',
+                    'search?jql=' +
+                    encodeURI(jql) +
+                    '&maxResults=10000',
                     this.proxy
                 )
                 .then((res) => {
@@ -52,6 +54,35 @@ class JiraService {
                 })
                 .catch((error) => {
                     reject(error)
+                })
+        })
+    }
+
+    getAllSprintSprint() {
+        return new Promise((resolve, reject) => {
+            this._getAllSprintSprint(0, []).then(res => {
+                let finalResult = {}
+                res.forEach(el => {
+                    finalResult[el.name.substring(9, 6).trim()] = el.id
+                })
+                resolve(finalResult)
+            }).catch(err => reject(err))
+        })
+    }
+
+    _getAllSprintSprint(index, lastResult) {
+        return new Promise((resolve, reject) => {
+            axios.get(urlAgile + '?startAt=' + index + '&maxResults=50', this.proxy)
+                .then(res => {
+                    let data = res.data
+                    lastResult = data.values.concat(lastResult)
+                    if (data.isLast) {
+                        resolve(lastResult)
+                    } else {
+                        resolve(this._getAllSprintSprint(index + 50, lastResult))
+                    }
+                }).catch(err => {
+                    reject(err)
                 })
         })
     }

@@ -19,6 +19,8 @@ router.post('/rf2squashnofile', controller.rf2squashnofile)
 
 //! PROTOTYPE A FINIR
 
+router.get('/jira/sprint', controller.getAllJiraSprint)
+
 router.put('/copyCampaing', controller_prototype.copyCompaing)
 
 router.get('/squash/link/', controller_prototype.prepareLinkBetweenTestsExigs)

@@ -51,8 +51,6 @@
   }
 
   function callApiRf2Sq() {
-
-
     let data = new FormData()
     data.append("inputSessionTokenSquash", undefined)
     data.append("inputSprint", document.querySelectorAll("[id='inputSprint']")[0].value)
@@ -70,9 +68,6 @@
     }).then(res => {
       console.log(res)
       showResultRf2Sq()
-
-      /*var pre = document.getElementById("result_rf2sq_info")
-      pre.textContent = res.moreInfo*/
       let result = res.result
       let contantCard = document.getElementById('result_rf2sq_detail')
       contantCard.innerHTML = ""
@@ -80,13 +75,13 @@
       let fail = 0
       result.forEach(element => {
         if (element.status !== "SUCCESS") {
-          success++
+          fail++
           createCard(contantCard, element)
         }
       })
       result.forEach(element => {
         if (element.status === "SUCCESS") {
-          fail++
+          success++
           createCard(contantCard, element)
         }
       })
@@ -95,6 +90,7 @@
       h2.textContent = res.message + ", " + success + " success et " + fail + " fails"
     }).catch(err => console.log(err))
   }
+
   function createCard(contantCard, element) {
     let div = document.createElement('div');
     div.className = (element.status == "SUCCESS" ? 'card m-2 mx-auto bg-success bg-gradient' : 'card m-2 mx-auto bg-danger bg-gradient')
@@ -107,6 +103,7 @@
         `
     contantCard.appendChild(div)
   }
+
 </script>
 <div id="result_rf2sq" class="mt-5 " style="display: none;">
   <h2 id="result_rf2sq_title" class="text-center"></h2>

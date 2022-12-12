@@ -55,4 +55,9 @@ module.exports = {
                 })
             })
     },
+
+    getAllJiraSprint: (req, res) => {
+        maker.getAllJiraSprint(req)
+            .then(result => res.json(result)).catch(err => res.json(err))
+    }
 }

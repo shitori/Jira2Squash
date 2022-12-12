@@ -56,24 +56,16 @@
         "status": "OK"
     },
     {
-        "name": "!Test Sel lists agents",
-        "status": "OK"
-    },
-    {
-        "name": "!Test Sel lists agents sup",
-        "status": "OK"
-    },
-    {
         "name": "Test Sel agent tabs",
         "status": "OK"
     },
     {
         "name": "Test Sel agent tabs 2",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel chat empty",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel directory research",
@@ -100,6 +92,14 @@
         "status": "OK"
     },
     {
+        "name": "Test Sel lists agents",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel lists agents sup",
+        "status": "OK"
+    },
+    {
         "name": "Test Sel no site",
         "status": "OK"
     },
@@ -113,7 +113,7 @@
     },
     {
         "name": "Test Sel callback accent",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel callback allowed",
@@ -193,7 +193,7 @@
     },
     {
         "name": "Test Sel reject incoming call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel listing shortlist EN",
@@ -209,23 +209,19 @@
     },
     {
         "name": "Test Sel conference call external",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel external num",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel no pause",
-        "status": "KO"
-    },
-    {
-        "name": "Test Sel outgoing call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel send sms",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel sms bad number",
@@ -241,7 +237,7 @@
     },
     {
         "name": "Test Sel template sms",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel template sms link",
@@ -249,6 +245,10 @@
     },
     {
         "name": "Test Sel template sms mod",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel sans emetteur",
         "status": "OK"
     },
     {
