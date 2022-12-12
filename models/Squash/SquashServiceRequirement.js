@@ -18,6 +18,18 @@ class SquashService {
         this.setter = new SquashServiceSetter(proxy, client)
     }
 
+    _setProgressBarRequirement(max) {
+        this.setter._setProgressBarRequirement(max)
+    }
+
+    _setProgressBarFolder(max) {
+        this.setter._setProgressBarFolder(max)
+    }
+
+    _setProgressBarStatus(max) {
+        this.setter._setProgressBarStatus(max)
+    }
+
     createRequirement(idFolderParent, record) {
         let data = {
             _type: 'requirement',
@@ -49,9 +61,9 @@ class SquashService {
                 .then((success) => {
                     resolve(
                         'ID nouvelle exigence : ' +
-                            success.id +
-                            ' - ' +
-                            record.nameJira
+                        success.id +
+                        ' - ' +
+                        record.nameJira
                     )
                 })
                 .catch((err) => {

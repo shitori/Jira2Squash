@@ -20,9 +20,12 @@ class JiraService {
             axios
                 .get(urlSuggestion + sprintName, this.proxy)
                 .then((res) => {
+                    console.log("Sprint find");
                     resolve(res.data.suggestions[0].id)
                 })
                 .catch((err) => {
+                    console.log("error in getSprintID");
+                    console.log(err);
                     reject(err)
                 })
         })

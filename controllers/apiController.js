@@ -16,6 +16,7 @@ module.exports = {
                 })
             })
             .catch((err) => {
+                console.log("error in fromAPI controller");
                 res.json(err)
             })
     },

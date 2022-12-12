@@ -33,16 +33,25 @@ class SquashService {
     }
 
     _setProgressBarRequirement(max) {
+        this.setter._setProgressBarRequirement(max)
+        this.folderService._setProgressBarRequirement(max)
+        this.requirementService._setProgressBarRequirement(max)
         this.requirementMax = max
         this.requirementCurrent = 0
     }
 
     _setProgressBarFolder(max) {
+        this.setter._setProgressBarFolder(max)
+        this.folderService._setProgressBarFolder(max)
+        this.requirementService._setProgressBarFolder(max)
         this.forlderMax = max
         this.folderCurrent = 0
     }
 
     _setProgressBarStatus(max) {
+        this.setter._setProgressBarStatus(max)
+        this.folderService._setProgressBarStatus(max)
+        this.requirementService._setProgressBarStatus(max)
         this.changeStatusMax = max
         this.changeStatusCurrent = 0
     }

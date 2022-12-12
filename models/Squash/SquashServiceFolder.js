@@ -16,6 +16,18 @@ class SquashServiceFolder {
         this.setter = new SquashServiceSetter(proxy, client)
     }
 
+    _setProgressBarRequirement(max) {
+        this.setter._setProgressBarRequirement(max)
+    }
+
+    _setProgressBarFolder(max) {
+        this.setter._setProgressBarFolder(max)
+    }
+
+    _setProgressBarStatus(max) {
+        this.setter._setProgressBarStatus(max)
+    }
+
     createFolderIfNecessary(isWB, sprint) {
         let folderName =
             (isWB ? wallboardAcronymeSprint : bandeauAcronymeSprint) +
@@ -52,7 +64,7 @@ class SquashServiceFolder {
                             id: idParent,
                         },
                     }
-                    return this.create('requirement-folders', dataFolder)
+                    return this.setter.create('requirement-folders', dataFolder)
                 })
                 .then((res) => {
                     let idNewFolder = res.id
