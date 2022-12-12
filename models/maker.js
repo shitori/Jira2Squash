@@ -9,9 +9,8 @@ var fileHelper = require('./helper/fileHelper')
 
 //API
 const Jira = require('./v2/JiraService')
-const Squash = require('./v2/apiSquash')
 const Jenkins = require('./JenkinsService')
-const SquashService = require('./Squash/SquashService')
+const Squash = require('./Squash/SquashService')
 var xml2js = require('./../models/rf2squash/maker')
 
 //proxy
@@ -134,6 +133,7 @@ function fromAPI(req) {
                     excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
                 })
                 .catch((err) => {
+                    console.log("error in getSprintID use in getSprintID");
                     throw err
                 })
         } else {
