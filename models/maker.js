@@ -8,7 +8,7 @@ var dHelper = require('./helper/defaultHelper')
 var fileHelper = require('./helper/fileHelper')
 
 //v2
-const Jira = require('../models/v2/apiJira')
+const Jira = require('./v2/JiraService')
 const Proxy = require('../models/v2/proxy')
 const ProxySquash = require('../models/v2/proxySquash')
 const ProxySquashV2 = require('../models/v2/proxySquashV2')

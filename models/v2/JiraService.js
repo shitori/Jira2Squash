@@ -8,7 +8,7 @@ const urlSuggestion =
     process.env.JIRA_SUGGESTION_URL +
     'sprint/picker?excludeCompleted=false&query=sprint+'
 
-class apiJira {
+class JiraService {
     constructor(proxy) {
         this.proxy = proxy
     }
@@ -57,4 +57,4 @@ class apiJira {
     }
 }
 
-module.exports = apiJira
+module.exports = JiraService

@@ -1,7 +1,7 @@
 var WebSocket = require('faye-websocket')
 
 //v2
-const Jira = require('../models/v2/apiJira')
+const Jira = require('./v2/JiraService')
 const Proxy = require('../models/v2/proxy')
 const Squash = require('../models/v2/apiSquash')
 
