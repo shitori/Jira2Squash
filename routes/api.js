@@ -17,9 +17,9 @@ router.post('/backup', controller.backup)
 
 router.post('/rf2squashnofile', controller.rf2squashnofile)
 
-//! PROTOTYPE A FINIR
-
 router.get('/jira/sprint', controller.getAllJiraSprint)
+
+//! PROTOTYPE A FINIR
 
 router.put('/copyCampaing', controller_prototype.copyCompaing)
 

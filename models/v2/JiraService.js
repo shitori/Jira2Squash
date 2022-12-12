@@ -33,9 +33,9 @@ class JiraService {
             axios
                 .get(
                     baseUrl +
-                    'search?jql=' +
-                    encodeURI(jql) +
-                    '&maxResults=10000',
+                        'search?jql=' +
+                        encodeURI(jql) +
+                        '&maxResults=10000',
                     this.proxy
                 )
                 .then((res) => {
@@ -60,28 +60,37 @@ class JiraService {
 
     getAllSprintSprint() {
         return new Promise((resolve, reject) => {
-            this._getAllSprintSprint(0, []).then(res => {
-                let finalResult = {}
-                res.forEach(el => {
-                    finalResult[el.name.substring(9, 6).trim()] = el.id
+            this._getAllSprintSprint(0, [])
+                .then((res) => {
+                    let finalResult = {}
+                    res.forEach((el) => {
+                        finalResult[el.name.substring(9, 6).trim()] = el.id
+                    })
+                    resolve(finalResult)
                 })
-                resolve(finalResult)
-            }).catch(err => reject(err))
+                .catch((err) => reject(err))
         })
     }
 
     _getAllSprintSprint(index, lastResult) {
         return new Promise((resolve, reject) => {
-            axios.get(urlAgile + '?startAt=' + index + '&maxResults=50', this.proxy)
-                .then(res => {
+            axios
+                .get(
+                    urlAgile + '?startAt=' + index + '&maxResults=50',
+                    this.proxy
+                )
+                .then((res) => {
                     let data = res.data
                     lastResult = data.values.concat(lastResult)
                     if (data.isLast) {
                         resolve(lastResult)
                     } else {
-                        resolve(this._getAllSprintSprint(index + 50, lastResult))
+                        resolve(
+                            this._getAllSprintSprint(index + 50, lastResult)
+                        )
                     }
-                }).catch(err => {
+                })
+                .catch((err) => {
                     reject(err)
                 })
         })
