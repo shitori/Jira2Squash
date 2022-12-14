@@ -42,7 +42,7 @@ class SquashServiceSetter {
         })
 
         client.on('message', function (message) {
-            console.info("Data from WebSocketServer '" + message.data + "'")
+            console.info("Data from WebSocketServer squashserviceSetter'" + message.data + "'")
         })
 
         client.on('close', function (message) {
@@ -55,10 +55,11 @@ class SquashServiceSetter {
         client.close()
     }
 
-    _sendWSinfoHard(client, message, percent) {
+    _sendWSinfoHard(client, message, percent, cible) {
         let info = {
             message: message,
             percent: percent,
+            cible: cible,
         }
         this._sendWSinfoSoft(client, info)
     }
@@ -76,6 +77,7 @@ class SquashServiceSetter {
                 '/' +
                 this.requirementMax,
             percent: 50 + (this.requirementCurrent * 50) / this.requirementMax,
+            cible: 'fromAPI',
         }
         this._sendWSinfoSoft(client, requirementInfo)
     }
@@ -85,6 +87,7 @@ class SquashServiceSetter {
         let folderInfo = {
             message: 'Folders : ' + this.folderCurrent + '/' + this.forlderMax,
             percent: 30 + (this.folderCurrent * 20) / this.forlderMax,
+            cible: 'fromAPI',
         }
         this._sendWSinfoSoft(client, folderInfo)
     }
@@ -99,6 +102,7 @@ class SquashServiceSetter {
                 this.changeStatusMax,
             percent:
                 50 + (this.changeStatusCurrent * 50) / this.changeStatusMax,
+            cible: 'fromRF',
         }
         this._sendWSinfoSoft(client, changeStatusInfo)
     }
@@ -117,7 +121,7 @@ class SquashServiceSetter {
                     }
                     resolve(res.data)
                 })
-                .catch((error) => {
+                .catch((err) => {
                     if (objectName == 'requirement-folders') {
                         this._sendWSFolderInfo(this.client)
                     } else if (objectName == 'requirements') {
@@ -125,9 +129,7 @@ class SquashServiceSetter {
                     } else {
                         this.client.send('Finish for ' + objectName)
                     }
-                    console.error('error in create')
-                    console.error(error)
-                    reject(error)
+                    reject({ messsage: "error in create", err })
                 })
         })
     }
@@ -167,11 +169,9 @@ class SquashServiceSetter {
                         realId: test.refTestId,
                     })
                 })
-                .catch((error) => {
+                .catch((err) => {
                     this._sendWSExcutionStatusInfo(this.client)
-                    console.error('error in changeStatus')
-                    console.error(error)
-                    reject(error)
+                    reject({ message: "error in ", err })
                 })
         })
     }

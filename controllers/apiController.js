@@ -16,8 +16,12 @@ module.exports = {
                 })
             })
             .catch((err) => {
-                console.log("error in fromAPI controller");
-                res.json(err)
+                res.json({
+                    message:
+                        "Une erreur s'est produit pendant la mise à jour de Squash par Jira",
+                    moreInfo: err,
+                    type: 'error'
+                })
             })
     },
 
@@ -45,6 +49,7 @@ module.exports = {
                     message: 'Squash mise à jour',
                     moreInfo: moreInfo,
                     result: result,
+                    type: "success"
                 })
             })
             .catch((err) => {
@@ -53,6 +58,7 @@ module.exports = {
                         "Une erreur s'est produit pendant la mise à jour de Squash par RobotFramework",
 
                     moreInfo: err,
+                    type: 'error'
                 })
             })
     },

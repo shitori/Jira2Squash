@@ -9,6 +9,8 @@ const SquashServiceRequirement = require('./SquashServiceRequirement')
 const dotenv = require('dotenv')
 dotenv.config()
 
+const DELAY_VALUE = 1000
+
 class SquashService {
     constructor(proxy) {
         this.proxy = proxy
@@ -62,7 +64,7 @@ class SquashService {
         })
 
         client.on('message', function (message) {
-            console.info("Data from WebSocketServer '" + message.data + "'")
+            console.info("Data from WebSocketServer squashService'" + message.data + "'")
         })
 
         client.on('close', function (message) {
@@ -75,10 +77,11 @@ class SquashService {
         client.close()
     }
 
-    _sendWSinfoHard(client, message, percent) {
+    _sendWSinfoHard(client, message, percent, cible) {
         let info = {
             message: message,
             percent: percent,
+            cible: cible,
         }
         this._sendWSinfoSoft(client, info)
     }
@@ -97,20 +100,20 @@ class SquashService {
             this._setProgressBarFolder(promesse.length)
             Promise.all(promesse)
                 .then((responses) => {
-                    this.requirementService
+                    return this.requirementService
                         .createRequirements(responses[1], responses[0], result)
-                        .then((res) => resolve(res))
-                        .catch((err) => reject(err))
-                })
+
+
+
+                }).then((res) => resolve(res))
                 .catch((err) => {
                     console.error(err)
-                    reject(err)
+                    reject({ message: "error in importInSquashWithAPI", err })
                 })
         })
     }
 
     setSquashCampagneFromJsonResult(req, resultRobotFrameWork, mapping) {
-        //console.log(req);
         return new Promise((resolve, reject) => {
             this.getter
                 .getContents('campaign-folders', 9466) //? https://test-management.orangeapplicationsforbusiness.com/squash/campaign-workspace/campaign-folder/9466/content
@@ -132,7 +135,8 @@ class SquashService {
                     this._sendWSinfoHard(
                         this.client,
                         'Squash campaing parent folder finded',
-                        35
+                        35,
+                        'fromRF'
                     )
                     let folder = res._embedded.content.find(
                         (cf) => cf.name === 'PLTF V7'
@@ -143,7 +147,8 @@ class SquashService {
                     this._sendWSinfoHard(
                         this.client,
                         'Squash campaing folder finded',
-                        40
+                        40,
+                        'fromRF'
                     )
                     let hardP0 = res.iterations.find(
                         (iteration) =>
@@ -168,7 +173,8 @@ class SquashService {
                     this._sendWSinfoHard(
                         this.client,
                         'Squash Test folder finded',
-                        45
+                        45,
+                        'fromRF'
                     )
                     let res = []
                     responses.forEach((response) => {
@@ -187,7 +193,8 @@ class SquashService {
                     this._sendWSinfoHard(
                         this.client,
                         'Squash Test suites finded and concated',
-                        50
+                        50,
+                        'fromRF'
                     )
                     let res = []
                     responses.forEach((response) => {
@@ -231,7 +238,10 @@ class SquashService {
                                     findedResultRobotFrameWork !== undefined &&
                                     findedResultRobotFrameWork.status == 'OK'
                                 ) {
-                                    console.info(el.refTestName + ' ajouté')
+                                    console.info(
+                                        el.refTestName +
+                                        ' ajouté pour nouveau succès'
+                                    )
                                     changeStatusList.push(
                                         new Promise((resolve) =>
                                             setTimeout(resolve, this.delay)
@@ -242,12 +252,15 @@ class SquashService {
                                             )
                                         )
                                     )
-                                    this.delay += 1000
+                                    this.delay += DELAY_VALUE
                                 } else if (
                                     findedResultRobotFrameWork !== undefined &&
                                     findedResultRobotFrameWork.status == 'KO'
                                 ) {
-                                    console.info(el.refTestName + ' ajouté')
+                                    console.info(
+                                        el.refTestName +
+                                        ' ajouté pour nouveau échec'
+                                    )
                                     changeStatusList.push(
                                         new Promise((resolve) =>
                                             setTimeout(resolve, this.delay)
@@ -258,7 +271,7 @@ class SquashService {
                                             )
                                         )
                                     )
-                                    this.delay += 1000
+                                    this.delay += DELAY_VALUE
                                 }
                             }
                         })
@@ -274,9 +287,7 @@ class SquashService {
                     resolve(responses)
                 })
                 .catch((err) => {
-                    console.error('error in setSquashCampagneFromJsonResult')
-                    console.error(err)
-                    reject(err)
+                    reject({ message: "error in setSquashCampagneFromJsonResult Squash service", err })
                 })
         })
     }

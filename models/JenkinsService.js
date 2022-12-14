@@ -28,7 +28,7 @@ class Jenkins {
             axios
                 .get(URL_OUTPUT, this.proxy)
                 .then((res) => resolve(res))
-                .catch((err) => reject(err))
+                .catch((err) => reject({ message: "error in getOutputResultRobotFrameWork", err }))
         })
     }
 
@@ -37,7 +37,7 @@ class Jenkins {
             axios
                 .get(URL_HTML, this.proxy)
                 .then((res) => resolve(res))
-                .catch((err) => reject(err))
+                .catch((err) => reject({ message: "error in getOutputResultRobotFrameWork", err }))
         })
     }
 }

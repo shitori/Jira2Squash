@@ -1,7 +1,7 @@
 const USERNAME = process.env.SQUASH_USERNAME
 const PASSWORD = process.env.PROXY_PASSWORD
 
-const headerSquash = {
+const SquashHeader = {
     headers: {
         Authorization:
             'Basic ' +
@@ -9,4 +9,4 @@ const headerSquash = {
     },
 }
 
-module.exports = headerSquash
+module.exports = SquashHeader

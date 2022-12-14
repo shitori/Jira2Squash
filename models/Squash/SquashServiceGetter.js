@@ -24,7 +24,7 @@ class SquashServiceGetter {
                     resolve(res.data)
                 })
                 .catch((err) => {
-                    reject(err)
+                    reject({ message: "error in getContents", err })
                 })
         })
     }
@@ -38,7 +38,7 @@ class SquashServiceGetter {
                     resolve(res.data)
                 })
                 .catch((err) => {
-                    reject(err)
+                    reject({ message: "error in getObject", err })
                 })
         })
     }
@@ -60,8 +60,8 @@ class SquashServiceGetter {
                     )
                     resolve(searchObject)
                 })
-                .catch((error) => {
-                    reject(error)
+                .catch((err) => {
+                    reject({ message: "error in findByName", err })
                 })
         })
     }
@@ -80,7 +80,7 @@ class SquashServiceGetter {
                         resolve(res[field])
                     }
                 })
-                .catch((err) => reject(err))
+                .catch((err) => reject({ message: "error in findSomethingByName", err }))
         })
     }
 }

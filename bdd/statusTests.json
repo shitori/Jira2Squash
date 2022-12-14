@@ -1,34 +1,6 @@
 [
     {
-        "name": "Test Sel cancel reconnection",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel conference call",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel conference call 2",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel double message",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel double mod status",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel legal break",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel transfert call",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel transfert fa",
+        "name": "Test Sel sans emetteur",
         "status": "OK"
     },
     {
@@ -53,6 +25,74 @@
     },
     {
         "name": "Test Sel validate number",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel dashboard fa details",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel dashboard fa research",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel dashboard fa sup filters",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel dashboard filters",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel legends calls dial",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel legends FA dial",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel stats fa",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel listing shortlist EN",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel listing shortlist FR",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel loop language",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel send sms",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel sms bad number",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel sms len message",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel sms no message",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel template sms",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel template sms link",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel template sms mod",
         "status": "OK"
     },
     {
@@ -104,16 +144,76 @@
         "status": "OK"
     },
     {
-        "name": "Test Sel queue progress",
-        "status": "OK"
-    },
-    {
         "name": "Test Sel sup tabs",
         "status": "OK"
     },
     {
-        "name": "Test Sel callback accent",
+        "name": "Test Sel conference call external",
         "status": "OK"
+    },
+    {
+        "name": "Test Sel external num",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel no pause",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel incoming call",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel legal break sup",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel reject incoming call",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel cancel reconnection",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel conference call",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel conference call 2",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel double message",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel double mod status",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel legal break",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel queue progress",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel transfert call",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel transfert fa",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel voicemail legal break",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel callback accent",
+        "status": "KO"
     },
     {
         "name": "Test Sel callback allowed",
@@ -125,11 +225,11 @@
     },
     {
         "name": "Test Sel callback html",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel callback send",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel callback svi",
@@ -153,102 +253,6 @@
     },
     {
         "name": "Test Sel voice allowed",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel dashboard fa details",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel dashboard fa research",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel dashboard fa sup filters",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel dashboard filters",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel legends calls dial",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel legends FA dial",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel stats fa",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel incoming call",
-        "status": "KO"
-    },
-    {
-        "name": "Test Sel legal break sup",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel reject incoming call",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel listing shortlist EN",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel listing shortlist FR",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel loop language",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel conference call external",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel external num",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel no pause",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel send sms",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel sms bad number",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel sms len message",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel sms no message",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel template sms",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel template sms link",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel template sms mod",
-        "status": "OK"
-    },
-    {
-        "name": "Test Sel sans emetteur",
         "status": "OK"
     },
     {

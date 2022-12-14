@@ -30,7 +30,7 @@ class apiSquash {
         this.allExig = []
         this.client = new WebSocket.Client('ws://localhost:3002/')
         this._setClientWebsocket(this.client)
-        this.delay
+        this.delay = 0
     }
 
     _setProgressBarRequirement(max) {
@@ -54,7 +54,7 @@ class apiSquash {
         })
 
         client.on('message', function (message) {
-            console.info("Data from WebSocketServer '" + message.data + "'")
+            console.info("Data from WebSocketServer api Squash'" + message.data + "'")
         })
 
         client.on('close', function (message) {
@@ -67,10 +67,11 @@ class apiSquash {
         client.close()
     }
 
-    _sendWSinfoHard(client, message, percent) {
+    _sendWSinfoHard(client, message, percent, cible) {
         let info = {
             message: message,
             percent: percent,
+            cible: cible,
         }
         this._sendWSinfoSoft(client, info)
     }
@@ -88,6 +89,7 @@ class apiSquash {
                 '/' +
                 this.requirementMax,
             percent: 50 + (this.requirementCurrent * 50) / this.requirementMax,
+            cible: 'fromAPI',
         }
         this._sendWSinfoSoft(client, requirementInfo)
     }
@@ -97,6 +99,7 @@ class apiSquash {
         let folderInfo = {
             message: 'Folders : ' + this.folderCurrent + '/' + this.forlderMax,
             percent: 30 + (this.folderCurrent * 20) / this.forlderMax,
+            cible: 'fromAPI',
         }
         this._sendWSinfoSoft(client, folderInfo)
     }
@@ -111,6 +114,7 @@ class apiSquash {
                 this.changeStatusMax,
             percent:
                 50 + (this.changeStatusCurrent * 50) / this.changeStatusMax,
+            cible: 'fromRF',
         }
         this._sendWSinfoSoft(client, changeStatusInfo)
     }
@@ -744,7 +748,8 @@ class apiSquash {
                     this._sendWSinfoHard(
                         this.client,
                         'Squash campaing parent folder finded',
-                        35
+                        35,
+                        'fromRF'
                     )
                     let folder = res._embedded.content.find(
                         (cf) => cf.name === 'PLTF V7'
@@ -755,7 +760,8 @@ class apiSquash {
                     this._sendWSinfoHard(
                         this.client,
                         'Squash campaing folder finded',
-                        40
+                        40,
+                        'fromRF'
                     )
                     let hardP0 = res.iterations.find(
                         (iteration) =>
@@ -780,7 +786,8 @@ class apiSquash {
                     this._sendWSinfoHard(
                         this.client,
                         'Squash Test folder finded',
-                        45
+                        45,
+                        'fromRF'
                     )
                     let res = []
                     responses.forEach((response) => {
@@ -797,7 +804,8 @@ class apiSquash {
                     this._sendWSinfoHard(
                         this.client,
                         'Squash Test suites finded and concated',
-                        50
+                        50,
+                        'fromRF'
                     )
                     let res = []
                     responses.forEach((response) => {
@@ -841,7 +849,10 @@ class apiSquash {
                                     findedResultRobotFrameWork !== undefined &&
                                     findedResultRobotFrameWork.status == 'OK'
                                 ) {
-                                    console.info(el.refTestName + ' ajouté')
+                                    console.info(
+                                        el.refTestName +
+                                            ' ajouté pour nouveau succès'
+                                    )
                                     changeStatusList.push(
                                         new Promise((resolve) =>
                                             setTimeout(resolve, this.delay)
@@ -854,7 +865,10 @@ class apiSquash {
                                     findedResultRobotFrameWork !== undefined &&
                                     findedResultRobotFrameWork.status == 'KO'
                                 ) {
-                                    console.info(el.refTestName + ' ajouté')
+                                    console.info(
+                                        el.refTestName +
+                                            ' ajouté pour nouveau échec'
+                                    )
                                     changeStatusList.push(
                                         new Promise((resolve) =>
                                             setTimeout(resolve, this.delay)
@@ -878,7 +892,9 @@ class apiSquash {
                     resolve(responses)
                 })
                 .catch((err) => {
-                    console.error('error in setSquashCampagneFromJsonResult')
+                    console.error(
+                        'error in setSquashCampagneFromJsonResult in apiSquash'
+                    )
                     console.error(err)
                     reject(err)
                 })

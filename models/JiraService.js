@@ -20,13 +20,11 @@ class JiraService {
             axios
                 .get(urlSuggestion + sprintName, this.proxy)
                 .then((res) => {
-                    console.log("Sprint find");
+                    console.log('Sprint find')
                     resolve(res.data.suggestions[0].id)
                 })
                 .catch((err) => {
-                    console.log("error in getSprintID");
-                    console.log(err);
-                    reject(err)
+                    reject({ message: "getOutputResultRobotFrameWork", err })
                 })
         })
     }
@@ -36,9 +34,9 @@ class JiraService {
             axios
                 .get(
                     baseUrl +
-                        'search?jql=' +
-                        encodeURI(jql) +
-                        '&maxResults=10000',
+                    'search?jql=' +
+                    encodeURI(jql) +
+                    '&maxResults=10000',
                     this.proxy
                 )
                 .then((res) => {
@@ -55,8 +53,8 @@ class JiraService {
                     })
                     resolve(compactIssues)
                 })
-                .catch((error) => {
-                    reject(error)
+                .catch((err) => {
+                    reject({ message: "error in getIssues", err })
                 })
         })
     }
@@ -71,7 +69,7 @@ class JiraService {
                     })
                     resolve(finalResult)
                 })
-                .catch((err) => reject(err))
+                .catch((err) => reject({ message: "error in getAllSprintSprint", err }))
         })
     }
 
@@ -94,7 +92,7 @@ class JiraService {
                     }
                 })
                 .catch((err) => {
-                    reject(err)
+                    reject({ message: "error in _getAllSprintSprint", err })
                 })
         })
     }

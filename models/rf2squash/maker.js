@@ -18,13 +18,18 @@ function setUpToSquashFromXmlFileWithOption(
     cibleStatusTestsFilePath
 ) {
     return new Promise((resolve, reject) => {
+        let returnInfo = ''
+        let finalResult = []
+        let mappings = {}
+        let shortResult = []
+        let nbSucess = 0
         fsp.readFile(sourceFilePath)
             .then((xml) => {
                 xml2js.parseString(xml, (err, result) => {
                     if (err) {
                         reject(err)
                     }
-                    let shortResult = []
+
                     result = result.robot.suite[0].suite
                     result.forEach((el) => {
                         el.suite.forEach((els) => {
@@ -35,10 +40,6 @@ function setUpToSquashFromXmlFileWithOption(
                         })
                     })
 
-                    let finalResult = []
-                    let mappings = {}
-
-                    let nbSucess = 0
                     shortResult.forEach((el) => {
                         let test = {}
                         mappings[el.fileName] = []
@@ -55,10 +56,10 @@ function setUpToSquashFromXmlFileWithOption(
                                         test['status'] = 'KO'
                                     }
                                 })
-                            } /*else {
-                            console.log("Other :");
-                            console.log(els);
-                        }*/ // ! cas de la loop
+                            } else {
+                                console.info('Other :')
+                                console.info(els)
+                            } // ! cas de la loop
                         })
                         if (!isFail) {
                             test['name'] = el.fileName
@@ -67,31 +68,24 @@ function setUpToSquashFromXmlFileWithOption(
                         }
                         finalResult.push(test)
                     })
-
                     const json = JSON.stringify(finalResult, null, 4)
-
-                    const json2 = JSON.stringify(mappings, null, 4)
-
-                    let returnInfo = ''
-                    // log JSON string
-                    fsp.writeFile(cibleStatusTestsFilePath, json)
-                        .then(() => {
-                            returnInfo +=
-                                nbSucess +
-                                '/' +
-                                shortResult.length +
-                                ' success\n'
-                            return fsp.writeFile(cibleMappingFilePath, json2)
-                        })
-                        .then(() => {
-                            returnInfo += 'mapping set up\n'
-                            resolve(returnInfo)
-                        })
-                        .catch((err) => console.error(err))
+                    return fsp.writeFile(cibleStatusTestsFilePath, json)
                 })
             })
-            .catch((err) => {
-                reject(err)
+            .then(() => {
+                returnInfo +=
+                    nbSucess +
+                    '/' +
+                    shortResult.length +
+                    ' success\n'
+                const json2 = JSON.stringify(mappings, null, 4)
+                return fsp.writeFile(cibleMappingFilePath, json2)
+            })
+            .then(() => {
+                returnInfo += 'mapping set up\n'
+                resolve(returnInfo)
+            }).catch((err) => {
+                reject({ message: "setUpToSquashFromXmlFileWithOption", err })
             })
     })
 }

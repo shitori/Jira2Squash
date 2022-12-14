@@ -1,7 +1,7 @@
 var WebSocket = require('faye-websocket')
 
 //v2
-const Jira = require('./v2/JiraService')
+const Jira = require('./JiraService')
 const Proxy = require('../models/v2/proxy')
 const Squash = require('../models/v2/apiSquash')
 
@@ -31,7 +31,7 @@ function testSocket() {
     })
 
     client.on('message', function (message) {
-        console.info("Data from WebSocketServer '" + message.data + "'")
+        console.info("Data from WebSocketServer makerTest'" + message.data + "'")
     })
 
     client.on('close', function (message) {
