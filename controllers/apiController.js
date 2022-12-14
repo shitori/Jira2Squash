@@ -63,6 +63,20 @@ module.exports = {
             })
     },
 
+    getOldResult: (req, res) => {
+        let result = maker.getOldResult()
+        let moreInfo = ''
+        result.forEach((element) => {
+            moreInfo += element.message + '\n'
+        })
+        res.json({
+            message: 'Ancienne mise à jour Squash',
+            moreInfo: moreInfo,
+            result: result,
+            type: "success"
+        })
+    },
+
     getAllJiraSprint: (req, res) => {
         maker
             .getAllJiraSprint(req)

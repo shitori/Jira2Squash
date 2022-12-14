@@ -48,6 +48,45 @@ function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+function callApiRf2SqOld() {
+    fetch('/api/oldResult', {
+        method: 'GET'
+    }).then(res => {
+        return res.json()
+    }).then(res => {
+        showResultRf2Sq()
+
+        let result = res.result
+        let contantCard = document.getElementById('result_rf2sq_detail')
+        contantCard.innerHTML = ''
+        let success = 0
+        let fail = 0
+        result.forEach((element) => {
+            if (element.status !== 'SUCCESS') {
+                fail++
+                createCard(contantCard, element)
+            }
+        })
+        result.forEach((element) => {
+            if (element.status === 'SUCCESS') {
+                success++
+                createCard(contantCard, element)
+            }
+        })
+
+        var h2 = document.getElementById('result_rf2sq_title')
+        h2.textContent =
+            res.message + ', ' + success + ' success et ' + fail + ' fails'
+    }).catch(err => {
+        console.error(err)
+        showResultRf2Sq()
+        let contantCard = document.getElementById('result_rf2sq_detail')
+        contantCard.innerHTML = "<pre>" + err + "</pre>"
+        let h2 = document.getElementById('result_rf2sq_title')
+        h2.textContent = "Erreur lors de la récupération de l'ancien transfert de Robot Framework vers Squash"
+    })
+}
+
 function callApiRf2Sq() {
     let data = new FormData()
     data.append('inputSessionTokenSquash', undefined)

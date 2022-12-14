@@ -17,6 +17,8 @@ router.post('/backup', controller.backup)
 
 router.post('/rf2squashnofile', controller.rf2squashnofile)
 
+router.get('/oldResult', controller.getOldResult)
+
 router.get('/jira/sprint', controller.getAllJiraSprint)
 
 //! PROTOTYPE A FINIR

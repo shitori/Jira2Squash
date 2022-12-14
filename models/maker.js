@@ -350,6 +350,64 @@ function setSquashCampagneFromJsonResult(req) {
     })
 }
 
+function getOldResult() {
+    let resultRobotFrameWork = fileHelper.readJsonFile('./bdd/statusTests.json')
+    let shortRes = fileHelper.readJsonFile('./tmp/shortResultJson.json')
+    let mapping = fileHelper.readJsonFile('./bdd/mapping.json')
+    let data = []
+    shortRes.forEach((el) => {
+        Object.entries(mapping).forEach((kv) => {
+            let key = kv[0]
+            let value = kv[1]
+            if (value.includes(el.refTestId)) {
+                let findedResultRobotFrameWork =
+                    resultRobotFrameWork.find(
+                        (rrb) => rrb.name === key
+                    )
+                if (
+                    findedResultRobotFrameWork !== undefined &&
+                    findedResultRobotFrameWork.status == 'OK'
+                ) {
+                    console.info(
+                        el.refTestName +
+                        ' trouvé en succès'
+                    )
+                    data.push({
+                        message:
+                            'Test ' +
+                            el.id +
+                            ' anciennement mise à jour avec le status : SUCCESS',
+                        id: el.id,
+                        status: "SUCCESS",
+                        testName: el.refTestName,
+                        realId: el.refTestId,
+                    })
+
+                } else if (
+                    findedResultRobotFrameWork !== undefined &&
+                    findedResultRobotFrameWork.status == 'KO'
+                ) {
+                    console.info(
+                        el.refTestName +
+                        ' trouvé en échec'
+                    )
+                    data.push({
+                        message:
+                            'Test ' +
+                            el.id +
+                            ' anciennement mise à jour avec le status : FAILURE',
+                        id: el.id,
+                        status: "FAILURE",
+                        testName: el.refTestName,
+                        realId: el.refTestId,
+                    })
+                }
+            }
+        })
+    })
+    return data
+}
+
 function backup(req) {
     // TODO jira OK --> SQUASH call API TODO
     return new Promise((resolve) => {
@@ -399,4 +457,5 @@ module.exports = {
     setSquashCampagneFromJsonResult,
     getRobotFrameWorkReport,
     getAllJiraSprint,
+    getOldResult
 }

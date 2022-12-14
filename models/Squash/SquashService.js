@@ -233,7 +233,6 @@ class SquashService {
                                     resultRobotFrameWork.find(
                                         (rrb) => rrb.name === key
                                     )
-                                //console.log(findedResultRobotFrameWork)
                                 if (
                                     findedResultRobotFrameWork !== undefined &&
                                     findedResultRobotFrameWork.status == 'OK'
