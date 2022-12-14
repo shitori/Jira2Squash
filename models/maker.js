@@ -15,8 +15,6 @@ var xml2js = require('./../models/rf2squash/maker')
 
 //proxy
 const Proxy = require('./v2/proxy')
-const ProxySquash = require('./v2/proxySquash')
-const ProxySquashV2 = require('./v2/proxySquashV2')
 const SquashHeader = require('./Squash/SquashHeader')
 
 const dotenv = require('dotenv')

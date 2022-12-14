@@ -7,12 +7,15 @@ webSocket.onmessage = (event) => {
             let data = JSON.parse(txt)
             let message = data.message
             let percent = data.percent
+            let cible = data.cible
+            if(cible == 'fromAPI'){
+                let h3 = document.getElementById('ws_return')
+                let progressBar = document.getElementById('progress_bar')
 
-            let h3 = document.getElementById('ws_return')
-            let progressBar = document.getElementById('progress_bar')
+                h3.textContent = message
+                progressBar.setAttribute('style', 'width: ' + percent + '%')
+            }
 
-            h3.textContent = message
-            progressBar.setAttribute('style', 'width: ' + percent + '%')
         })
     } else {
         console.log('Result: ' + event.data)
@@ -77,14 +80,14 @@ function callApi() {
         body: data,
     })
         .then(async (res) => {
-            console.log(res);
+
             console.log('debut de la sessions redirection')
-            while (
+            /*while (
                 document.getElementById('progress_bar').style.width !== '100%'
             ) {
                 await sleep(1000)
                 console.log('wait')
-            }
+            }*/
             console.log('fin de la sessions redirection')
             return res.json()
         })
@@ -92,6 +95,7 @@ function callApi() {
             printResult(res)
         })
         .catch((err) => {
+            console.log("une erreur s'est produite");
             console.error(err)
             let res = {
                 message: "Une erreur s'est produite sur l'api",

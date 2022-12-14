@@ -32,12 +32,14 @@ webSocketRf2Sq.onmessage = (event) => {
             let data = JSON.parse(txt)
             let message = data.message
             let percent = data.percent
+            let cible = data.cible
+            if (cible == "fromRF") {
+                let h3 = document.getElementById('ws_return_rf2sq')
+                let progressBar = document.getElementById('progress_bar_rf2sq')
 
-            let h3 = document.getElementById('ws_return_rf2sq')
-            let progressBar = document.getElementById('progress_bar_rf2sq')
-
-            h3.textContent = message
-            progressBar.setAttribute('style', 'width: ' + percent + '%')
+                h3.textContent = message
+                progressBar.setAttribute('style', 'width: ' + percent + '%')
+            }
         })
     } else {
         console.log('Result: ' + event.data)
@@ -112,14 +114,14 @@ function callApiRf2Sq() {
                 let h2 = document.getElementById('result_rf2sq_title')
                 h2.textContent = res.message
             } else {
-                while (
+                /*while (
                     document.getElementById('progress_bar_rf2sq').style.width !==
                     '100%'
                 ) {
                     await sleep(1000)
                     console.log('wait')
 
-                }
+                }*/
                 console.log('fin de la sessions redirection')
 
                 showResultRf2Sq()

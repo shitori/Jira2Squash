@@ -115,6 +115,7 @@ class SquashService {
 
     setSquashCampagneFromJsonResult(req, resultRobotFrameWork, mapping) {
         return new Promise((resolve, reject) => {
+            console.log(req.body);
             this.getter
                 .getContents('campaign-folders', 9466) //? https://test-management.orangeapplicationsforbusiness.com/squash/campaign-workspace/campaign-folder/9466/content
                 .then((res) => {
@@ -125,7 +126,10 @@ class SquashService {
                     let folder = res._embedded.content.find(
                         (cf) => cf.name === findFolder
                     )
-                    console.info('Sprint folder finded')
+
+                    console.info('Sprint folder finded : ')
+                    console.info(folder)
+                    console.info(findFolder)
                     return this.getter.getContents(
                         'campaign-folders',
                         folder.id

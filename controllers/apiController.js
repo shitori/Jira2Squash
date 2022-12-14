@@ -53,11 +53,12 @@ module.exports = {
                 })
             })
             .catch((err) => {
+                console.log(err);
                 res.json({
                     message:
                         "Une erreur s'est produit pendant la mise à jour de Squash par RobotFramework",
 
-                    moreInfo: err,
+                    moreInfo: JSON.stringify(err, null, 4),
                     type: 'error'
                 })
             })
