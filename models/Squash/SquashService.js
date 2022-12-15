@@ -64,7 +64,9 @@ class SquashService {
         })
 
         client.on('message', function (message) {
-            console.info("Data from WebSocketServer squashService'" + message.data + "'")
+            console.info(
+                "Data from WebSocketServer squashService'" + message.data + "'"
+            )
         })
 
         client.on('close', function (message) {
@@ -100,22 +102,23 @@ class SquashService {
             this._setProgressBarFolder(promesse.length)
             Promise.all(promesse)
                 .then((responses) => {
-                    return this.requirementService
-                        .createRequirements(responses[1], responses[0], result)
-
-
-
-                }).then((res) => resolve(res))
+                    return this.requirementService.createRequirements(
+                        responses[1],
+                        responses[0],
+                        result
+                    )
+                })
+                .then((res) => resolve(res))
                 .catch((err) => {
                     console.error(err)
-                    reject({ message: "error in importInSquashWithAPI", err })
+                    reject({ message: 'error in importInSquashWithAPI', err })
                 })
         })
     }
 
     setSquashCampagneFromJsonResult(req, resultRobotFrameWork, mapping) {
         return new Promise((resolve, reject) => {
-            console.log(req.body);
+            console.log(req.body)
             this.getter
                 .getContents('campaign-folders', 9466) //? https://test-management.orangeapplicationsforbusiness.com/squash/campaign-workspace/campaign-folder/9466/content
                 .then((res) => {
@@ -243,7 +246,7 @@ class SquashService {
                                 ) {
                                     console.info(
                                         el.refTestName +
-                                        ' ajouté pour nouveau succès'
+                                            ' ajouté pour nouveau succès'
                                     )
                                     changeStatusList.push(
                                         new Promise((resolve) =>
@@ -262,7 +265,7 @@ class SquashService {
                                 ) {
                                     console.info(
                                         el.refTestName +
-                                        ' ajouté pour nouveau échec'
+                                            ' ajouté pour nouveau échec'
                                     )
                                     changeStatusList.push(
                                         new Promise((resolve) =>
@@ -290,7 +293,11 @@ class SquashService {
                     resolve(responses)
                 })
                 .catch((err) => {
-                    reject({ message: "error in setSquashCampagneFromJsonResult Squash service", err })
+                    reject({
+                        message:
+                            'error in setSquashCampagneFromJsonResult Squash service',
+                        err,
+                    })
                 })
         })
     }

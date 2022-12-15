@@ -12,6 +12,12 @@ function hideLoadingRf2Sq() {
     loading.style.display = 'none'
     var result = document.getElementById('result_rf2sq')
     result.style.display = 'none'
+
+    let h3 = document.getElementById('ws_return_rf2sq')
+    let progressBar = document.getElementById('progress_bar_rf2sq')
+
+    h3.textContent = 'DEFAULT_MESSAGE_NI'
+    progressBar.setAttribute('style', 'width: 0%')
 }
 
 function showResultRf2Sq() {
@@ -33,7 +39,7 @@ webSocketRf2Sq.onmessage = (event) => {
             let message = data.message
             let percent = data.percent
             let cible = data.cible
-            if (cible == "fromRF") {
+            if (cible == 'fromRF') {
                 let h3 = document.getElementById('ws_return_rf2sq')
                 let progressBar = document.getElementById('progress_bar_rf2sq')
 
@@ -52,41 +58,45 @@ function sleep(ms) {
 
 function callApiRf2SqOld() {
     fetch('/api/oldResult', {
-        method: 'GET'
-    }).then(res => {
-        return res.json()
-    }).then(res => {
-        showResultRf2Sq()
-
-        let result = res.result
-        let contantCard = document.getElementById('result_rf2sq_detail')
-        contantCard.innerHTML = ''
-        let success = 0
-        let fail = 0
-        result.forEach((element) => {
-            if (element.status !== 'SUCCESS') {
-                fail++
-                createCard(contantCard, element)
-            }
-        })
-        result.forEach((element) => {
-            if (element.status === 'SUCCESS') {
-                success++
-                createCard(contantCard, element)
-            }
-        })
-
-        var h2 = document.getElementById('result_rf2sq_title')
-        h2.textContent =
-            res.message + ', ' + success + ' success et ' + fail + ' fails'
-    }).catch(err => {
-        console.error(err)
-        showResultRf2Sq()
-        let contantCard = document.getElementById('result_rf2sq_detail')
-        contantCard.innerHTML = "<pre>" + err + "</pre>"
-        let h2 = document.getElementById('result_rf2sq_title')
-        h2.textContent = "Erreur lors de la récupération de l'ancien transfert de Robot Framework vers Squash"
+        method: 'GET',
     })
+        .then((res) => {
+            return res.json()
+        })
+        .then((res) => {
+            showResultRf2Sq()
+
+            let result = res.result
+            let contantCard = document.getElementById('result_rf2sq_detail')
+            contantCard.innerHTML = ''
+            let success = 0
+            let fail = 0
+            result.forEach((element) => {
+                if (element.status !== 'SUCCESS') {
+                    fail++
+                    createCard(contantCard, element)
+                }
+            })
+            result.forEach((element) => {
+                if (element.status === 'SUCCESS') {
+                    success++
+                    createCard(contantCard, element)
+                }
+            })
+
+            var h2 = document.getElementById('result_rf2sq_title')
+            h2.textContent =
+                res.message + ', ' + success + ' success et ' + fail + ' fails'
+        })
+        .catch((err) => {
+            console.error(err)
+            showResultRf2Sq()
+            let contantCard = document.getElementById('result_rf2sq_detail')
+            contantCard.innerHTML = '<pre>' + err + '</pre>'
+            let h2 = document.getElementById('result_rf2sq_title')
+            h2.textContent =
+                "Erreur lors de la récupération de l'ancien transfert de Robot Framework vers Squash"
+        })
 }
 
 function callApiRf2Sq() {
@@ -104,28 +114,17 @@ function callApiRf2Sq() {
             return res.json()
         })
         .then(async (res) => {
+            onsole.log('data api: ')
             console.log(res)
-            console.log('debut de la sessions redirection')
-            if (res.type == "error") {
-                console.log("une erreur s'est produite");
+            if (res.type == 'error') {
+                console.log("une erreur s'est produite")
                 showResultRf2Sq()
                 let contantCard = document.getElementById('result_rf2sq_detail')
                 contantCard.innerHTML = res.moreInfo
                 let h2 = document.getElementById('result_rf2sq_title')
                 h2.textContent = res.message
             } else {
-                /*while (
-                    document.getElementById('progress_bar_rf2sq').style.width !==
-                    '100%'
-                ) {
-                    await sleep(1000)
-                    console.log('wait')
-
-                }*/
-                console.log('fin de la sessions redirection')
-
                 showResultRf2Sq()
-
                 let result = res.result
                 let contantCard = document.getElementById('result_rf2sq_detail')
                 contantCard.innerHTML = ''
@@ -146,16 +145,22 @@ function callApiRf2Sq() {
 
                 var h2 = document.getElementById('result_rf2sq_title')
                 h2.textContent =
-                    res.message + ', ' + success + ' success et ' + fail + ' fails'
+                    res.message +
+                    ', ' +
+                    success +
+                    ' success et ' +
+                    fail +
+                    ' fails'
             }
         })
         .catch((err) => {
             console.error(err)
             showResultRf2Sq()
             let contantCard = document.getElementById('result_rf2sq_detail')
-            contantCard.innerHTML = "<pre>" + err + "</pre>"
+            contantCard.innerHTML = '<pre>' + err + '</pre>'
             let h2 = document.getElementById('result_rf2sq_title')
-            h2.textContent = "Erreur lors du transfert de Robot Framework vers Squash"
+            h2.textContent =
+                'Erreur lors du transfert de Robot Framework vers Squash'
         })
 }
 

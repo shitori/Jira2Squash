@@ -24,7 +24,7 @@ class JiraService {
                     resolve(res.data.suggestions[0].id)
                 })
                 .catch((err) => {
-                    reject({ message: "getOutputResultRobotFrameWork", err })
+                    reject({ message: 'getOutputResultRobotFrameWork', err })
                 })
         })
     }
@@ -34,9 +34,9 @@ class JiraService {
             axios
                 .get(
                     baseUrl +
-                    'search?jql=' +
-                    encodeURI(jql) +
-                    '&maxResults=10000',
+                        'search?jql=' +
+                        encodeURI(jql) +
+                        '&maxResults=10000',
                     this.proxy
                 )
                 .then((res) => {
@@ -54,7 +54,7 @@ class JiraService {
                     resolve(compactIssues)
                 })
                 .catch((err) => {
-                    reject({ message: "error in getIssues", err })
+                    reject({ message: 'error in getIssues', err })
                 })
         })
     }
@@ -69,7 +69,9 @@ class JiraService {
                     })
                     resolve(finalResult)
                 })
-                .catch((err) => reject({ message: "error in getAllSprintSprint", err }))
+                .catch((err) =>
+                    reject({ message: 'error in getAllSprintSprint', err })
+                )
         })
     }
 
@@ -92,7 +94,7 @@ class JiraService {
                     }
                 })
                 .catch((err) => {
-                    reject({ message: "error in _getAllSprintSprint", err })
+                    reject({ message: 'error in _getAllSprintSprint', err })
                 })
         })
     }

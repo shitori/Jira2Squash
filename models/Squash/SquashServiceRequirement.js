@@ -63,13 +63,13 @@ class SquashService {
                 .then((success) => {
                     resolve(
                         'ID nouvelle exigence : ' +
-                        success.id +
-                        ' - ' +
-                        record.nameJira
+                            success.id +
+                            ' - ' +
+                            record.nameJira
                     )
                 })
                 .catch((err) => {
-                    reject({ message: "error in createRequirement", err })
+                    reject({ message: 'error in createRequirement', err })
                 })
         })
     }
@@ -81,7 +81,12 @@ class SquashService {
                 console.info('Répertoire ' + nameFolder + ' vide')
                 this.createRequirement(idFolder, record)
                     .then((res) => resolve({ message: res, result: 1 }))
-                    .catch((err) => reject({ message: "error in createRequirementIfNecessary", err }))
+                    .catch((err) =>
+                        reject({
+                            message: 'error in createRequirementIfNecessary',
+                            err,
+                        })
+                    )
             } else {
                 var exigenceAlreadyExist = dataFolder._embedded.content.find(
                     (el) => el.name == record.nameJira.replaceAll('/', '\\')
@@ -89,7 +94,13 @@ class SquashService {
                 if (exigenceAlreadyExist == undefined) {
                     this.createRequirement(idFolder, record)
                         .then((res) => resolve({ message: res, result: 1 }))
-                        .catch((err) => reject({ message: "error in createRequirementIfNecessary", err }))
+                        .catch((err) =>
+                            reject({
+                                message:
+                                    'error in createRequirementIfNecessary',
+                                err,
+                            })
+                        )
                 } else {
                     resolve({
                         message:
@@ -145,8 +156,8 @@ class SquashService {
                         }
                     })
                     return Promise.all(result)
-
-                }).then((resultResponses) => {
+                })
+                .then((resultResponses) => {
                     var totalCreate = 0
                     var status = ''
                     resultResponses.forEach((el) => {
@@ -161,7 +172,9 @@ class SquashService {
                         moreInfo: status,
                     })
                 })
-                .catch((err) => reject({ message: "error in createRequirements", err }))
+                .catch((err) =>
+                    reject({ message: 'error in createRequirements', err })
+                )
         })
     }
 }

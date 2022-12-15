@@ -73,19 +73,16 @@ function setUpToSquashFromXmlFileWithOption(
                 })
             })
             .then(() => {
-                returnInfo +=
-                    nbSucess +
-                    '/' +
-                    shortResult.length +
-                    ' success\n'
+                returnInfo += nbSucess + '/' + shortResult.length + ' success\n'
                 const json2 = JSON.stringify(mappings, null, 4)
                 return fsp.writeFile(cibleMappingFilePath, json2)
             })
             .then(() => {
                 returnInfo += 'mapping set up\n'
                 resolve(returnInfo)
-            }).catch((err) => {
-                reject({ message: "setUpToSquashFromXmlFileWithOption", err })
+            })
+            .catch((err) => {
+                reject({ message: 'setUpToSquashFromXmlFileWithOption', err })
             })
     })
 }

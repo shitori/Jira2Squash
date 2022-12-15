@@ -20,7 +20,7 @@ module.exports = {
                     message:
                         "Une erreur s'est produit pendant la mise à jour de Squash par Jira",
                     moreInfo: err,
-                    type: 'error'
+                    type: 'error',
                 })
             })
     },
@@ -49,17 +49,17 @@ module.exports = {
                     message: 'Squash mise à jour',
                     moreInfo: moreInfo,
                     result: result,
-                    type: "success"
+                    type: 'success',
                 })
             })
             .catch((err) => {
-                console.log(err);
+                console.log(err)
                 res.json({
                     message:
                         "Une erreur s'est produit pendant la mise à jour de Squash par RobotFramework",
 
                     moreInfo: JSON.stringify(err, null, 4),
-                    type: 'error'
+                    type: 'error',
                 })
             })
     },
@@ -74,7 +74,7 @@ module.exports = {
             message: 'Ancienne mise à jour Squash',
             moreInfo: moreInfo,
             result: result,
-            type: "success"
+            type: 'success',
         })
     },
 

@@ -54,7 +54,9 @@ class apiSquash {
         })
 
         client.on('message', function (message) {
-            console.info("Data from WebSocketServer api Squash'" + message.data + "'")
+            console.info(
+                "Data from WebSocketServer api Squash'" + message.data + "'"
+            )
         })
 
         client.on('close', function (message) {

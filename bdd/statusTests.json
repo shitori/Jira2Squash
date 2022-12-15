@@ -161,7 +161,7 @@
     },
     {
         "name": "Test Sel incoming call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel legal break sup",

@@ -70,7 +70,9 @@ class SquashServiceFolder {
                     let idNewFolder = res.id
                     resolve(idNewFolder)
                 })
-                .catch((err) => reject({ message: "error in createFolderIfNecessary", err }))
+                .catch((err) =>
+                    reject({ message: 'error in createFolderIfNecessary', err })
+                )
         })
     }
 }

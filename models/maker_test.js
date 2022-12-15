@@ -31,7 +31,9 @@ function testSocket() {
     })
 
     client.on('message', function (message) {
-        console.info("Data from WebSocketServer makerTest'" + message.data + "'")
+        console.info(
+            "Data from WebSocketServer makerTest'" + message.data + "'"
+        )
     })
 
     client.on('close', function (message) {

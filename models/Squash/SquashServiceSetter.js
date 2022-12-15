@@ -42,7 +42,11 @@ class SquashServiceSetter {
         })
 
         client.on('message', function (message) {
-            console.info("Data from WebSocketServer squashserviceSetter'" + message.data + "'")
+            console.info(
+                "Data from WebSocketServer squashserviceSetter'" +
+                    message.data +
+                    "'"
+            )
         })
 
         client.on('close', function (message) {
@@ -129,7 +133,7 @@ class SquashServiceSetter {
                     } else {
                         this.client.send('Finish for ' + objectName)
                     }
-                    reject({ messsage: "error in create", err })
+                    reject({ messsage: 'error in create', err })
                 })
         })
     }
@@ -171,7 +175,7 @@ class SquashServiceSetter {
                 })
                 .catch((err) => {
                     this._sendWSExcutionStatusInfo(this.client)
-                    reject({ message: "error in ", err })
+                    reject({ message: 'error in ', err })
                 })
         })
     }
