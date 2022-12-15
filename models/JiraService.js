@@ -98,6 +98,12 @@ class JiraService {
                 })
         })
     }
+
+    getAllAnoUnresolved() {
+        return this.getIssues(
+            'project = FCCNB AND issuetype = Bug AND resolution = Unresolved ORDER BY priority DESC, updated DESC'
+        )
+    }
 }
 
 module.exports = JiraService

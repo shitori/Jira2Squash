@@ -22,20 +22,20 @@ webSocket.onmessage = (event) => {
 }
 
 function showLoading() {
-    var form = document.getElementById('formFormApi')
+    let form = document.getElementById('formFormApi')
     form.style.display = 'none'
-    var loading = document.getElementById('loading')
+    let loading = document.getElementById('loading')
     loading.style.display = 'block'
-    var result = document.getElementById('result')
+    let result = document.getElementById('result')
     result.style.display = 'none'
 }
 
 function hideLoading() {
-    var form = document.getElementById('formFormApi')
+    let form = document.getElementById('formFormApi')
     form.style.display = 'block'
-    var loading = document.getElementById('loading')
+    let loading = document.getElementById('loading')
     loading.style.display = 'none'
-    var result = document.getElementById('result')
+    let result = document.getElementById('result')
     result.style.display = 'none'
 
     let h3 = document.getElementById('ws_return')
@@ -46,11 +46,11 @@ function hideLoading() {
 }
 
 function showResult() {
-    var form = document.getElementById('formFormApi')
+    let form = document.getElementById('formFormApi')
     form.style.display = 'none'
-    var loading = document.getElementById('loading')
+    let loading = document.getElementById('loading')
     loading.style.display = 'none'
-    var result = document.getElementById('result')
+    let result = document.getElementById('result')
     result.style.display = 'block'
 }
 
@@ -99,8 +99,8 @@ function printResult(res) {
     console.log('data api: ')
     console.log(res)
     showResult()
-    var pre = document.getElementById('result_info')
+    let pre = document.getElementById('result_info')
     pre.textContent = res.moreInfo
-    var h2 = document.getElementById('result_title')
+    let h2 = document.getElementById('result_title')
     h2.textContent = res.message
 }

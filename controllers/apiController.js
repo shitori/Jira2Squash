@@ -84,4 +84,18 @@ module.exports = {
             .then((result) => res.json(result))
             .catch((err) => res.json(err))
     },
+
+    getAllJiraAnoUnresolved: (req, res) => {
+        maker
+            .getAllAnoUnresolvedJira(req)
+            .then((result) => {
+                let csv = ''
+                result.forEach((el) => {
+                    csv += el.idJira + ';' + el.nameJira + ';\n'
+                })
+                console.info(csv)
+                res.json(result)
+            })
+            .catch((err) => res.json(err))
+    },
 }

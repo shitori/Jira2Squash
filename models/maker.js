@@ -447,6 +447,11 @@ function getAllJiraSprint(req) {
     return jira.getAllSprintSprint()
 }
 
+function getAllAnoUnresolvedJira(req) {
+    let jira = new Jira(new Proxy(req.body.tokenSessionJira).getProxy())
+    return jira.getAllAnoUnresolved()
+}
+
 module.exports = {
     writeOnSquash,
     writeOnSquashAPI,
@@ -457,4 +462,5 @@ module.exports = {
     getRobotFrameWorkReport,
     getAllJiraSprint,
     getOldResult,
+    getAllAnoUnresolvedJira,
 }

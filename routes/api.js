@@ -21,6 +21,8 @@ router.get('/oldResult', controller.getOldResult)
 
 router.get('/jira/sprint', controller.getAllJiraSprint)
 
+router.get('/jira/ano', controller.getAllJiraAnoUnresolved)
+
 //! PROTOTYPE A FINIR
 
 router.put('/copyCampaing', controller_prototype.copyCompaing)
