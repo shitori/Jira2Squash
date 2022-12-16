@@ -455,6 +455,7 @@ function getAllAnoUnresolvedJira(req) {
 function getAllSquashTests() {
     let squash = new Squash(SquashHeader)
     let tests = fileHelper.readJsonFile('./backup/allTests.json')
+    let mapping = fileHelper.readJsonFile('./bdd/mapping.json') //TODO new mapping with all test
     let finalTests = []
     tests.forEach(test => {
         let testExist = finalTests.find(el => el.name == test.name)
@@ -476,7 +477,7 @@ function getAllSquashTests() {
         }
     })
     return Promise.resolve(finalTests)
-    //return squash.getAllTests()
+    //return squash.getAllTests() // TODO reinject this code and remove var "tests"
 }
 
 module.exports = {
