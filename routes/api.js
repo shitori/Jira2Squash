@@ -23,6 +23,8 @@ router.get('/jira/sprint', controller.getAllJiraSprint)
 
 router.get('/jira/ano', controller.getAllJiraAnoUnresolved)
 
+router.get('/squash/tests', controller.getAllSquashTests)
+
 //! PROTOTYPE A FINIR
 
 router.put('/copyCampaing', controller_prototype.copyCompaing)

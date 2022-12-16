@@ -98,4 +98,11 @@ module.exports = {
             })
             .catch((err) => res.json(err))
     },
+
+    getAllSquashTests: (req, res) => {
+        maker.getAllSquashTests()
+            .then(result => {
+                res.json(result)
+            }).catch((err) => res.json(err))
+    }
 }

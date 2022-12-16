@@ -246,7 +246,7 @@ class SquashService {
                                 ) {
                                     console.info(
                                         el.refTestName +
-                                            ' ajouté pour nouveau succès'
+                                        ' ajouté pour nouveau succès'
                                     )
                                     changeStatusList.push(
                                         new Promise((resolve) =>
@@ -265,7 +265,7 @@ class SquashService {
                                 ) {
                                     console.info(
                                         el.refTestName +
-                                            ' ajouté pour nouveau échec'
+                                        ' ajouté pour nouveau échec'
                                     )
                                     changeStatusList.push(
                                         new Promise((resolve) =>
@@ -298,6 +298,33 @@ class SquashService {
                             'error in setSquashCampagneFromJsonResult Squash service',
                         err,
                     })
+                })
+        })
+    }
+
+    getAllTests() {
+        return new Promise((resolve, reject) => {
+            this.getter.findIDByName('projects', "fcc-next-gen")
+                .then(idProject => {
+                    return this.getter.getTestslibrary(idProject)
+                }).then(res => {
+                    let promises = []
+                    res.forEach(el => {
+                        promises.push(this.getter._recursiveTestCaseFolder(el.id, el.name))
+                    });
+                    return Promise.all(promises)
+                })
+                .then(res => {
+                    let concatResult = 0
+                    res.forEach((result) => {
+                        concatResult += result
+                    })
+                    console.info('Cas de tests trouvés : ' + concatResult)
+                    resolve(this.getter.tests)
+                })
+                .catch((err) => {
+                    console.log(err)
+                    reject({ message: 'error in getAllTests', err })
                 })
         })
     }

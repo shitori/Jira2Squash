@@ -181,15 +181,15 @@
     },
     {
         "name": "Test Sel conference call 2",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel double message",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel double mod status",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel legal break",
@@ -197,11 +197,11 @@
     },
     {
         "name": "Test Sel queue progress",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel transfert call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel transfert fa",
@@ -209,7 +209,7 @@
     },
     {
         "name": "Test Sel voicemail legal break",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel callback accent",
@@ -233,7 +233,7 @@
     },
     {
         "name": "Test Sel callback svi",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel callback without appellant",

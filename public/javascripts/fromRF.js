@@ -114,7 +114,7 @@ function callApiRf2Sq() {
             return res.json()
         })
         .then(async (res) => {
-            onsole.log('data api: ')
+            console.log('data api: ')
             console.log(res)
             if (res.type == 'error') {
                 console.log("une erreur s'est produite")
