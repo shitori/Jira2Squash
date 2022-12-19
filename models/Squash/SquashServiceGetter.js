@@ -89,11 +89,15 @@ class SquashServiceGetter {
 
     getTestslibrary(idProject) {
         return new Promise((resolve, reject) => {
-            let currentURL = baseURL + 'projects/' + idProject + '/test-cases-library/content'
+            let currentURL =
+                baseURL +
+                'projects/' +
+                idProject +
+                '/test-cases-library/content'
             axios
                 .get(currentURL, this.proxy)
                 .then((res) => {
-                    resolve(res.data._embedded["test-case-library-content"])
+                    resolve(res.data._embedded['test-case-library-content'])
                 })
                 .catch((err) => {
                     reject({ message: 'error in getObject', err })
@@ -101,7 +105,7 @@ class SquashServiceGetter {
         })
     }
 
-    _recursiveTestCaseFolder(id,parent) {
+    _recursiveTestCaseFolder(id, parent) {
         return new Promise((resolve) => {
             let testsFind = 0
             this.getContents('test-case-folders', id)
@@ -111,14 +115,17 @@ class SquashServiceGetter {
                         data._embedded.content.forEach(async (obj) => {
                             if (obj._type == 'test-case-folder') {
                                 promises.push(
-                                    this._recursiveTestCaseFolder(obj.id,parent)
+                                    this._recursiveTestCaseFolder(
+                                        obj.id,
+                                        parent
+                                    )
                                 )
                             } else {
                                 testsFind++
                                 this.tests.push({
                                     id: obj.id,
                                     name: obj.name,
-                                    parent
+                                    parent,
                                 })
                             }
                         })
@@ -136,7 +143,6 @@ class SquashServiceGetter {
                 })
         })
     }
-
 }
 
 module.exports = SquashServiceGetter

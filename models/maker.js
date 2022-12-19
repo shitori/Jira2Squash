@@ -39,13 +39,13 @@ function writeOnExcel(sprintName, squashFileName, footerSize, result) {
             ws.cell(rowIndex, columnIndex++).string('C') // Action
             ws.cell(rowIndex, columnIndex++).string(
                 '/fcc-next-gen/' +
-                (record.nameJira.toLowerCase().includes('wallboard')
-                    ? 'New Wallboard/WB - '
-                    : '[NextGen]Nouveaux Bandeaux/G2R2 - ') +
-                'Sprint ' +
-                sprintName +
-                '/' +
-                record.nameJira.replaceAll('/', '\\')
+                    (record.nameJira.toLowerCase().includes('wallboard')
+                        ? 'New Wallboard/WB - '
+                        : '[NextGen]Nouveaux Bandeaux/G2R2 - ') +
+                    'Sprint ' +
+                    sprintName +
+                    '/' +
+                    record.nameJira.replaceAll('/', '\\')
             ) // REQ PATH
             ws.cell(rowIndex, columnIndex++).number(1) // REQ VERSION NUM
             ws.cell(rowIndex, columnIndex++).string(record.idJira) // REQ VERSION REFERENCE
@@ -53,13 +53,13 @@ function writeOnExcel(sprintName, squashFileName, footerSize, result) {
             ws.cell(rowIndex, columnIndex++).string('MINOR') // REQ VERSION CRITICALITY
             ws.cell(rowIndex, columnIndex++).string(
                 'REQ_JIRA_BUILD_' +
-                (record.typeJira == 'Récit' ? 'STORY' : 'BUG')
+                    (record.typeJira == 'Récit' ? 'STORY' : 'BUG')
             ) // REQ VERSION CATEGORY
             ws.cell(rowIndex, columnIndex++).string('UNDER_REVIEW') // REQ VERSION STATUS
             ws.cell(rowIndex, columnIndex++).string(
                 '<p><a href="https://jira-build.orangeapplicationsforbusiness.com/browse/' +
-                record.idJira +
-                '" target="_blank">Lien vers le ticket JIRA</a></p>'
+                    record.idJira +
+                    '" target="_blank">Lien vers le ticket JIRA</a></p>'
             ) // REQ VERSION DESCRIPTION
 
             rowIndex++
@@ -423,8 +423,8 @@ function backup(req) {
                 promises.push(
                     jira.getIssues(
                         'project = FCCNB AND issuetype in (Improvement, Bug, Story) AND Sprint = ' +
-                        value +
-                        ' ORDER BY priority DESC, updated DESC'
+                            value +
+                            ' ORDER BY priority DESC, updated DESC'
                     )
                 )
             }
@@ -457,26 +457,69 @@ function getAllSquashTests() {
     let tests = fileHelper.readJsonFile('./backup/allTests.json')
     let mapping = fileHelper.readJsonFile('./bdd/mapping.json') //TODO new mapping with all test
     let finalTests = []
-    tests.forEach(test => {
-        let testExist = finalTests.find(el => el.name == test.name)
+    tests.forEach((test) => {
+        let testExist = finalTests.find((el) => el.name == test.name)
         if (testExist == undefined) {
             finalTests.push({
                 name: test.name,
-                "parents": [
+                parents: [
                     {
-                        "parent": test.parent,
-                        "id": test.id
-                    }
-                ]
+                        parent: test.parent,
+                        id: test.id,
+                    },
+                ],
+                ids: [test.id],
             })
         } else {
-            testExist["parents"].push({
-                "parent": test.parent,
-                "id": test.id
+            testExist['parents'].push({
+                parent: test.parent,
+                id: test.id,
             })
+            testExist['ids'].push(test.id)
         }
     })
-    return Promise.resolve(finalTests)
+    for (const [keyMapping, valueMapping] of Object.entries(mapping)) {
+        finalTests.forEach((test) => {
+            const found = test['ids'].some((id) => valueMapping.includes(id))
+            if (found) {
+                mapping[keyMapping] = valueMapping.concat(test['ids'])
+            }
+        })
+        mapping[keyMapping] = mapping[keyMapping].filter(
+            (item, index) => mapping[keyMapping].indexOf(item) === index
+        )
+    }
+    let promises = [
+        fileHelper.saveJsonBackUp(
+            'mappingSetUpPlus',
+            JSON.stringify(mapping, null, 4)
+        ),
+        fileHelper.saveJsonBackUp(
+            'allTestsRegroup',
+            JSON.stringify(finalTests, null, 4)
+        ),
+    ]
+    return new Promise((resolve, reject) => {
+        Promise.all(promises)
+            .then((results) => {
+                console.info(results)
+                resolve({
+                    message: 'Fichiers crées.',
+                    newMapping: mapping,
+                    regroupTest: finalTests,
+                    results,
+                })
+            })
+            .catch((err) => {
+                reject({
+                    message: 'Fail création fichiers',
+                    newMapping: mapping,
+                    regroupTest: finalTests,
+                    err,
+                })
+            })
+    })
+
     //return squash.getAllTests() // TODO reinject this code and remove var "tests"
 }
 
@@ -491,5 +534,5 @@ module.exports = {
     getAllJiraSprint,
     getOldResult,
     getAllAnoUnresolvedJira,
-    getAllSquashTests
+    getAllSquashTests,
 }

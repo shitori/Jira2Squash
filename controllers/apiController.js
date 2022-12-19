@@ -100,9 +100,11 @@ module.exports = {
     },
 
     getAllSquashTests: (req, res) => {
-        maker.getAllSquashTests()
-            .then(result => {
+        maker
+            .getAllSquashTests()
+            .then((result) => {
                 res.json(result)
-            }).catch((err) => res.json(err))
-    }
+            })
+            .catch((err) => res.json(err))
+    },
 }

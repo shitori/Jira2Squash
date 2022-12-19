@@ -8,6 +8,20 @@ function readJsonFile(fileName) {
     return JSON.parse(fs.readFileSync(fileName))
 }
 
+function saveJsonBackUp(fileName, jsonString) {
+    return new Promise((resolve, reject) => {
+        let backupName = 'backup/' + fileName + '.json'
+        fs.writeFile(backupName, jsonString, (err) => {
+            if (err) {
+                reject(err)
+            } else {
+                console.info('backup file ' + backupName + ' saved')
+                resolve(backupName)
+            }
+        })
+    })
+}
+
 function saveJsonTmpFile(fileName, jsonString) {
     return new Promise((resolve, reject) => {
         let tmpName = 'tmp/' + fileName + '.json'
@@ -98,4 +112,5 @@ module.exports = {
     saveHtmlFile,
     saveJsonTmpFile,
     readJsonFile,
+    saveJsonBackUp,
 }
