@@ -12,6 +12,6 @@
         "jest/globals": true
     },
     "rules": {
-        "no-console": ["log", { "allow": ["info", "warn", "error"] }]
+        "no-console": 0
     }
 }

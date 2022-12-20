@@ -278,10 +278,30 @@ class SquashService {
                                         )
                                     )
                                     this.delay += DELAY_VALUE
+                                } else if (
+                                    req.body.inputSprint === '' &&
+                                    key === 'UNTESTABLE'
+                                ) {
+                                    console.info(
+                                        el.refTestName +
+                                            ' pas testable pour le moment'
+                                    )
+                                    changeStatusList.push(
+                                        new Promise((resolve) =>
+                                            setTimeout(resolve, this.delay)
+                                        ).then(() =>
+                                            this.setter.changeStatus(
+                                                el,
+                                                'UNTESTABLE'
+                                            )
+                                        )
+                                    )
+                                    this.delay += DELAY_VALUE
                                 }
                             }
                         })
                     })
+
                     this._setProgressBarStatus(changeStatusList.length)
                     console.info(
                         changeStatusList.length + ' tests will be changed ! '

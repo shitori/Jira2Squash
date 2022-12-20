@@ -1,3 +1,4 @@
+var squashUrl = "https://testmanagement.factory.orange-business.com/squash/test-case-workspace/test-case/detail/"
 function showLoadingRf2Sq() {
     showLoadingDefault('rf2squash', 'loading_rf2sq', 'result_rf2sq')
 }
@@ -43,8 +44,9 @@ function callApiRf2SqOldDefault(url, option, errMessage) {
             contantCard.innerHTML = ''
             let success = 0
             let fail = 0
+            let untest = 0
             result.forEach((element) => {
-                if (element.status !== 'SUCCESS') {
+                if (element.status === 'FAILURE') {
                     fail++
                     createCard(contantCard, element)
                 }
@@ -56,9 +58,16 @@ function callApiRf2SqOldDefault(url, option, errMessage) {
                 }
             })
 
+            result.forEach((element) => {
+                if (element.status === 'UNTESTABLE') {
+                    untest++
+                    createCard(contantCard, element)
+                }
+            })
+
             var h2 = document.getElementById('result_rf2sq_title')
-            h2.textContent =
-                res.message + ', ' + success + ' success et ' + fail + ' fails'
+            h2.innerHTML =
+                res.message + '<br> <b class="text-danger">' + fail + '</b> en échecs , <b class="text-success">' + success + '</b> en succès et <b>' + untest + '</b> pas testables pour le moment.'
         })
         .catch((err) => {
             console.error(err)
@@ -98,23 +107,38 @@ function callApiRf2Sq() {
 }
 
 function createCard(contantCard, element) {
+    //UNTESTABLE FAILURE SUCCESS
+    let classCard = ''
+    let logoTitle = ''
+    switch (element.status) {
+        case 'SUCCESS':
+            classCard = 'card m-2 mx-auto bg-success bg-gradient'
+            logoTitle = `✅ `
+            break
+        case 'FAILURE':
+            classCard = 'card m-2 mx-auto bg-danger bg-gradient'
+            logoTitle = '❌ '
+            break
+        case 'UNTESTABLE':
+            classCard = 'card m-2 mx-auto bg-dark bg-gradient text-light'
+            logoTitle = '❗ '
+            break
+        default:
+            console.error('fail in createCard : ' + element)
+    }
     let div = document.createElement('div')
-    div.className =
-        element.status == 'SUCCESS'
-            ? 'card m-2 mx-auto bg-success bg-gradient'
-            : 'card m-2 mx-auto bg-danger bg-gradient'
+    div.className = classCard
     div.style.width = '35rem'
     div.innerHTML =
         `
           <div class="card-body">
-            <h5 class="card-title "> ` +
-        (element.status == 'SUCCESS' ? `✅ ` : `❌ `) +
+            <h5 class="card-title "> ` + logoTitle +
         element.testName +
         ` ` +
         ` </h5>
-            <p class="card-text text-center">ID test : ` +
+            <p class="card-text text-center">ID test : <a href="` + squashUrl + element.realId + `" class="btn btn-light" target="_blank">` +
         element.realId +
-        ` / ID execution : ` +
+        `</a> / ID execution : ` +
         element.id +
         `</p>
           </div>

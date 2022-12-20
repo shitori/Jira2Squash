@@ -258,20 +258,6 @@ function getRobotFrameWorkReport() {
     })
 }
 
-function getRobotFrameWorkReportLog() {
-    return new Promise((resolve, reject) => {
-        let jenkins = new Jenkins()
-        jenkins
-            .getHTMLLogResultRobotFrameWork()
-            .then((file) => {
-                resolve(fileHelper.saveLogFile(file))
-            })
-            .catch((err) =>
-                reject({ message: 'error in getRobotFrameWorkReportLog', err })
-            )
-    })
-}
-
 function setSquashCampagneFromJsonResult(req) {
     return new Promise((resolve, reject) => {
         var squash = new Squash(SquashHeader)
@@ -400,6 +386,21 @@ function getOldResult() {
                         testName: el.refTestName,
                         realId: el.refTestId,
                     })
+                } else if(key === 'UNTESTABLE'){
+                    console.info(
+                        el.refTestName +
+                            ' pas testable pour le moment'
+                    )
+                    data.push({
+                        message:
+                            'Test ' +
+                            el.id +
+                            ' anciennement mise à jour avec le status : UNTESTABLE',
+                        id: el.id,
+                        status: 'UNTESTABLE',
+                        testName: el.refTestName,
+                        realId: el.refTestId,
+                    })
                 }
             }
         })
@@ -411,10 +412,10 @@ function backup(req) {
     // TODO jira OK --> SQUASH call API TODO
     return new Promise((resolve) => {
         let jira = new Jira(new Proxy(req.body.tokenSessionJira).getProxy())
-        var squash = new Squash(
+        /*let squash = new Squash(
             new Proxy(req.body.tokenSessionSquash).getProxy()
-        )
-        var idSprint = require('./../bdd/idSprints.json')
+        )*/
+        let idSprint = require('./../bdd/idSprints.json')
         let promises = []
         Object.entries(idSprint).forEach((el) => {
             //let key = el[0]
@@ -453,9 +454,9 @@ function getAllAnoUnresolvedJira(req) {
 }
 
 function getAllSquashTests() {
-    let squash = new Squash(SquashHeader)
+    //let squash = new Squash(SquashHeader)
     let tests = fileHelper.readJsonFile('./backup/allTests.json')
-    let mapping = fileHelper.readJsonFile('./bdd/mapping.json') //TODO new mapping with all test
+    let mapping = fileHelper.readJsonFile('./bdd/mapping.json')
     let finalTests = []
     tests.forEach((test) => {
         let testExist = finalTests.find((el) => el.name == test.name)
