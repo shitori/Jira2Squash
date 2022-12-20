@@ -1,4 +1,5 @@
-var squashUrl = "https://testmanagement.factory.orange-business.com/squash/test-case-workspace/test-case/detail/"
+var squashUrl =
+    'https://testmanagement.factory.orange-business.com/squash/test-case-workspace/test-case/detail/'
 function showLoadingRf2Sq() {
     showLoadingDefault('rf2squash', 'loading_rf2sq', 'result_rf2sq')
 }
@@ -67,7 +68,14 @@ function callApiRf2SqOldDefault(url, option, errMessage) {
 
             var h2 = document.getElementById('result_rf2sq_title')
             h2.innerHTML =
-                res.message + '<br> <b class="text-danger">' + fail + '</b> en échecs , <b class="text-success">' + success + '</b> en succès et <b>' + untest + '</b> pas testables pour le moment.'
+                res.message +
+                '<br> <b class="text-danger">' +
+                fail +
+                '</b> en échecs , <b class="text-success">' +
+                success +
+                '</b> en succès et <b>' +
+                untest +
+                '</b> pas testables pour le moment.'
         })
         .catch((err) => {
             console.error(err)
@@ -132,11 +140,15 @@ function createCard(contantCard, element) {
     div.innerHTML =
         `
           <div class="card-body">
-            <h5 class="card-title "> ` + logoTitle +
+            <h5 class="card-title "> ` +
+        logoTitle +
         element.testName +
         ` ` +
         ` </h5>
-            <p class="card-text text-center">ID test : <a href="` + squashUrl + element.realId + `" class="btn btn-light" target="_blank">` +
+            <p class="card-text text-center">ID test : <a href="` +
+        squashUrl +
+        element.realId +
+        `" class="btn btn-light" target="_blank">` +
         element.realId +
         `</a> / ID execution : ` +
         element.id +

@@ -386,10 +386,9 @@ function getOldResult() {
                         testName: el.refTestName,
                         realId: el.refTestId,
                     })
-                } else if(key === 'UNTESTABLE'){
+                } else if (key === 'UNTESTABLE') {
                     console.info(
-                        el.refTestName +
-                            ' pas testable pour le moment'
+                        el.refTestName + ' pas testable pour le moment'
                     )
                     data.push({
                         message:
