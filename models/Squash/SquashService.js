@@ -118,7 +118,6 @@ class SquashService {
 
     setSquashCampagneFromJsonResult(req, resultRobotFrameWork, mapping) {
         return new Promise((resolve, reject) => {
-            console.log(req.body)
             this.getter
                 .getContents('campaign-folders', 9466) //? https://test-management.orangeapplicationsforbusiness.com/squash/campaign-workspace/campaign-folder/9466/content
                 .then((res) => {
@@ -347,8 +346,227 @@ class SquashService {
                     resolve(this.getter.tests)
                 })
                 .catch((err) => {
-                    console.log(err)
+                    console.error(err)
                     reject({ message: 'error in getAllTests', err })
+                })
+        })
+    }
+
+    diffuseCompaingBandeauTests(sprintName, seedFolderName) {
+        return new Promise((resolve, reject) => {
+            this._getSeedTestsForComopaign(sprintName, seedFolderName)
+                .then((res) => {
+                    let seedTestPlan = res.seedTestPlan
+                    let iterations = res.iterations
+                    let tests = fileHelper.readJsonFile(
+                        './backup/allTestsRegroup.json'
+                    )
+                    let promises = []
+                    this.delay = 0
+                    seedTestPlan.forEach((testIteration) => {
+                        let testID = testIteration.referenced_test_case.id
+                        tests.forEach((test) => {
+                            if (test.ids.includes(testID)) {
+                                console.info(testID + ' pret pour le clonage')
+                                iterations.forEach((iteration) => {
+                                    test.parents.forEach((parent) => {
+                                        if (
+                                            parent.parent.includes(
+                                                iteration.name
+                                            )
+                                        ) {
+                                            console.info(
+                                                'iteration ' +
+                                                    iteration.id +
+                                                    '/' +
+                                                    iteration.name +
+                                                    ' receive copy from parent of ' +
+                                                    parent.id +
+                                                    '/' +
+                                                    parent.parent
+                                            )
+                                            let postURL =
+                                                'iterations/' +
+                                                iteration.id +
+                                                '/test-plan'
+                                            let dataForPost = {
+                                                _type: 'iteration-test-plan-item',
+                                                test_case: {
+                                                    _type: 'test-case',
+                                                    id: parent.id,
+                                                },
+                                            }
+                                            if (
+                                                testIteration.referenced_dataset ==
+                                                undefined
+                                            ) {
+                                                promises.push(
+                                                    new Promise((resolve) =>
+                                                        setTimeout(
+                                                            resolve,
+                                                            this.delay
+                                                        )
+                                                    ).then(() =>
+                                                        this.setter.create(
+                                                            postURL,
+                                                            dataForPost
+                                                        )
+                                                    )
+                                                )
+                                            } else {
+                                                promises.push(
+                                                    new Promise((resolve) =>
+                                                        setTimeout(
+                                                            resolve,
+                                                            this.delay
+                                                        )
+                                                    ).then(() =>
+                                                        this._getDataSetAndInsertTest(
+                                                            postURL,
+                                                            dataForPost,
+                                                            testIteration
+                                                                .referenced_dataset
+                                                                .name
+                                                        )
+                                                    )
+                                                )
+                                            }
+                                            this.delay += DELAY_VALUE
+                                        }
+                                    })
+                                })
+                            }
+                        })
+                    })
+                    if (!promises.length) {
+                        console.info('pas de copie à faire')
+                        resolve(res)
+                    } else {
+                        return Promise.all(promises)
+                    }
+                })
+                .then((responses) => {
+                    console.info('Copie terminé')
+                    resolve(responses)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    reject({
+                        message: 'error in diffuseCompaingBandeauTests',
+                        err,
+                    })
+                })
+        })
+    }
+
+    _getDataSetAndInsertTest(postURL, dataForPost, datasetNameSeed) {
+        return new Promise((resolve, reject) => {
+            this.getter
+                .getDataSetIDByName(dataForPost.test_case.id, datasetNameSeed)
+                .then((dataSetId) => {
+                    dataForPost.dataset = {
+                        _type: 'dataset',
+                        id: dataSetId,
+                    }
+                    return this.setter.create(postURL, dataForPost)
+                })
+                .then((res) => {
+                    resolve(res)
+                })
+                .catch((err) => {
+                    reject({
+                        message: 'error in _getDataSetAndInsertTest',
+                        err,
+                    })
+                })
+        })
+    }
+
+    _getCompaignContent(compaigns, reject, nameCompaing, nextStepObject) {
+        let compaign = compaigns.find(
+            (compaign) => compaign.name == nameCompaing
+        )
+        if (compaign == undefined) {
+            reject({
+                message:
+                    nextStepObject +
+                    ' ' +
+                    nameCompaing +
+                    ' pas trouvé dans Squash',
+            })
+        } else {
+            return this.getter.getContents(nextStepObject, compaign.id)
+        }
+    }
+
+    _getSeedTestsForComopaign(sprintName, seedFolderName) {
+        let otherThanSeediterations = []
+        return new Promise((resolve, reject) => {
+            this.getter
+                .findIDByName('projects', 'fcc-next-gen')
+                .then((idProject) => {
+                    return this.getter.getCompaignsLibrary(idProject)
+                })
+                .then((compaigns) => {
+                    return this._getCompaignContent(
+                        compaigns,
+                        reject,
+                        'Bandeaux NextGen',
+                        'campaign-folders'
+                    )
+                })
+                .then((compaignContent) => {
+                    return this._getCompaignContent(
+                        compaignContent._embedded.content,
+                        reject,
+                        'G2R2',
+                        'campaign-folders'
+                    )
+                })
+                .then((compaignContent) => {
+                    return this._getCompaignContent(
+                        compaignContent._embedded.content,
+                        reject,
+                        sprintName,
+                        'campaign-folders'
+                    )
+                })
+                .then((compaignContent) => {
+                    return this._getCompaignContent(
+                        compaignContent._embedded.content,
+                        reject,
+                        'Amélioration',
+                        'campaigns'
+                    )
+                })
+                .then((compaignContent) => {
+                    otherThanSeediterations = compaignContent.iterations.filter(
+                        (iteration) => iteration.name !== seedFolderName
+                    )
+                    let iteration = compaignContent.iterations.find(
+                        (iteration) => iteration.name == seedFolderName
+                    )
+                    if (iteration == undefined) {
+                        reject({
+                            message:
+                                'itération FCC Desktop pas trouvé dans Squash',
+                        })
+                    } else {
+                        return this.getter.getTestPlan(iteration.id)
+                    }
+                })
+                .then((iterationTestPlan) => {
+                    resolve({
+                        seedTestPlan: iterationTestPlan,
+                        iterations: otherThanSeediterations,
+                    })
+                })
+                .catch((err) => {
+                    console.error(err)
+                    reject({
+                        message: 'error in _getSeedTestsForComopaign',
+                        err,
+                    })
                 })
         })
     }

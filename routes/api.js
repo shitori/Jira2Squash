@@ -25,13 +25,16 @@ router.get('/jira/ano', controller.getAllJiraAnoUnresolved)
 
 router.get('/squash/tests', controller.getAllSquashTests)
 
+router.post(
+    '/squash/diffuseCompaingBandeauTests',
+    controller.diffuseCompaingBandeauTests
+)
+
 //! PROTOTYPE A FINIR
 
 router.put('/copyCampaing', controller_prototype.copyCompaing)
 
 router.get('/squash/link/', controller_prototype.prepareLinkBetweenTestsExigs)
-
-router.get('/squash/test/', controller_prototype.getAllTestsFromSquash)
 
 //! TEST
 

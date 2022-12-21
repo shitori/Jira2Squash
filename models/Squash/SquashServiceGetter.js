@@ -44,6 +44,24 @@ class SquashServiceGetter {
         })
     }
 
+    getTestPlan(iterationID) {
+        return new Promise((resolve, reject) => {
+            let currentURL =
+                baseURL +
+                'iterations/' +
+                iterationID +
+                '/test-plan?page=0&size=200000'
+            axios
+                .get(currentURL, this.proxy)
+                .then((res) => {
+                    resolve(res.data._embedded['test-plan'])
+                })
+                .catch((err) => {
+                    reject({ message: 'error in getTestPlan', err })
+                })
+        })
+    }
+
     findByName(objectType, name) {
         return new Promise((resolve, reject) => {
             let currentURL = baseURL + objectType + '?page=0&size=200000'
@@ -100,7 +118,44 @@ class SquashServiceGetter {
                     resolve(res.data._embedded['test-case-library-content'])
                 })
                 .catch((err) => {
-                    reject({ message: 'error in getObject', err })
+                    reject({ message: 'error in getTestslibrary', err })
+                })
+        })
+    }
+
+    getCompaignsLibrary(idProject) {
+        return new Promise((resolve, reject) => {
+            let currentURL =
+                baseURL + 'projects/' + idProject + '/campaigns-library/content'
+            axios
+                .get(currentURL, this.proxy)
+                .then((res) => {
+                    resolve(res.data._embedded['campaign-library-content'])
+                })
+                .catch((err) => {
+                    reject({ message: 'error in getCompaignsLibrary', err })
+                })
+        })
+    }
+
+    getDataSetIDByName(idTest, name) {
+        return new Promise((resolve, reject) => {
+            this.getObject('test-cases', idTest)
+                .then((test) => {
+                    let dataset = test.datasets.find(
+                        (dataset) => dataset.name == name
+                    )
+                    if (dataset == undefined) {
+                        reject({
+                            message: 'error in getCompaignsLibrary',
+                            err: 'Pas de dataset',
+                        })
+                    } else {
+                        resolve(dataset.id)
+                    }
+                })
+                .catch((err) => {
+                    reject({ message: 'error in getDataSetIDByName', err })
                 })
         })
     }

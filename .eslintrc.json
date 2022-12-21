@@ -11,7 +11,8 @@
         "node": true,
         "jest/globals": true
     },
+    "ignorePatterns": ["**/public/javascripts/*.js"],
     "rules": {
-        "no-console": 0
+        "no-console": ["error", { "allow": ["info", "warn", "error"] }]
     }
 }

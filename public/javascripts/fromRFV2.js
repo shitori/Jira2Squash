@@ -145,15 +145,11 @@ function createCard(contantCard, element) {
         element.testName +
         ` ` +
         ` </h5>
-            <p class="card-text text-center">ID test : <a href="` +
+            <p class="card-text text-center"> Exécution n°` +
+        element.id +
+        `<br><a href="` +
         squashUrl +
         element.realId +
-        `" class="btn btn-light" target="_blank">` +
-        element.realId +
-        `</a> / ID execution : ` +
-        element.id +
-        `</p>
-          </div>
-        `
+        `" class="btn btn-light" target="_blank">Voir le test</a> </p></div>`
     contantCard.appendChild(div)
 }

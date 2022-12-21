@@ -8,7 +8,7 @@ module.exports = {
         maker
             .fromAPI(req)
             .then((dataQuery) => {
-                res.json({
+                res.status(200).json({
                     message: dataQuery.message,
                     from: dataQuery.from,
                     fileName: dataQuery.fileName,
@@ -16,7 +16,7 @@ module.exports = {
                 })
             })
             .catch((err) => {
-                res.json({
+                res.status(404).json({
                     message:
                         "Une erreur s'est produit pendant la mise à jour de Squash par Jira",
                     moreInfo: err,
@@ -28,12 +28,18 @@ module.exports = {
     fromFile: (req, res) => {
         maker
             .fromFile(req)
-            .then((localPathFile) => res.json({ localPathFile: localPathFile }))
-            .catch((err) => res.json({ message: 'fail make file :' + err }))
+            .then((localPathFile) =>
+                res.status(200).json({ localPathFile: localPathFile })
+            )
+            .catch((err) =>
+                res.status(404).json({ message: 'fail make file :' + err })
+            )
     },
 
     backup: (req, res) => {
-        maker.backup(req).then((result) => res.json({ data: result }))
+        maker
+            .backup(req)
+            .then((result) => res.status(200).json({ data: result }))
     },
 
     rf2squashnofile: (req, res) => {
@@ -45,7 +51,7 @@ module.exports = {
                 result.forEach((element) => {
                     moreInfo += element.message + '\n'
                 })
-                res.json({
+                res.status(200).json({
                     message: 'Squash mise à jour',
                     moreInfo: moreInfo,
                     result: result,
@@ -53,8 +59,8 @@ module.exports = {
                 })
             })
             .catch((err) => {
-                console.log(err)
-                res.json({
+                console.error(err)
+                res.status(404).json({
                     message:
                         "Une erreur s'est produit pendant la mise à jour de Squash par RobotFramework",
 
@@ -70,7 +76,7 @@ module.exports = {
         result.forEach((element) => {
             moreInfo += element.message + '\n'
         })
-        res.json({
+        res.status(200).json({
             message: 'Ancienne mise à jour Squash',
             moreInfo: moreInfo,
             result: result,
@@ -81,8 +87,8 @@ module.exports = {
     getAllJiraSprint: (req, res) => {
         maker
             .getAllJiraSprint(req)
-            .then((result) => res.json(result))
-            .catch((err) => res.json(err))
+            .then((result) => res.status(200).json(result))
+            .catch((err) => res.status(404).json(err))
     },
 
     getAllJiraAnoUnresolved: (req, res) => {
@@ -94,17 +100,26 @@ module.exports = {
                     csv += el.idJira + ';' + el.nameJira + ';\n'
                 })
                 console.info(csv)
-                res.json(result)
+                res.status(200).json(result)
             })
-            .catch((err) => res.json(err))
+            .catch((err) => res.status(404).json(err))
     },
 
     getAllSquashTests: (req, res) => {
         maker
             .getAllSquashTests()
             .then((result) => {
-                res.json(result)
+                res.status(200).json(result)
             })
-            .catch((err) => res.json(err))
+            .catch((err) => res.status(404).json(err))
+    },
+
+    diffuseCompaingBandeauTests: (req, res) => {
+        maker
+            .diffuseCompaingBandeauTests()
+            .then((result) => {
+                res.status(200).json(result)
+            })
+            .catch((err) => res.status(404).json(err))
     },
 }

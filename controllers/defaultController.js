@@ -40,7 +40,7 @@ module.exports = {
                 res.download(tmpFilePath)
             })
             .catch((err) => {
-                console.log(err)
+                console.error(err)
                 res.redirect('/')
             })
     },

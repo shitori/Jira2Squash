@@ -149,27 +149,27 @@
     },
     {
         "name": "Test Sel conference call external",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel external num",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel no pause",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel incoming call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel legal break sup",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel reject incoming call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel cancel reconnection",
@@ -177,11 +177,11 @@
     },
     {
         "name": "Test Sel conference call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel conference call 2",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel double message",
@@ -193,19 +193,19 @@
     },
     {
         "name": "Test Sel legal break",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel queue progress",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel transfert call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel transfert fa",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel voicemail legal break",
@@ -213,7 +213,7 @@
     },
     {
         "name": "Test Sel callback accent",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel callback allowed",
@@ -225,15 +225,15 @@
     },
     {
         "name": "Test Sel callback html",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel callback send",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel callback svi",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel callback without appellant",

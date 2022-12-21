@@ -131,7 +131,7 @@ function fromAPI(req) {
                     excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
                 })
                 .catch((err) => {
-                    console.log('error in getSprintID use in getSprintID')
+                    console.error('error in getSprintID use in getSprintID')
                     throw err
                 })
         } else {
@@ -523,6 +523,14 @@ function getAllSquashTests() {
     //return squash.getAllTests() // TODO reinject this code and remove var "tests"
 }
 
+function diffuseCompaingBandeauTests() {
+    let sprintName = 'Sprint Test API'
+    let seedFolderName = 'FCC Desktop'
+    let squash = new Squash(SquashHeader)
+    return squash.diffuseCompaingBandeauTests(sprintName, seedFolderName)
+    //locate Bandeau - FCC Desktop
+}
+
 module.exports = {
     writeOnSquash,
     writeOnSquashAPI,
@@ -535,4 +543,5 @@ module.exports = {
     getOldResult,
     getAllAnoUnresolvedJira,
     getAllSquashTests,
+    diffuseCompaingBandeauTests,
 }
