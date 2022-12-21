@@ -4,24 +4,24 @@ const ws = wb.addWorksheet('REQUIREMENT')
 const excelToJson = require('convert-excel-to-json')
 var WebSocket = require('faye-websocket')
 
-var dHelper = require('./helper/defaultHelper')
-var fileHelper = require('./helper/fileHelper')
+var dHelper = require('../Helper/defaultHelper')
+var fileHelper = require('../Helper/fileHelper')
 
-//API
+//Service
 const Jira = require('./JiraService')
 const Jenkins = require('./JenkinsService')
-const Squash = require('./Squash/SquashService')
-var xml2js = require('./../models/rf2squash/maker')
+const Squash = require('./SquashService')
+var xml2js = require('./XmlService')
 
-//proxy
-const Proxy = require('./v2/proxy')
-const SquashHeader = require('./Squash/SquashHeader')
+//Proxy & Header
+const Proxy = require('../Proxy/proxy')
+const SquashHeader = require('../Squash/SquashHeader')
 
 const dotenv = require('dotenv')
 dotenv.config()
 
 const headingColumnNames =
-    require('./../bdd/headingColimnNamesExcel.json').header
+    require('../../bdd/headingColimnNamesExcel.json').header
 
 function writeOnExcel(sprintName, squashFileName, footerSize, result) {
     //Write Column Title in Excel file
@@ -128,19 +128,19 @@ function fromAPI(req) {
             jira.getSprintID(req.body.inputSprintJira)
                 .then((res) => {
                     req.body.inputJiraSprintRequest = res
-                    excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
+                    _excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
                 })
                 .catch((err) => {
                     console.error('error in getSprintID use in getSprintID')
                     throw err
                 })
         } else {
-            excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
+            _excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
         }
     })
 }
 
-function excuteProcessFromAPI(req, jira, squash, sourceName, resolve) {
+function _excuteProcessFromAPI(req, jira, squash, sourceName, resolve) {
     req.body = dHelper.checkInput(req.body)
 
     let client = new WebSocket.Client('ws://localhost:3002/')
@@ -255,6 +255,82 @@ function getRobotFrameWorkReport() {
             .catch((err) =>
                 reject({ message: 'error in getRobotFrameWorkReport', err })
             )
+    })
+}
+
+function setSquashCampagneFromJsonResultWithXmlFile(req) {
+    return new Promise((resolve, reject) => {
+        var squash = new Squash(SquashHeader)
+
+        let client = new WebSocket.Client('ws://localhost:3002/')
+
+        client.on('open', () => {
+            let starter = {
+                message: 'Start transfer from RobotFramework to Squash.',
+                percent: 1,
+                cible: 'fromRF',
+            }
+            client.send(JSON.stringify(starter)) // !First Send
+
+            fileHelper
+            .saveTmpFile(req.files.formFile)
+                .then((tmpName) => {
+                    let endServerTmp = {
+                        message: "RobotFrameWork's result saved",
+                        percent: 20,
+                        cible: 'fromRF',
+                    }
+                    client.send(JSON.stringify(endServerTmp))
+                    return xml2js.setUpToSquashFromXmlFile(tmpName)
+                })
+                .then(() => {
+                    let endXml2js = {
+                        message:
+                            "RobotFrameWork's result saved into JSON content",
+                        percent: 30,
+                        cible: 'fromRF',
+                    }
+                    client.send(JSON.stringify(endXml2js))
+                    let resultRobotFrameWork = fileHelper.readJsonFile(
+                        './bdd/statusTests.json'
+                    )
+                    let mapping = fileHelper.readJsonFile('./bdd/mapping.json')
+                    return squash.setSquashCampagneFromJsonResult(
+                        req,
+                        resultRobotFrameWork,
+                        mapping
+                    )
+                })
+                .then((res) => {
+                    let endSquash = {
+                        message: "RobotFrameWork's result saved into Squash",
+                        percent: 100,
+                        cible: 'fromRF',
+                    }
+                    client.send(JSON.stringify(endSquash))
+                    client.close()
+                    resolve(res)
+                })
+                .catch((err) => {
+                    client.close()
+                    reject({
+                        message: 'error in setSquashCampagneFromJsonResult',
+                        err,
+                    })
+                })
+        })
+
+        client.on('message', function (message) {
+            console.info(
+                "Data from WebSocketServer maker'" + message.data + "'"
+            )
+        })
+
+        client.on('close', function (message) {
+            console.info('Connection closed!', message.code, message.reason)
+
+            client = null
+        })
     })
 }
 
@@ -414,7 +490,7 @@ function backup(req) {
         /*let squash = new Squash(
             new Proxy(req.body.tokenSessionSquash).getProxy()
         )*/
-        let idSprint = require('./../bdd/idSprints.json')
+        let idSprint = require('../../bdd/idSprints.json')
         let promises = []
         Object.entries(idSprint).forEach((el) => {
             //let key = el[0]
@@ -544,4 +620,5 @@ module.exports = {
     getAllAnoUnresolvedJira,
     getAllSquashTests,
     diffuseCompaingBandeauTests,
+    setSquashCampagneFromJsonResultWithXmlFile,
 }

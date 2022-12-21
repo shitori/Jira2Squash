@@ -1,4 +1,4 @@
-var maker = require('../models/maker')
+var maker = require('../models/Service/MakerService')
 
 const dotenv = require('dotenv')
 dotenv.config()
@@ -48,6 +48,32 @@ module.exports = {
     rf2squashnofile: (req, res) => {
         maker
             .setSquashCampagneFromJsonResult(req)
+            .then((result) => {
+                let moreInfo = ''
+                result.forEach((element) => {
+                    moreInfo += element + '\n'
+                })
+                res.render('success', {
+                    message: 'Squash mise à jour',
+                    from: undefined,
+                    fileName: undefined,
+                    moreInfo: moreInfo,
+                })
+            })
+            .catch((err) => {
+                res.render('success', {
+                    message:
+                        "Une erreur s'est produit pendant la mise à jour de Squash par RobotFramework",
+                    from: undefined,
+                    fileName: undefined,
+                    moreInfo: err,
+                })
+            })
+    },
+
+    rf2squash: (req, res) => {
+        maker
+            .setSquashCampagneFromJsonResultWithXmlFile(req)
             .then((result) => {
                 let moreInfo = ''
                 result.forEach((element) => {

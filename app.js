@@ -5,7 +5,7 @@ var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 
-var indexRouter = require('./routes/index')
+var guiRouter = require('./routes/gui')
 var apiRouter = require('./routes/api')
 
 var app = express()
@@ -24,7 +24,7 @@ app.use(
     '/favicon.ico',
     express.static(path.join(__dirname, 'public', 'images', 'favicon.ico'))
 )
-app.use('/', indexRouter)
+app.use('/', guiRouter)
 app.use('/api/', apiRouter)
 
 // catch 404 and forward to error handler

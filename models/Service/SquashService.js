@@ -1,10 +1,10 @@
-const fileHelper = require('../helper/fileHelper')
+const fileHelper = require('../Helper/fileHelper')
 var WebSocket = require('faye-websocket')
 
-const SquashServiceGetter = require('./SquashServiceGetter')
-const SquashServiceSetter = require('./SquashServiceSetter')
-const SquashServiceFolder = require('./SquashServiceFolder')
-const SquashServiceRequirement = require('./SquashServiceRequirement')
+const SquashServiceGetter = require('../Squash/SquashServiceGetter')
+const SquashServiceSetter = require('../Squash/SquashServiceSetter')
+const SquashServiceFolder = require('../Squash/SquashServiceFolder')
+const SquashServiceRequirement = require('../Squash/SquashServiceRequirement')
 
 const dotenv = require('dotenv')
 dotenv.config()

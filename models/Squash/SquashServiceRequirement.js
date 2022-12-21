@@ -1,4 +1,4 @@
-const dHelper = require('../helper/defaultHelper')
+const dHelper = require('../Helper/defaultHelper')
 
 const SquashServiceGetter = require('./SquashServiceGetter')
 const SquashServiceSetter = require('./SquashServiceSetter')
