@@ -116,7 +116,7 @@ module.exports = {
 
     diffuseCompaingBandeauTests: (req, res) => {
         maker
-            .diffuseCompaingBandeauTests()
+            .diffuseCompaingBandeauTestsSquash()
             .then((result) => {
                 res.status(200).json(result)
             })

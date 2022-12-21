@@ -94,13 +94,13 @@ class SquashService {
 
     importInSquashWithAPI(result, sprint) {
         return new Promise((resolve, reject) => {
-            var promesse = [
+            let promises = [
                 this.folderService.createFolderIfNecessary(true, sprint),
                 this.folderService.createFolderIfNecessary(false, sprint),
             ]
             this._setProgressBarRequirement(result.length)
-            this._setProgressBarFolder(promesse.length)
-            Promise.all(promesse)
+            this._setProgressBarFolder(promises.length)
+            Promise.all(promises)
                 .then((responses) => {
                     return this.requirementService.createRequirements(
                         responses[1],

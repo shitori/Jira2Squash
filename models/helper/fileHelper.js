@@ -1,4 +1,4 @@
-var fs = require('fs')
+const fs = require('fs')
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max)
@@ -67,8 +67,8 @@ function saveSourceFile(files) {
         if (!files) {
             reject('No file')
         }
-        var file = files.formFile
-        var tmpName = 'upload/tmp' + getRandomInt(100) + '.xlsx'
+        let file = files.formFile
+        let tmpName = 'upload/tmp' + getRandomInt(100) + '.xlsx'
         fs.writeFile(tmpName, file.data, (err) => {
             if (err) {
                 reject(err)
@@ -80,11 +80,11 @@ function saveSourceFile(files) {
 }
 
 function saveSourceFileBis(files) {
-    var tmpName = 'tmp' + getRandomInt(100) + '.xlsx'
+    let tmpName = 'tmp' + getRandomInt(100) + '.xlsx'
     if (!files) {
         return 'No file'
     }
-    var file = files.formFile
+    let file = files.formFile
     fs.writeFile(tmpName, file.data, (err) => {
         if (err) {
             return err

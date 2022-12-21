@@ -1,4 +1,4 @@
-var squashUrl =
+const squashUrl =
     'https://testmanagement.factory.orange-business.com/squash/test-case-workspace/test-case/detail/'
 function showLoadingRf2Sq() {
     showLoadingDefault('rf2squash', 'loading_rf2sq', 'result_rf2sq')
@@ -66,7 +66,7 @@ function callApiRf2SqOldDefault(url, option, errMessage) {
                 }
             })
 
-            var h2 = document.getElementById('result_rf2sq_title')
+            let h2 = document.getElementById('result_rf2sq_title')
             h2.innerHTML =
                 res.message +
                 '<br> <b class="text-danger">' +

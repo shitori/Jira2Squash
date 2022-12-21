@@ -39,7 +39,6 @@ class JiraService {
                     this.proxy
                 )
                 .then((res) => {
-                    //console.info(`statusCode: ${res.status}`);
                     let compactIssues = []
                     res.data.issues.forEach((issue) => {
                         let compactIssue = {}

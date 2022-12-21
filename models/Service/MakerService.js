@@ -1,9 +1,17 @@
+var WebSocket = require('faye-websocket')
+
+const excelToJson = require('convert-excel-to-json')
+const headingColumnNames =
+    require('../../bdd/headingColimnNamesExcel.json').header
+const dotenv = require('dotenv')
+dotenv.config()
+
+// Variable to read JIRA ticket export
 const xl = require('excel4node')
 const wb = new xl.Workbook()
 const ws = wb.addWorksheet('REQUIREMENT')
-const excelToJson = require('convert-excel-to-json')
-var WebSocket = require('faye-websocket')
 
+//Helper
 var dHelper = require('../Helper/defaultHelper')
 var fileHelper = require('../Helper/fileHelper')
 
@@ -16,12 +24,6 @@ var xml2js = require('./XmlService')
 //Proxy & Header
 const Proxy = require('../Proxy/proxy')
 const SquashHeader = require('../Squash/SquashHeader')
-
-const dotenv = require('dotenv')
-dotenv.config()
-
-const headingColumnNames =
-    require('../../bdd/headingColimnNamesExcel.json').header
 
 function writeOnExcel(sprintName, squashFileName, footerSize, result) {
     //Write Column Title in Excel file
@@ -82,7 +84,7 @@ function writeOnSquash(
     dataParser.header.rows = headerSize
     dataParser.sourceFile = sourceFilePath
 
-    var result = excelToJson(dataParser)
+    let result = excelToJson(dataParser)
 
     result = result.general_report
     return writeOnExcel(sprintName, squashFileName, footerSize, result)
@@ -116,11 +118,11 @@ function fromFile(req) {
 
 function fromAPI(req) {
     return new Promise((resolve) => {
-        var sourceName = req.body.inputSquash
-        var jira = new Jira(
+        let sourceName = req.body.inputSquash
+        let jira = new Jira(
             new Proxy(req.body.inputSessionTokenJira).getProxy()
         )
-        var squash = new Squash(SquashHeader)
+        let squash = new Squash(SquashHeader)
         if (
             req.body.inputSprintJira !== undefined &&
             req.body.inputSprintJira !== ''
@@ -193,7 +195,7 @@ function _excuteProcessFromAPI(req, jira, squash, sourceName, resolve) {
                 }
             })
             .then((finalResult) => {
-                var query = {}
+                let query = {}
                 switch (req.body.validator) {
                     case 'file':
                         query = {
@@ -266,7 +268,7 @@ function getRobotFrameWorkReport() {
 
 function setSquashCampagneFromJsonResultWithXmlFile(req) {
     return new Promise((resolve, reject) => {
-        var squash = new Squash(SquashHeader)
+        let squash = new Squash(SquashHeader)
 
         let client = new WebSocket.Client('ws://localhost:3002/')
 
@@ -342,7 +344,7 @@ function setSquashCampagneFromJsonResultWithXmlFile(req) {
 
 function setSquashCampagneFromJsonResult(req) {
     return new Promise((resolve, reject) => {
-        var squash = new Squash(SquashHeader)
+        let squash = new Squash(SquashHeader)
 
         let client = new WebSocket.Client('ws://localhost:3002/')
         let jenkins = new Jenkins()
@@ -535,54 +537,67 @@ function getAllAnoUnresolvedJira(req) {
 }
 
 function getAllSquashTests() {
-    //let squash = new Squash(SquashHeader)
-    let tests = fileHelper.readJsonFile('./backup/allTests.json')
+    //let tests = fileHelper.readJsonFile('./backup/allTests.json')
+    let squash = new Squash(SquashHeader)
     let mapping = fileHelper.readJsonFile('./bdd/mapping.json')
     let finalTests = []
-    tests.forEach((test) => {
-        let testExist = finalTests.find((el) => el.name == test.name)
-        if (testExist == undefined) {
-            finalTests.push({
-                name: test.name,
-                parents: [
-                    {
-                        parent: test.parent,
-                        id: test.id,
-                    },
-                ],
-                ids: [test.id],
-            })
-        } else {
-            testExist['parents'].push({
-                parent: test.parent,
-                id: test.id,
-            })
-            testExist['ids'].push(test.id)
-        }
-    })
-    for (const [keyMapping, valueMapping] of Object.entries(mapping)) {
-        finalTests.forEach((test) => {
-            const found = test['ids'].some((id) => valueMapping.includes(id))
-            if (found) {
-                mapping[keyMapping] = valueMapping.concat(test['ids'])
-            }
-        })
-        mapping[keyMapping] = mapping[keyMapping].filter(
-            (item, index) => mapping[keyMapping].indexOf(item) === index
-        )
-    }
-    let promises = [
-        fileHelper.saveJsonBackUp(
-            'mappingSetUpPlus',
-            JSON.stringify(mapping, null, 4)
-        ),
-        fileHelper.saveJsonBackUp(
-            'allTestsRegroup',
-            JSON.stringify(finalTests, null, 4)
-        ),
-    ]
     return new Promise((resolve, reject) => {
-        Promise.all(promises)
+        squash
+            .getAllTests()
+            .then((tests) => {
+                tests.forEach((test) => {
+                    let testExist = finalTests.find(
+                        (el) => el.name == test.name
+                    )
+                    if (testExist == undefined) {
+                        finalTests.push({
+                            name: test.name,
+                            parents: [
+                                {
+                                    parent: test.parent,
+                                    id: test.id,
+                                },
+                            ],
+                            ids: [test.id],
+                        })
+                    } else {
+                        testExist['parents'].push({
+                            parent: test.parent,
+                            id: test.id,
+                        })
+                        testExist['ids'].push(test.id)
+                    }
+                })
+                for (const [keyMapping, valueMapping] of Object.entries(
+                    mapping
+                )) {
+                    finalTests.forEach((test) => {
+                        const found = test['ids'].some((id) =>
+                            valueMapping.includes(id)
+                        )
+                        if (found) {
+                            mapping[keyMapping] = valueMapping.concat(
+                                test['ids']
+                            )
+                        }
+                    })
+                    mapping[keyMapping] = mapping[keyMapping].filter(
+                        (item, index) =>
+                            mapping[keyMapping].indexOf(item) === index
+                    )
+                }
+                let promises = [
+                    fileHelper.saveJsonBackUp(
+                        'mappingSetUpPlus',
+                        JSON.stringify(mapping, null, 4)
+                    ),
+                    fileHelper.saveJsonBackUp(
+                        'allTestsRegroup',
+                        JSON.stringify(finalTests, null, 4)
+                    ),
+                ]
+                return Promise.all(promises)
+            })
             .then((results) => {
                 console.info(results)
                 resolve({
@@ -601,16 +616,13 @@ function getAllSquashTests() {
                 })
             })
     })
-
-    //return squash.getAllTests() // TODO reinject this code and remove var "tests"
 }
 
-function diffuseCompaingBandeauTests() {
+function diffuseCompaingBandeauTestsSquash() {
     let sprintName = 'Sprint Test API'
     let seedFolderName = 'FCC Desktop'
     let squash = new Squash(SquashHeader)
     return squash.diffuseCompaingBandeauTests(sprintName, seedFolderName)
-    //locate Bandeau - FCC Desktop
 }
 
 module.exports = {
@@ -619,12 +631,12 @@ module.exports = {
     fromFile,
     fromAPI,
     backup,
+    diffuseCompaingBandeauTestsSquash,
     setSquashCampagneFromJsonResult,
+    setSquashCampagneFromJsonResultWithXmlFile,
     getRobotFrameWorkReport,
     getAllJiraSprint,
     getOldResult,
     getAllAnoUnresolvedJira,
     getAllSquashTests,
-    diffuseCompaingBandeauTests,
-    setSquashCampagneFromJsonResultWithXmlFile,
 }

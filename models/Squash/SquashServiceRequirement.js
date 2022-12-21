@@ -76,7 +76,7 @@ class SquashService {
 
     createRequirementIfNecessary(idFolder, dataFolder, record, nameFolder) {
         return new Promise((resolve, reject) => {
-            var folderEmpty = dataFolder._embedded == undefined
+            let folderEmpty = dataFolder._embedded == undefined
             if (folderEmpty) {
                 console.info('Répertoire ' + nameFolder + ' vide')
                 this.createRequirement(idFolder, record)
@@ -88,7 +88,7 @@ class SquashService {
                         })
                     )
             } else {
-                var exigenceAlreadyExist = dataFolder._embedded.content.find(
+                let exigenceAlreadyExist = dataFolder._embedded.content.find(
                     (el) => el.name == record.nameJira.replaceAll('/', '\\')
                 )
                 if (exigenceAlreadyExist == undefined) {
@@ -117,15 +117,15 @@ class SquashService {
 
     createRequirements(idB, idWB, result) {
         return new Promise((resolve, reject) => {
-            var promises = [
+            let promises = [
                 this.getter.getContents('requirement-folders', idB),
                 this.getter.getContents('requirement-folders', idWB),
             ]
             this.delay = 0
             Promise.all(promises)
                 .then((responses) => {
-                    var resWallboard = responses[1]
-                    var resBandeau = responses[0]
+                    let resWallboard = responses[1]
+                    let resBandeau = responses[0]
                     result.forEach((record, index) => {
                         if (
                             record.nameJira.toLowerCase().includes('wallboard')
@@ -158,8 +158,8 @@ class SquashService {
                     return Promise.all(result)
                 })
                 .then((resultResponses) => {
-                    var totalCreate = 0
-                    var status = ''
+                    let totalCreate = 0
+                    let status = ''
                     resultResponses.forEach((el) => {
                         totalCreate += el.result
                         status += el.message + '\n'
