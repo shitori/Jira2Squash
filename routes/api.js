@@ -26,7 +26,4 @@ router.post(
     controller.diffuseCompaingBandeauTests
 )
 
-
-
-
 module.exports = router

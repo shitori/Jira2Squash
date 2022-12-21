@@ -128,7 +128,13 @@ function fromAPI(req) {
             jira.getSprintID(req.body.inputSprintJira)
                 .then((res) => {
                     req.body.inputJiraSprintRequest = res
-                    _excuteProcessFromAPI(req, jira, squash, sourceName, resolve)
+                    _excuteProcessFromAPI(
+                        req,
+                        jira,
+                        squash,
+                        sourceName,
+                        resolve
+                    )
                 })
                 .catch((err) => {
                     console.error('error in getSprintID use in getSprintID')
@@ -273,7 +279,7 @@ function setSquashCampagneFromJsonResultWithXmlFile(req) {
             client.send(JSON.stringify(starter)) // !First Send
 
             fileHelper
-            .saveTmpFile(req.files.formFile)
+                .saveTmpFile(req.files.formFile)
                 .then((tmpName) => {
                     let endServerTmp = {
                         message: "RobotFrameWork's result saved",
