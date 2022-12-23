@@ -52,13 +52,27 @@
           <h2 class="accordion-header" id="flush-headingThree">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
               data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-              NOUVEAU : Mettre à jour les tests Squash à partir de RobotFrameWork
+              Mettre à jour les tests Squash à partir de RobotFrameWork
             </button>
           </h2>
           <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree"
             data-bs-parent="#accordionFlush">
             <div class="accordion-body">
               <%- include('./form/xml2jsonV2.ejs'); %>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="flush-headingFour">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
+              Diffuser les tests Squash
+            </button>
+          </h2>
+          <div id="flush-collapseFour" class="accordion-collapse collapse" aria-labelledby="flush-headingFour"
+            data-bs-parent="#accordionFlush">
+            <div class="accordion-body">
+              <%- include('./form/diffuseForm.ejs'); %>
             </div>
           </div>
         </div>

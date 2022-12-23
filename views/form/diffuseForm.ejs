@@ -1,0 +1,26 @@
+<form action="" id="diffuseForm" method="post" enctype="multipart/form-data">
+  <h5>Objectif de l'opération : Transfèrer les tests un dossiers campagne donneur du bandeau vers les 3 autres dossiers campagnes receveurs du bandeau</h5>
+
+  <div class="mb-3">
+    <div class="row">
+      <div class="col-6">
+        <label for="inputSprintDiffuse" class="form-label">Numéro de Sprint dans Squash</label>
+        <input type="input" class="form-control" id="inputSprintDiffuse" name="inputSprintDiffuse"
+          aria-describedby="sprintHelp">
+        <div id="sprintHelp" class="form-text">
+          Le numéro du sprint dans la campagne Squash, valeur par défaut : Sprint Test API
+        </div>
+      </div>
+      <div class="col-6">
+        <label for="inputSeedFolderDiffuse" class="form-label">Nom du dossier donneur dans Squash</label>
+        <input type="input" class="form-control" id="inputSeedFolderDiffuse" name="inputSeedFolderDiffuse"
+          aria-describedby="sprintHelp">
+        <div id="sprintHelp" class="form-text">Valeur par défaut : FCC Desktop</div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center">
+    <button type="button" onclick="showDiffuseLoading();callDiffuseApi()" class="btn btn-outline-success btn-lg"
+      name="validator" value="api">Transfère</button>
+  </div>
+</form>

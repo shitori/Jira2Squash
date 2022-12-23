@@ -245,7 +245,7 @@ class SquashService {
                                 ) {
                                     console.info(
                                         el.refTestName +
-                                            ' ajouté pour nouveau succès'
+                                        ' ajouté pour nouveau succès'
                                     )
                                     changeStatusList.push(
                                         new Promise((resolve) =>
@@ -264,7 +264,7 @@ class SquashService {
                                 ) {
                                     console.info(
                                         el.refTestName +
-                                            ' ajouté pour nouveau échec'
+                                        ' ajouté pour nouveau échec'
                                     )
                                     changeStatusList.push(
                                         new Promise((resolve) =>
@@ -283,7 +283,7 @@ class SquashService {
                                 ) {
                                     console.info(
                                         el.refTestName +
-                                            ' pas testable pour le moment'
+                                        ' pas testable pour le moment'
                                     )
                                     changeStatusList.push(
                                         new Promise((resolve) =>
@@ -326,9 +326,11 @@ class SquashService {
             this.getter
                 .findIDByName('projects', 'fcc-next-gen')
                 .then((idProject) => {
+                    this._sendWSinfoHard(this.client, "Find fcc-next-gen project", 10, "Diffuse")
                     return this.getter.getTestslibrary(idProject)
                 })
                 .then((res) => {
+                    this._sendWSinfoHard(this.client, "Find library tests", 20, "Diffuse")
                     let promises = []
                     res.forEach((el) => {
                         promises.push(
@@ -338,6 +340,7 @@ class SquashService {
                     return Promise.all(promises)
                 })
                 .then((res) => {
+                    this._sendWSinfoHard(this.client, "Find tests", 30, "Diffuse")
                     let concatResult = 0
                     res.forEach((result) => {
                         concatResult += result
@@ -356,6 +359,7 @@ class SquashService {
         return new Promise((resolve, reject) => {
             this._getSeedTestsForComopaign(sprintName, seedFolderName)
                 .then((res) => {
+
                     let seedTestPlan = res.seedTestPlan
                     let iterations = res.iterations
                     let tests = fileHelper.readJsonFile(
@@ -377,13 +381,13 @@ class SquashService {
                                         ) {
                                             console.info(
                                                 'iteration ' +
-                                                    iteration.id +
-                                                    '/' +
-                                                    iteration.name +
-                                                    ' receive copy from parent of ' +
-                                                    parent.id +
-                                                    '/' +
-                                                    parent.parent
+                                                iteration.id +
+                                                '/' +
+                                                iteration.name +
+                                                ' receive copy from parent of ' +
+                                                parent.id +
+                                                '/' +
+                                                parent.parent
                                             )
                                             let postURL =
                                                 'iterations/' +
@@ -442,6 +446,7 @@ class SquashService {
                         console.info('pas de copie à faire')
                         resolve(res)
                     } else {
+                        this.setter._setProgressBarTestPlan(promises.length)
                         return Promise.all(promises)
                     }
                 })
@@ -482,7 +487,7 @@ class SquashService {
         })
     }
 
-    _getCompaignContent(compaigns, reject, nameCompaing, nextStepObject) {
+    _getCompaignContent(compaigns, reject, nameCompaing, nextStepObject, isObject) {
         let compaign = compaigns.find(
             (compaign) => compaign.name == nameCompaing
         )
@@ -495,7 +500,12 @@ class SquashService {
                     ' pas trouvé dans Squash',
             })
         } else {
-            return this.getter.getContents(nextStepObject, compaign.id)
+            if (isObject) {
+                return this.getter.getObject(nextStepObject, compaign.id)
+            } else {
+                return this.getter.getContents(nextStepObject, compaign.id)
+            }
+
         }
     }
 
@@ -505,9 +515,11 @@ class SquashService {
             this.getter
                 .findIDByName('projects', 'fcc-next-gen')
                 .then((idProject) => {
+                    this._sendWSinfoHard(this.client, 'Find project', 40, "Diffuse")
                     return this.getter.getCompaignsLibrary(idProject)
                 })
                 .then((compaigns) => {
+                    this._sendWSinfoHard(this.client, 'Find library compaings', 50, "Diffuse")
                     return this._getCompaignContent(
                         compaigns,
                         reject,
@@ -516,6 +528,7 @@ class SquashService {
                     )
                 })
                 .then((compaignContent) => {
+                    this._sendWSinfoHard(this.client, 'Find compaing Bandeaux NextGen', 60, "Diffuse")
                     return this._getCompaignContent(
                         compaignContent._embedded.content,
                         reject,
@@ -524,6 +537,7 @@ class SquashService {
                     )
                 })
                 .then((compaignContent) => {
+                    this._sendWSinfoHard(this.client, 'Find compaing G2R2', 70, "Diffuse")
                     return this._getCompaignContent(
                         compaignContent._embedded.content,
                         reject,
@@ -532,14 +546,17 @@ class SquashService {
                     )
                 })
                 .then((compaignContent) => {
+                    this._sendWSinfoHard(this.client, 'Find compaing ' + sprintName, 70, "Diffuse")
                     return this._getCompaignContent(
                         compaignContent._embedded.content,
                         reject,
                         'Amélioration',
-                        'campaigns'
+                        'campaigns',
+                        true
                     )
                 })
                 .then((compaignContent) => {
+                    this._sendWSinfoHard(this.client, 'Find compaing Amélioration', 70, "Diffuse")
                     otherThanSeediterations = compaignContent.iterations.filter(
                         (iteration) => iteration.name !== seedFolderName
                     )
@@ -556,6 +573,7 @@ class SquashService {
                     }
                 })
                 .then((iterationTestPlan) => {
+                    this._sendWSinfoHard(this.client, 'Find ' + seedFolderName + ' test plan', 70, "Diffuse")
                     resolve({
                         seedTestPlan: iterationTestPlan,
                         iterations: otherThanSeediterations,

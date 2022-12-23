@@ -14,11 +14,18 @@ class SquashServiceSetter {
         this.requirementCurrent = 0
         this.changeStatusMax = 0
         this.changeStatusCurrent = 0
+        this.testPlanMax = 0
+        this.testPlanCurrent = 0
         this.allTest = []
         this.allExig = []
         this.client = client
         this._setClientWebsocket(this.client)
         this.delay = 0
+    }
+
+    _setProgressBarTestPlan(max) {
+        this.testPlanMax = max
+        this.testPlanCurrent = 0
     }
 
     _setProgressBarRequirement(max) {
@@ -44,8 +51,8 @@ class SquashServiceSetter {
         client.on('message', function (message) {
             console.info(
                 "Data from WebSocketServer squashserviceSetter'" +
-                    message.data +
-                    "'"
+                message.data +
+                "'"
             )
         })
 
@@ -86,6 +93,20 @@ class SquashServiceSetter {
         this._sendWSinfoSoft(client, requirementInfo)
     }
 
+    _sendWSTestPlanInfo(client) {
+        this.testPlanCurrent++
+        let testPlanInfo = {
+            message:
+                'Test-plan : ' +
+                this.testPlanCurrent +
+                '/' +
+                this.testPlanMax,
+            percent: 50 + (this.testPlanCurrent * 50) / this.testPlanMax,
+            cible: 'Diffuse',
+        }
+        this._sendWSinfoSoft(client, testPlanInfo)
+    }
+
     _sendWSFolderInfo(client) {
         this.folderCurrent++
         let folderInfo = {
@@ -120,6 +141,8 @@ class SquashServiceSetter {
                         this._sendWSFolderInfo(this.client)
                     } else if (objectName == 'requirements') {
                         this._sendWSRequirementInfo(this.client)
+                    } else if (objectName.includes("test-plan")) {
+                        this._sendWSTestPlanInfo(this.client)
                     } else {
                         this.client.send('Finish for ' + objectName)
                     }
@@ -130,6 +153,8 @@ class SquashServiceSetter {
                         this._sendWSFolderInfo(this.client)
                     } else if (objectName == 'requirements') {
                         this._sendWSRequirementInfo(this.client)
+                    } else if (objectName.includes("test-plan")) {
+                        this._sendWSTestPlanInfo(this.client)
                     } else {
                         this.client.send('Finish for ' + objectName)
                     }
