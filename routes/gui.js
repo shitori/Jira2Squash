@@ -8,6 +8,8 @@ router.get('/', controller.home)
 
 router.get('/rfhtml', controller.getRobotFrameWorkHtml)
 
+router.get('/fakeCRM', controller.fakeCRM)
+
 //? POST ROUTE
 router.post('/fromFile', controller.fromFile)
 

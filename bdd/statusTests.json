@@ -161,7 +161,7 @@
     },
     {
         "name": "Test Sel incoming call",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel legal break sup",
@@ -197,7 +197,7 @@
     },
     {
         "name": "Test Sel queue progress",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel transfert call",
@@ -233,7 +233,7 @@
     },
     {
         "name": "Test Sel callback svi",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel callback without appellant",

@@ -96,4 +96,8 @@ module.exports = {
                 })
             })
     },
+
+    fakeCRM: (req, res) => {
+        res.render('fakeCRM')
+    },
 }

@@ -51,8 +51,8 @@ class SquashServiceSetter {
         client.on('message', function (message) {
             console.info(
                 "Data from WebSocketServer squashserviceSetter'" +
-                message.data +
-                "'"
+                    message.data +
+                    "'"
             )
         })
 
@@ -76,6 +76,7 @@ class SquashServiceSetter {
     }
 
     _sendWSinfoSoft(client, info) {
+        console.info(info)
         client.send(JSON.stringify(info))
     }
 
@@ -97,10 +98,7 @@ class SquashServiceSetter {
         this.testPlanCurrent++
         let testPlanInfo = {
             message:
-                'Test-plan : ' +
-                this.testPlanCurrent +
-                '/' +
-                this.testPlanMax,
+                'Test-plan : ' + this.testPlanCurrent + '/' + this.testPlanMax,
             percent: 50 + (this.testPlanCurrent * 50) / this.testPlanMax,
             cible: 'Diffuse',
         }
@@ -141,7 +139,7 @@ class SquashServiceSetter {
                         this._sendWSFolderInfo(this.client)
                     } else if (objectName == 'requirements') {
                         this._sendWSRequirementInfo(this.client)
-                    } else if (objectName.includes("test-plan")) {
+                    } else if (objectName.includes('test-plan')) {
                         this._sendWSTestPlanInfo(this.client)
                     } else {
                         this.client.send('Finish for ' + objectName)
@@ -153,7 +151,7 @@ class SquashServiceSetter {
                         this._sendWSFolderInfo(this.client)
                     } else if (objectName == 'requirements') {
                         this._sendWSRequirementInfo(this.client)
-                    } else if (objectName.includes("test-plan")) {
+                    } else if (objectName.includes('test-plan')) {
                         this._sendWSTestPlanInfo(this.client)
                     } else {
                         this.client.send('Finish for ' + objectName)
