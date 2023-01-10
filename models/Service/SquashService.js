@@ -279,7 +279,7 @@ class SquashService {
                                     this.delay += DELAY_VALUE
                                 } else if (
                                     req.body.inputSprint === '' &&
-                                    key === 'UNTESTABLE'
+                                    ["NO_ACCESS","HUMAN_ACTION","ANO","OTHER_TENANT","CRM","SALESFORCE","MOBILE"].includes(key)
                                 ) {
                                     console.info(
                                         el.refTestName +

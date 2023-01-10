@@ -144,6 +144,14 @@
         "status": "OK"
     },
     {
+        "name": "Test Sel proto edge no proxy",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel proto ff no proxy",
+        "status": "KO"
+    },
+    {
         "name": "Test Sel sup tabs",
         "status": "OK"
     },
@@ -160,8 +168,12 @@
         "status": "OK"
     },
     {
+        "name": "Test Sel CLI",
+        "status": "OK"
+    },
+    {
         "name": "Test Sel incoming call",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel legal break sup",
@@ -197,7 +209,7 @@
     },
     {
         "name": "Test Sel queue progress",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel transfert call",
@@ -213,7 +225,7 @@
     },
     {
         "name": "Test Sel callback accent",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel callback allowed",
@@ -225,11 +237,11 @@
     },
     {
         "name": "Test Sel callback html",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel callback send",
-        "status": "OK"
+        "status": "KO"
     },
     {
         "name": "Test Sel callback svi",
@@ -253,6 +265,46 @@
     },
     {
         "name": "Test Sel voice allowed",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel crm after call",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel crm before call",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel crm hide",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel dimelo dossier",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel dimelo tache",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel conference triple",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel help request sup",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel supervisor mode",
+        "status": "KO"
+    },
+    {
+        "name": "Test Sel transfert to agent",
+        "status": "OK"
+    },
+    {
+        "name": "Test Sel transfert to agent other site",
         "status": "OK"
     },
     {
