@@ -82,7 +82,104 @@ function setUpToSquashFromXmlFileWithOption(
                 resolve(returnInfo)
             })
             .catch((err) => {
-                reject({ message: 'setUpToSquashFromXmlFileWithOption', err })
+                console.error({
+                    message:
+                        'error in setUpToSquashFromXmlFileWithOption, try low version',
+                    err,
+                })
+                _setUpToSquashFromXmlFileWithOptionLowVersion(
+                    sourceFilePath,
+                    cibleMappingFilePath,
+                    cibleStatusTestsFilePath
+                )
+                    .then((res) => resolve(res))
+                    .catch((err) => reject(err))
+                //reject({ message: 'error in setUpToSquashFromXmlFileWithOption', err })
+            })
+    })
+}
+
+function _setUpToSquashFromXmlFileWithOptionLowVersion(
+    sourceFilePath,
+    cibleMappingFilePath,
+    cibleStatusTestsFilePath
+) {
+    return new Promise((resolve, reject) => {
+        let returnInfo = ''
+        let finalResult = []
+        let mappings = {}
+        let shortResult = []
+        let nbSucess = 0
+        fsp.readFile(sourceFilePath)
+            .then((xml) => {
+                xml2js.parseString(xml, (err, result) => {
+                    if (err) {
+                        reject(err)
+                    }
+                    result = result.robot.suite[0].suite[0].suite
+                    //result = result.robot.suite[0].suite
+                    console.info(result)
+
+                    result.forEach((el) => {
+                        el.suite.forEach((els) => {
+                            shortResult.push({
+                                fileName: els.$.name,
+                                tests: els.test,
+                            })
+                        })
+                    })
+
+                    console.info(shortResult)
+
+                    shortResult.forEach((el) => {
+                        let test = {}
+                        mappings[el.fileName] = []
+
+                        let isFail = false
+                        el.tests.forEach((els) => {
+                            if (Array.isArray(els.kw)) {
+                                els.kw.forEach((elss) => {
+                                    let status = elss.status[0].$.status
+                                    if (status == 'FAIL') {
+                                        console.error(el.fileName + ' : KO')
+                                        isFail = true
+                                        test['name'] = el.fileName
+                                        test['status'] = 'KO'
+                                    }
+                                })
+                            } else {
+                                console.info('Other :')
+                                console.info(els)
+                            } // ! cas de la loop
+                        })
+                        if (!isFail) {
+                            test['name'] = el.fileName
+                            test['status'] = 'OK'
+                            nbSucess++
+                        }
+                        finalResult.push(test)
+                    })
+
+                    const json = JSON.stringify(finalResult, null, 4)
+                    return fsp.writeFile(cibleStatusTestsFilePath, json)
+                })
+            })
+            .then(() => {
+                returnInfo += nbSucess + '/' + shortResult.length + ' success\n'
+                const json2 = JSON.stringify(mappings, null, 4)
+                return fsp.writeFile(cibleMappingFilePath, json2)
+            })
+            .then(() => {
+                returnInfo += 'mapping set up\n'
+                resolve(returnInfo)
+            })
+            .catch((err) => {
+                console.error(err)
+                reject({
+                    message:
+                        'error in _setUpToSquashFromXmlFileWithOptionLowVersion',
+                    err,
+                })
             })
     })
 }

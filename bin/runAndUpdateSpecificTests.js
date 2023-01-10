@@ -1,13 +1,21 @@
 var maker = require('../models/Service/MakerService')
+var fileHelper = require('../models/Helper/fileHelper')
+var filePath = process.argv[2]
+var file = fileHelper.readFile(filePath)
+console.info(file)
 require('./ws')
 
 var req = {
     body: {
         inputSprint: '',
     },
+    files: {
+        formFile: { data: file },
+    },
 }
+
 maker
-    .setSquashCampagneFromJsonResult(req)
+    .setSquashCampagneFromJsonResultWithXmlFile(req)
     .then((result) => {
         let moreInfo = ''
         result.forEach((element) => {

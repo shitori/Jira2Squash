@@ -4,6 +4,10 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max)
 }
 
+function readFile(fileName) {
+    return fs.readFileSync(fileName)
+}
+
 function readJsonFile(fileName) {
     return JSON.parse(fs.readFileSync(fileName))
 }
@@ -112,5 +116,6 @@ module.exports = {
     saveHtmlFile,
     saveJsonTmpFile,
     readJsonFile,
+    readFile,
     saveJsonBackUp,
 }

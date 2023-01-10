@@ -209,7 +209,7 @@
     },
     {
         "name": "Test Sel voicemail legal break",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel callback accent",
@@ -233,7 +233,7 @@
     },
     {
         "name": "Test Sel callback svi",
-        "status": "KO"
+        "status": "OK"
     },
     {
         "name": "Test Sel callback without appellant",
