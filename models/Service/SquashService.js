@@ -253,7 +253,8 @@ class SquashService {
                                         ).then(() =>
                                             this.setter.changeStatus(
                                                 el,
-                                                'SUCCESS'
+                                                'SUCCESS',
+                                                '<p>Tous s\'est bien passé</p>'
                                             )
                                         )
                                     )
@@ -272,7 +273,8 @@ class SquashService {
                                         ).then(() =>
                                             this.setter.changeStatus(
                                                 el,
-                                                'FAILURE'
+                                                'FAILURE',
+                                                '<p>Il y a un problème, à voir.</p>'
                                             )
                                         )
                                     )
@@ -291,7 +293,8 @@ class SquashService {
                                         ).then(() =>
                                             this.setter.changeStatus(
                                                 el,
-                                                'UNTESTABLE'
+                                                'UNTESTABLE',
+                                                '<p>Pas testable pour le moment.</p>'
                                             )
                                         )
                                     )

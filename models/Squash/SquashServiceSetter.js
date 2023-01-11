@@ -4,6 +4,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const baseURL = process.env.SQUASH_BASE_URL
+const DELAY_VALUE = 1000
 
 class SquashServiceSetter {
     constructor(proxy, client) {
@@ -51,8 +52,8 @@ class SquashServiceSetter {
         client.on('message', function (message) {
             console.info(
                 "Data from WebSocketServer squashserviceSetter'" +
-                    message.data +
-                    "'"
+                message.data +
+                "'"
             )
         })
 
@@ -161,8 +162,7 @@ class SquashServiceSetter {
         })
     }
 
-    changeStatus(test, status) {
-        //TODO change parent itération -> maybe useless
+    changeStatusOLD(test, status, message) {
         let idTest = test.id
         return new Promise((resolve, reject) => {
             let currentURL =
@@ -174,12 +174,13 @@ class SquashServiceSetter {
                     let dataPatch = {
                         _type: 'execution',
                         execution_status: status,
+                        comment: message
                     }
                     currentURL =
                         baseURL +
                         'executions/' +
                         idExecution +
-                        '?fields=execution_status'
+                        '?fields=execution_status,comment'
                     return axios.patch(currentURL, dataPatch, this.proxy)
                 })
                 .then(() => {
@@ -199,6 +200,51 @@ class SquashServiceSetter {
                 .catch((err) => {
                     this._sendWSExcutionStatusInfo(this.client)
                     reject({ message: 'error in ', err })
+                })
+        })
+    }
+
+    changeStatus(test, status, message) {
+        let idTest = test.id
+        return new Promise((resolve, reject) => {
+            let currentURL =
+                baseURL + 'iteration-test-plan-items/' + idTest + '/executions'
+            axios
+                .post(currentURL, {}, this.proxy)
+                .then((res) => {
+                    let stepExecution = res.data.execution_steps
+                    let promises = []
+
+                    stepExecution.forEach(step => {
+                        promises.push(
+                            new Promise((resolve) =>
+                                setTimeout(resolve, this.delay)
+                            ).then(() => axios.patch(baseURL + 'execution-steps/' + step.id + '/execution-status/' + status, {}, this.proxy))
+                        )
+                        this.delay += DELAY_VALUE
+                    });
+
+                    return Promise.all(promises)
+                })
+                .then(() => {
+
+                    this._sendWSExcutionStatusInfo(this.client)
+                    resolve({
+                        message:
+                            'Test ' +
+                            idTest +
+                            ' mise à jour avec le status : ' +
+                            status,
+                        id: idTest,
+                        status: status,
+                        testName: test.refTestName,
+                        realId: test.refTestId,
+                    })
+                })
+                .catch((err) => {
+                    console.error(err);
+                    this._sendWSExcutionStatusInfo(this.client)
+                    reject({ message: 'error in changeStatus', err })
                 })
         })
     }
